@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+/* 댓글 메뉴 전용 스타일 (중첩 방지) */
+.reply-menu-container {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 1000;
+}
+
+/* 부모 박스는 자식이 삐져나와도 다 보여줘야 함 */
+.reply-item, .result-container {
+    position: relative;
+    overflow: visible !important;
+}
+
+/* 메뉴 버튼을 감싸는 박스 */
+.reply-menu-container {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+/* 메뉴 안의 버튼 */
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: white;
+    cursor: pointer;
+}
