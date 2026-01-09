@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.picflower.dao.IproductDAO">
+	<select id="productListDao" resultType="com.picflower.dto.productDTO">
+		select * from product     
+		<where>
+	        <if test="p_category != null">
+	            p_category = #{p_category}
+	        </if>
+	    </where>
+	    ORDER BY p_no DESC
+	</select>
+	<insert id="productWriteDao">
+		insert into product values(product_seq.nextval, #{p_title}, #{p_subtitle}, #{p_price}, #{p_category}, #{p_image}, #{p_detail}, sysdate, #{m_no}, null ,#{f_no})
+	</insert>
+	<select id="productViewDao" resultType="com.picflower.dto.productDTO">
+		select * from product where p_no=#{param1}
+	</select>
+	<update id="productUpdateDao">
+		update product set p_title = #{p_title}, p_subtitle = #{p_subtitle}, p_price = #{p_price}, p_category= #{p_category}, p_image = #{p_image}, p_detail = #{p_detail}, f_no = #{f_no} where p_no = ${p_no}
+	</update>
+	<delete id="productDeleteDao">
+		delete from product where p_no=#{param1}
+	</delete>
+</mapper>

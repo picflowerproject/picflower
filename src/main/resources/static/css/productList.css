@@ -1,0 +1,167 @@
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* 카테고리 네비게이션 */
+.category-nav {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.category-nav a {
+    text-decoration: none;
+    color: #666;
+    margin: 0 15px;
+    font-weight: 500;
+    transition: color 0.3s;
+    padding-bottom: 5px;
+}
+
+.category-nav a:hover {
+    color: #ff6b6b;
+    border-bottom: 2px solid #ff6b6b;
+}
+
+/* 상품 그리드 시스템 수정 */
+.product-grid {
+    display: grid;
+    /* 핵심: 1fr(동일한 비율)로 3개의 컬럼을 생성 */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 50px; /* 카드 사이의 간격 */
+    padding: 20px 0;
+}
+
+/* (옵션) 태블릿이나 모바일에서 너무 작아 보일 경우를 대비한 반응형 코드 */
+@media (max-width: 1024px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr); /* 화면이 작아지면 2개씩 */
+    }
+}
+
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: repeat(1, 1fr); /* 모바일은 1개씩 */
+    }
+}
+
+/* 이미지 박스 비율 유지 (3개씩 보일 때 예쁘게 나오도록) */
+.product-img-box {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* 가로세로 1:1 정사각 비율 유지 */
+    overflow: hidden;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+}
+
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+}
+
+/* 이미지 영역 */
+.product-img-box {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background-color: #eee;
+}
+
+.product-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.product-card:hover img {
+    transform: scale(1.1);
+}
+
+/* 상품 정보 영역 */
+.product-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.product-title a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-price {
+    font-size: 1.2rem;
+    color: #ff6b6b;
+    font-weight: 700;
+}
+
+.product-price span {
+    font-size: 0.9rem;
+    color: #888;
+    font-weight: normal;
+}
+/* 페이지네이션 스타일 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    gap: 8px;
+}
+
+.page-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #666;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.page-btn:hover {
+    background-color: #f0f0f0;
+    border-color: #bbb;
+}
+
+.page-btn.active {
+    background-color: #ff6b6b; /* 기존 테마색과 통일 */
+    color: white;
+    border-color: #ff6b6b;
+}
+
+.category-nav a.active {
+    color: #222;
+    font-weight: 700;
+    border-bottom: 2px solid #222;
+}

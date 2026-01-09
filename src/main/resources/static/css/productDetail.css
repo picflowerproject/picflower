@@ -1,0 +1,296 @@
+@charset "UTF-8";
+main {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+    color: #333;
+}
+
+h2 {
+    font-family: 'Nanum Myeongjo', serif; /* 추천 1번 예시 */
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #333; /* 꽃 색상을 돋보이게 하는 짙은 회색 권장 */
+}
+
+h3 {
+    font-family: 'Source Han Serif', serif;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 18px;
+    font-weight: 400;
+    color: #666; /* 보조 설명은 조금 더 연하게 */
+    letter-spacing: -0.5px; /* 가독성을 위한 자간 조절 */
+}
+
+/* 테이블 구조 개선 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 50px;
+}
+
+/* 이미지 영역 (좌측) */
+td[rowspan="7"] {
+    padding-right: 40px;
+    vertical-align: top;
+}
+
+.main-img {
+    width: 100%;
+    max-width: 400px;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.thumb-container {
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.thumb-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 4px;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.thumb-img:hover {
+    transform: translateY(-2px);
+    border-color: #B06DF2 !important; /* 보라색 강조 */
+}
+
+/* 텍스트 정보 영역 (우측) */
+td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* 항목 이름(라벨) 열 스타일 */
+td:nth-child(1):not([rowspan="7"]):not([colspan="3"]) {
+    width: 120px;
+    font-weight: 600;
+    color: #666;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+/* 가격 및 장바구니 영역 */
+.price-row {
+    vertical-align: middle;
+}
+
+.price-text {
+    font-size: 26px;       /* 크기를 키워 강조 */
+    font-weight: 800;      /* 아주 두껍게 */
+    color: #ff6b6b;        /* 메인 보라색 테마 적용 */
+    letter-spacing: -0.5px;
+}
+
+/* '원' 단위 텍스트 스타일링 */
+.price-text::after {
+    content: " 원";
+    font-size: 16px;       /* '원'은 조금 작게 */
+    font-weight: 500;
+    color: #333;           /* 단위는 일반 텍스트 색상 */
+    margin-left: 2px;
+}
+
+/* 장바구니 폼 영역을 가격과 분리하는 느낌 주기 */
+form[action="addCart"] {
+    background-color: #fcfaff; /* 아주 연한 보라색 배경 */
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #f0e6ff;
+}
+
+/* 수량 라벨 */
+form[action="addCart"] label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+}
+
+input[type="number"] {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 0 10px;
+}
+
+input[type="submit"] {
+    background-color: #A36CD9; /* 가장 진한 보라 */
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #B06DF2; /* 호버 시 약간 밝게 */
+}
+
+/* 상세 정보 텍스트 영역 */
+tr:last-child td {
+    padding: 40px 20px;
+    line-height: 1.8;
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    min-height: 200px;
+}
+
+td[colspan="3"]:first-of-type {
+    border: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-top: 40px;
+    padding-bottom: 10px;
+}
+
+.link-container {
+    display: flex;
+    justify-content: space-between; /* 양 끝으로 배치 */
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #eee; /* 구분선 추가 */
+}
+
+/* 오른쪽 버튼들을 묶어주는 그룹 (JSP 수정 없이 CSS로 처리) */
+.link-container a:first-child {
+    margin-right: auto; /* 첫 번째 요소(목록)를 왼쪽으로 밀어냄 */
+}
+
+.link-container a:not(:first-child) {
+    margin-left: 10px; /* 수정, 삭제 버튼 사이의 간격 */
+}
+
+/* 버튼 공통 스타일 */
+.link-container a {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* 목록으로 돌아가기 (좌측 - 차분한 스타일) */
+.link-container a:nth-child(1) {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+/* 정보 수정 (우측 - 강조 스타일) */
+.link-container a:nth-child(2) {
+    background-color: #A36CD9;
+    color: white;
+    border: 1px solid #A36CD9;
+}
+
+/* 상품 삭제 (우측 - 경고 스타일) */
+.link-container a:nth-child(3) {
+    background-color: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+/* 호버 효과 */
+.link-container a:hover {
+    opacity: 0.8;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+/* 탭 메뉴 전체 스타일 */
+.tab-container { margin-top: 50px; width: 100%; }
+
+.tab-menu {
+        display: flex;
+        justify-content: center; /* 중앙 정렬 */
+        border-bottom: 1px solid #ddd;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+.tab-btn {
+        padding: 15px 40px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 16px;
+        color: #999; /* 기본은 흐리게 */
+        position: relative;
+        transition: 0.3s;
+    }
+
+ /* 마우스를 올리거나 활성화되었을 때 */
+    .tab-btn:hover, .tab-btn.active {
+        color: #333; /* 글자색 진하게 */
+        font-weight: bold;
+    }
+
+/* 활성화된 탭 하단에 강조선 추가 */
+.tab-btn.active::after {
+	content: "";
+    position: absolute;
+    bottom: -1px; /* 탭 메뉴 하단 선과 겹치게 */
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #333;
+}
+
+ /* 탭 콘텐츠 영역: 이질적인 배경색 제거 */
+.tab-content {
+    display: none;
+    padding: 40px 10px;
+    line-height: 1.8;
+	color: #444;
+	min-height: 300px;
+}
+
+.tab-content.active {
+	display: block;
+}
+
+/* 후기 테이블 스타일 정돈 */
+.review-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+
+.review-table td { padding: 15px; border-bottom: 1px solid #eee; }
+
+.detail-container {
+    max-height: 1000px; /* 처음 보여줄 높이 */
+    overflow: hidden;
+    position: relative;
+}
+
+.detail-container.expanded {
+    max-height: none;
+}
+
+#tab-detail {
+    width: 800px;      /* 너무 넓으면 가독성이 떨어짐 */
+    margin: 0 auto;    /* 중앙 정렬 */
+    padding-top: 50px;
+    line-height: 1.8;
+    font-size: 15px;
+    color: #333;
+    word-break: break-all; /* 긴 문장 자동 줄바꿈 */
+}
+
+#tab-detail img {
+    max-width: 100%;   /* 영역을 벗어나지 않게 */
+    display: block;
+    margin: 20px auto;
+}

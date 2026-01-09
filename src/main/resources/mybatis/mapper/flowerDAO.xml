@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.picflower.dao.IflowerDAO">
+	<select id="flowerListDao" resultType="com.picflower.dto.flowerDTO">
+		select * from flower order by f_no desc
+	</select>
+	<insert id="flowerWriteDao">
+		insert into flower values(flower_seq.nextval, #{f_name}, #{f_ename}, #{f_image}, #{f_language}, #{f_detail}, #{f_use}, #{f_raise}, #{f_birth}, #{m_no})
+	</insert>
+	<select id="flowerViewDao" resultType="com.picflower.dto.flowerDTO">
+		select * from flower where f_no=#{param1}
+	</select>
+	<update id="flowerUpdateDao">
+		update flower set f_name = #{f_name}, f_ename = #{f_ename}, f_image = #{f_image}, f_language = #{f_language}, f_detail = #{f_detail}, f_use = #{f_use}, f_raise = #{f_raise}, f_birth = #{f_birth} where f_no = ${f_no}
+	</update>
+	<delete id="flowerDeleteDao">
+		delete from flower where f_no=#{param1}
+	</delete>
+</mapper>

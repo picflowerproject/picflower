@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.picflower.dao.ImemberDAO">
+	<select id="memberListDao" resultType="com.picflower.dto.memberDTO">
+		select * from member order by m_no desc
+	</select>
+	<insert id="memberWriteDao">
+		insert into member values(member_seq.nextval, #{m_id}, #{m_pwd}, #{m_name}, #{m_gender}, #{m_birth}, #{m_tel}, #{m_addr}, #{m_email}, #{m_flower}, sysdate, #{m_auth})
+	</insert>
+	<select id="memberViewDao" resultType="com.picflower.dto.memberDTO">
+		select * from member where m_no=#{param1}
+	</select>
+	<update id="memberUpdateDao">
+		update member set m_name = #{m_name}, m_gender = #{m_gender}, m_birth = #{m_birth}, m_tel = #{m_tel}, m_addr = #{m_addr}, m_email = #{m_email}, m_flower = #{m_flower}, m_auth = #{m_auth} where m_no = #{m_no} 
+	</update>
+	<delete id="memberDeleteDao">
+		delete from member where m_no=#{param1}
+	</delete>
+	<select id="findByM_id" resultType="com.picflower.dto.memberDTO">
+	  	SELECT * FROM member WHERE m_id = #{param1} 
+	</select>
+</mapper>

@@ -1,0 +1,271 @@
+@charset "UTF-8";
+
+/* 1. 레이아웃 기반 설정 */
+html { overflow-y: scroll; }
+
+.content-container {
+    width: 1200px; max-width: 95%; margin: 50px auto;
+    padding: 30px; background: #fff; box-sizing: border-box;
+}
+
+h1 {
+    font-size: 24px; color: #222; border-bottom: 2px solid #333;
+    padding-bottom: 15px; margin-bottom: 20px;
+}
+
+/* 2. 공지사항 아코디언 공통 구조 */
+.content-container details { 
+    width: 100%; margin-bottom: 10px; 
+    border: 1px solid #e9ecef; overflow: hidden; 
+    border-radius: 8px;
+}
+
+
+/* 새 공지사항 등록 컨테이너 */
+.add-notice-container {
+    margin-top: 10px;    /* 제목과의 간격 */
+    margin-bottom: 30px; /* ★ 공지 목록(details)과의 간격 (원하시는 여백) */
+    text-align: right;   /* 우측 정렬 (선택 사항) */
+}
+
+.add-notice-container a {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: #fff;
+    color: #a36cd9;
+    border: 1px solid #dcbbf2;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(163, 108, 217, 0.1);
+}
+
+.add-notice-container a:hover {
+    background-color: #f2e9fb;
+    border-color: #a36cd9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(163, 108, 217, 0.15);
+}
+/* 3. 제목줄 (summary) 스타일 통합 */
+.content-container summary {
+    display: flex; justify-content: space-between; align-items: center;  
+    padding: 15px 20px; background-color: #fff; cursor: pointer;
+    list-style: none; transition: background-color 0.2s;
+
+}
+.content-container summary::-webkit-details-marker { display: none;}
+.content-container summary:hover { background-color: #f8f9fa; }
+
+
+/* [1] 짝수 번째 게시글이 '닫혀 있을 때만' 제목줄(summary)에 연보라색 적용 */
+.notice-item:nth-child(even):not([open]) summary {
+    background-color: #faf8ff; /* 연한 보라색 배경 */
+}
+
+/* [2] 짝수 번째 게시글이 '닫혀 있을 때' 호버 효과 (선택 사항) */
+.notice-item:nth-child(even):not([open]) summary:hover {
+    background-color: #f2e9fb; /* 호버 시 조금 더 진한 보라색 */
+}
+
+/* [3] 오픈(open) 상태일 때는 공통 보라색 스타일 유지 */
+/* 이미 앞서 설정한 details[open] summary 스타일이 자동으로 적용됩니다 */
+.content-container details[open] summary {
+    background-color: #dcbbf2; /* 기존에 설정한 진한 보라색 */
+    color: #fff;
+    border-bottom: 1px solid #a36cd9;
+}
+
+/* [상태] 열렸을 때 보라색 테마 */
+.content-container details[open] summary { 
+    background-color: #dcbbf2; color: #fff; 
+    border-bottom: 1px solid #a36cd9; 
+}
+
+.content-container summary strong { 
+    flex: 1; font-size: 17px; color: #343a40; text-align: left; 
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+    margin-right: 20px; 
+}
+.content-container details[open] summary strong { color: #000; }
+
+.content-container summary span { 
+    width: 100px; text-align: right; font-size: 13px; 
+    color: #868e96; flex-shrink: 0; 
+}
+.content-container details[open] summary span { color: #666; }
+
+/* 4. 내용 및 이미지 영역 최적화 */
+div[id^="view_area_"], div[id^="edit_area_"] { 
+    padding: 20px; width: 100%; box-sizing: border-box; 
+}
+
+/* 이미지 감싸는 컨테이너: 여백 없이 이미지에 딱 붙게 설정 */
+.notice-image, .preview-container {
+    display: inline-block; /* 핵심: 컨테이너가 내용물 크기만큼만 줄어듦 */
+    width: auto;
+    margin: 15px 0;
+    line-height: 0;        /* 하단 미세 여백 제거 */
+}
+
+.content-container img, .edit-preview {
+    max-width: 450px; 
+    width: 100%; 
+    height: auto;          /* 600px 고정 대신 비율 유지 권장 */
+    object-fit: contain; 
+    display: block; 
+    border-radius: 6px; 
+    border: 1px solid #f0f0f0;
+}
+
+/* 이미지 없을 때 처리 */
+.content-container img:is([src="#"], [src=""], :not([src])) { 
+    display: none !important; 
+}
+/* 5. 버튼 정렬 및 스타일 */
+.action-buttons {
+    display: flex !important; justify-content: flex-end !important;
+    gap: 8px; margin-top: 15px; width: 100%;
+    
+}
+
+.action-buttons a, .action-buttons button {
+    padding: 8px 16px; border-radius: 4px; font-size: 13px;
+    font-weight: 500; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; transition: all 0.2s;
+
+}
+
+/* 링크형 버튼 (수정/삭제) */
+.action-buttons a {
+    color: #666; background: #fff; border: 1px solid #dee2e6;
+}
+.action-buttons a:hover { background: #f8f9fa; border-color: #adb5bd; }
+
+/* 실행 버튼 (저장/취소) */
+.action-buttons button[type="submit"] { background: #a36cd9; color: #fff; border: none; }
+.action-buttons button[type="button"] { background: #e9ecef; color: #333; border: none; }
+
+/* 6. 입력창 공통 */
+.content-container :is(input[type="text"], textarea) {
+    width: 100%; padding: 10px; border: 1px solid #ced4da;
+    border-radius: 4px; box-sizing: border-box; margin-top: 5px;
+}
+
+/* [공통] 입력창 포커스 효과 */
+.content-container input[type="text"]:focus,
+.content-container textarea:focus {
+    outline: none;
+    border: 1.5px solid #a36cd9 !important;
+    box-shadow: 0 0 5px rgba(163, 108, 217, 0.2);
+}
+
+/* 1. 상단 '새 공지사항 등록' 링크 버튼화 */
+.add-link-container {
+    text-align: right;
+    margin-bottom: 20px;
+}
+.add-link-container a {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #fff;
+    color: #a36cd9;
+    border: 1px solid #dcbbf2;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+.add-link-container a:hover {
+    background-color: #f2e9fb;
+    transform: translateY(-1px);
+}
+
+/* 2. 수정 모드 이미지 선택 (Label 디자인) */
+.file-input-wrapper {
+    margin-top: 10px;
+}
+
+/* 실제 input은 숨김 */
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #fff;
+    color: #a36cd9;
+    border: 1px solid #dcbbf2;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.file-input-label:hover {
+    background-color: #f2e9fb;
+}
+
+/* 3. 하단 액션 버튼들 (수정/삭제/저장/취소) 크기 축소 */
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 15px;
+}
+
+.action-buttons a, 
+.action-buttons button {
+    padding: 6px 14px !important; /* 버튼 크기 축소 */
+    font-size: 12px !important;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* 보기모드: 수정/삭제 버튼 */
+.action-buttons a {
+    background-color: #f8f9fa;
+    border: 1px solid #f8f9fa;
+    color: #495057;
+}
+.action-buttons a:hover { background-color: #e9ecef; }
+
+/*보기모드 : 수정 버튼 보라색*/
+.btn-update{
+	background-color: #dcbbf2 !important; /* 연보라 배경 */
+    border: 1px solid #dcbbf2 !important; /* 진보라 테두리 */
+    color: #000 !important;              /* 글자색 검정 */
+}
+
+/* 수정모드: 저장 버튼 */
+.btn-save {
+    background-color: #dcbbf2 !important;
+    border: 1px solid #dcbbf2 !important;
+    color: #000 !important;
+}
+.btn-save:hover { background-color: #c9a7e6 !important; transform: translateY(-1px); }
+
+/* 수정모드: 취소 버튼 */
+.btn-cancel {
+    background-color: #f1f3f5 !important;
+    border: 1px solid #f1f3f5 !important;
+    color: #495057 !important;
+}
+
+/* 4. 이미지 미리보기 규격 */
+.edit-preview {
+    max-width: 300px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+.edit-preview.hidden { display: none; }

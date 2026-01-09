@@ -1,0 +1,177 @@
+/* 1. 테이블 전체 외곽선 및 카드 느낌 설정 */
+#reviewForm table {
+    width: 100%;
+    border-collapse: separate; 
+    border-spacing: 0;
+    margin-top: 20px;
+    border: 2px solid #f2e9fb; /* 연보라색 테두리 */
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+/* 2. 행 간 구분선 (마지막 행 제외) */
+#reviewForm tr:not(:last-child) td {
+    border-bottom: 1px solid #f2e9fb;
+}
+
+#reviewForm td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+/* 3. 배경색 포인트 (입력 영역 강조) */
+.bg-point {
+    background-color: #faf8ff;
+}
+
+/* 4. 별점 시스템 디자인 */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse; /* 별점 로직을 위한 역순 배치 유지 */
+    justify-content: flex-end;    /* row-reverse 상황에서 왼쪽 끝으로 붙게 함 */
+    font-size: 35px;
+    width: fit-content;          /* 별점 영역만큼만 너비 차지 */
+}
+#reviewForm td.bg-point {
+    text-align: left;            /* 텍스트 정렬을 왼쪽으로 */
+}
+
+.star-rating input { display: none; }
+
+.star-rating label {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* 마우스 호버 및 선택 시 보라색 변화 */
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #a36cd9;
+}
+
+/* 5. 텍스트 입력창 */
+textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
+    resize: none;
+    display: block;
+}
+
+/* 6. 이미지 미리보기 규격 고정 */
+#preview {
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: 8px;
+    display: none; /* 초기 상태 숨김 */
+    margin-top: 10px;
+    border: 1px solid #eee;
+}
+
+/* 7. 등록 버튼 (연보라색 테마) */
+.btn-submit {
+    width: 100px;
+    height: 120px; /* textarea 높이에 맞춤 */
+    background-color: #dcbbf2;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(163, 108, 217, 0.2);
+    transition: all 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #c9a7e6;
+    transform: translateY(-2px);
+}
+
+/* 1. 기본 input 파일 숨기기 */
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* 2. 가짜 버튼(label) 디자인 */
+.file-input-label {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #fff;
+    color: #a36cd9; /* 테마 보라색 */
+    border: 1px solid #dcbbf2;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 10px;
+}
+
+/* 마우스 올렸을 때 효과 */
+.file-input-label:hover {
+    background-color: #f2e9fb;
+    border-color: #a36cd9;
+}
+
+/* 선택된 파일명 표시 (선택사항) */
+.file-name-display {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+}
+
+#preview {
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: 8px;
+    display: none; 
+    margin-bottom: 15px; /* 사진 아래쪽에 여백 추가 */
+    border: 1px solid #eee;
+}
+
+/* 버튼 주변 여백 정리 */
+.file-input-wrapper {
+    margin-top: 10px; /* 버튼 위쪽 여백 */
+    display: block;   /* 한 줄을 차지하도록 설정 */
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: 10px 20px; /* 버튼을 좀 더 클릭하기 좋게 키움 */
+    background-color: #fff;
+    color: #a36cd9;
+    border: 1px solid #dcbbf2;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 0; /* 불필요한 하단 여백 제거 */
+}
+
+/* 모든 textarea 클릭(포커스) 시 스타일 */
+textarea:focus {
+    /* 1. 기본 검은색 테두리 제거 */
+    outline: none; 
+    
+    /* 2. 보라색 테마 테두리로 변경 */
+    border: 1.5px solid #a36cd9 !important; 
+    
+    /* 3. 은은한 광채 효과 추가 (선택 사항) */
+    box-shadow: 0 0 8px rgba(163, 108, 217, 0.2);
+    
+    /* 4. 부드러운 변화를 위해 추가 */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+

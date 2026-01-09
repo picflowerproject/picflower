@@ -1,0 +1,144 @@
+@charset "UTF-8";
+
+/* 1. 테이블 및 컨테이너 기본 구조 */
+.content-container table {
+    width: 750px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+.content-container td {
+    padding: 15px;
+    border: 1px solid #f1f3f5;
+    vertical-align: middle;
+}
+
+.content-container td:first-child {
+    width: 100px; 
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #495057;
+    text-align: center;
+}
+
+.content-container td:last-child {
+    width: auto;
+}
+
+.content-container tr:last-child td {
+    background-color: transparent !important;
+    border: none;
+}
+
+/* 2. 입력창 스타일 - 너비 조절 핵심 부분 */
+.content-container input[type="text"],
+.content-container textarea {
+    width: 100%; 
+    max-width: 600px; 
+    
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    display: block; /* 줄바꿈 정렬을 위해 추가 */
+}
+
+/* 텍스트 영역은 가로 길이를 고정하거나 조금 더 넓게 쓰고 싶을 때 별도 조절 가능 */
+.content-container textarea {
+    width: 90%; 
+    max-width: 800px;
+    height: 150px; /* 기본 높이 설정 */
+}
+
+.content-container input[type="text"]:focus,
+.content-container textarea:focus {
+    outline: none;
+    border: 1.5px solid #a36cd9 !important;
+    box-shadow: 0 0 5px rgba(163, 108, 217, 0.2);
+}
+
+/* 3. 파일 선택 버튼 */
+#n_image {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: 7px 14px;
+    background-color: #fff;
+    color: #a36cd9;
+    border: 1px solid #dcbbf2;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.file-input-label:hover {
+    background-color: #f2e9fb;
+    border-color: #a36cd9;
+    transform: translateY(-1px);
+}
+
+/* 4. 하단 버튼 영역 */
+.button-row {
+    text-align: right !important;
+    padding: 20px 0 !important;
+}
+
+.button-row input {
+    padding: 10px 25px !important;
+    font-size: 14px !important;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 8px;
+}
+
+.button-row input[type="submit"] {
+    background-color: #dcbbf2;
+    color: #000;
+    border: none;
+}
+
+.button-row input[type="submit"]:hover {
+    background-color: #c9a7e6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(163, 108, 217, 0.2);
+}
+
+.button-row input[type="button"] {
+    background-color: #e9ecef;
+    border: none;
+    color: #495057;
+}
+
+.button-row input[type="button"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(163, 108, 217, 0.2);
+}
+
+/* 5. 미리보기 이미지 */
+#preview {
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    display: none;
+}

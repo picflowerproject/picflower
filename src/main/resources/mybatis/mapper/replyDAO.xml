@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.picflower.dao.IreplyDAO">
+	<select id="r_listDao" resultType="com.picflower.dto.replyDTO">
+		select * from reply
+	</select>
+	<select id="r_listByB_no" resultType="com.picflower.dto.replyDTO">
+    SELECT * FROM reply 
+    WHERE b_no = #{b_no} 
+    ORDER BY r_no DESC
+</select>
+	<insert id="r_insertDao">
+		insert into reply(r_no, r_text, r_count, r_date, b_no)
+		values (reply_seq.nextval, #{r_text}, #{r_count},SYSDATE, #{b_no})
+	</insert>
+	<update id="r_updateDao">
+		update reply set r_text=#{r_text}, r_date = SYSDATE
+		where r_no=#{r_no}
+	</update>
+	<delete id="r_deleteDao">
+		delete reply where r_no=#{r_no}
+	</delete>
+</mapper>

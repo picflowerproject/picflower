@@ -1,0 +1,119 @@
+@charset "UTF-8";
+    /* 기본 초기화 */
+    body { margin: 0; font-family: 'Pretendard', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; padding: 0; margin: 0; }
+
+    /* 헤더 전체 컨테이너 */
+    header {
+        width: 100%;
+        background-color: #fff;
+    }
+
+    /* 상단 영역 (로고, 검색, 유저메뉴) */
+    .top-header {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+    }
+
+    /* 1. 로고 */
+    .logo img {
+        height: 80px; /* 로고 높이 조절 */
+        width: auto;
+    }
+
+    /* 2. 검색창 디자인 */
+    .search-bar {
+        display: flex;
+        border: 2px solid #a36cd9; /* 꽃 테마 컬러 */
+        border-radius: 25px;
+        padding: 5px 15px;
+        width: 400px;
+    }
+    .search-bar input {
+        border: none;
+        outline: none;
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+    }
+    .search-bar button {
+        background: none;
+        border: none;
+        color: #a36cd9;
+        font-weight: bold;
+        cursor: pointer;
+        white-space: nowrap; 
+   		padding-left: 10px;
+    }
+
+    /* 3. 유저 메뉴 및 관리자 드롭박스 */
+    .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 14px;
+        color: #666;
+    }
+    .admin-select {
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        outline: none;
+    }
+
+    /* 4. 네비게이션 라인 */
+    .nav-bar {
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        gap: 30px;
+        padding: 15px 20px;
+        position: relative; /* 테마 드롭다운의 기준점 */
+    }
+    .nav-item {
+        font-weight: 600;
+        font-size: 16px;
+        transition: color 0.2s;
+    }
+    .nav-item:hover { color: #a36cd9; }
+
+    /* 테마 드롭다운 (details) 스타일 */
+    .theme-details summary {
+        list-style: none;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .theme-details summary::-webkit-details-marker { display: none; } /* 화살표 제거 */
+
+    .theme-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 20px;
+        background: white;
+        border: 1px solid #eee;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 10px 0;
+        z-index: 1000;
+        min-width: 150px;
+        display: flex;
+        flex-direction: column;
+    }
+    .theme-dropdown a {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    .theme-dropdown a:hover {
+        background-color: #f2f2f2;
+        color: #a36cd9;
+    }

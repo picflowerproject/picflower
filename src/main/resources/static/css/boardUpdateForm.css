@@ -1,0 +1,128 @@
+/* 1. 컨테이너 및 테이블 기본 구조 */
+.edit-container {
+    display: none;
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* 2. 테이블 기본 구조 수정 */
+.edit-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 2px solid #f2e9fb;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #fff;
+    /* table-layout: fixed; 를 삭제하거나 아래처럼 너비를 명시적으로 조절합니다. */
+}
+
+.edit-table tr:not(:last-child) td {
+    border-bottom: 1px solid #f2e9fb;
+}
+.edit-table td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+/*3. 이미지 미리보기 컨테이너 및 이미지 스타일 */
+.edit-image-cell {
+    text-align: left; 
+    padding: 20px !important;
+}
+
+/* 이미지가 가로 100%를 차지하고 세로는 비율에 맞게 자동 조절 */
+.edit-preview-img {
+    width: 350px;       /* 부모(td)의 너비를 꽉 채움 */
+    height: auto;      /* 핵심: 높이를 자동으로 설정하여 원본 비율 유지 */
+    border-radius: 8px;
+    border: 1px solid #eee;
+    display: block;
+    margin-bottom:10px;
+}
+
+/* 이미지를 감싸는 div가 여백 없이 이미지를 따라가도록 */
+.file-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    width: 100%; /* 너비를 100%로 설정 */
+}
+
+
+/* 4. 텍스트 영역 (왼쪽 - 자동으로 넓게 차지) */
+.edit-textarea-cell {
+    padding: 15px;
+    height: auto !important; 
+}
+
+.edit-textarea-cell textarea {
+    width: 100%;
+    /* 1. 높이를 원하는 만큼 대폭 늘립니다 (300px~400px 추천) */
+    height: 350px !important; 
+    padding: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    /* 2. resize: vertical을 주면 사용자가 수동으로 늘릴 수 있습니다. */
+    resize: vertical; 
+    box-sizing: border-box;
+    display: block;
+    /* 3. 내부 글자 줄간격을 주어 높이감을 확보합니다. */
+    line-height: 1.6;
+}
+.edit-textarea-cell textarea :focus{
+	outline:none;
+	border-color: #a36cd9;
+}
+
+
+/* 5. 버튼 영역 (수정됨) */
+.edit-button-cell {
+    width: 70px;
+    min-width: 85px;
+    padding: 15px 15px 15px 0 !important;
+    vertical-align: stretch; 
+    height: 100%;
+}
+
+
+/*6. 버튼 그룹 (수정됨) */
+.edit-btn-group {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+    min-height: 100%; 
+}
+
+/* 7. 버튼 공통 스타일 (수정됨) */
+.btn-edit-action {
+    flex: 1; 
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 13px; /* 너비가 줄어들었으므로 폰트 크기를 살짝 조절(선택사항) */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px; 
+}
+
+/* 8. 버튼 개별 색상 (우선순위 확보) */
+.btn-edit-action.btn-save { background-color: #dcbbf2; color: #000; margin-bottom: 8px; /* 저장 버튼 아래에 확실하게 간격 추가 */ }
+.btn-edit-action.btn-save:hover {
+    background-color: #c9a7e6;
+    transform: translateY(-1px);
+}
+
+.btn-edit-action.btn-cancel { background-color: #eeeeee; color: #666; }
+.btn-edit-action.btn-cancel:hover {
+    background-color: #e0e0e0;
+}
+
+/* 별점 배경 포인트 (등록폼과 동일) */
+.bg-point {
+    background-color: #faf8ff;
+}
+

@@ -1,0 +1,226 @@
+/* 컨셉 색상 변수 */
+:root {
+    --p-light: #E9C9F2;
+    --p-mid: #B06DF2;
+    --p-dark: #A36CD9;
+}
+
+body {
+    background-color: #ffffff;
+    font-family: 'Pretendard', sans-serif;
+    color: #333;
+}
+
+main {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 20px;
+}
+
+/* 헤더: 기존 스타일 유지 */
+h2 {
+    font-size: 1.5rem;
+    color: #222;
+    margin-bottom: 30px;
+    border-left: 5px solid var(--p-mid);
+    padding-left: 15px;
+}
+
+/* 테이블 넓이 고정 설정 */
+table {
+    width: 100%;
+    border-top: 2px solid #eee;
+    table-layout: fixed; /* 테이블 레이아웃 알고리즘 고정 */
+    border-collapse: collapse;
+}
+
+tr {
+    border-bottom: 1px solid #eee;
+}
+
+td {
+    padding: 15px 10px;
+    word-break: break-all; /* 긴 텍스트가 들어와도 고정 넓이 유지하며 줄바꿈 */
+    vertical-align: middle;
+}
+
+/* 첫 번째 열(라벨 항목) 넓이 고정 */
+td:first-child {
+    width: 120px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* 기존 스타일을 유지하며 크기와 위치값만 수정/추가 */
+.img-item { 
+    position: relative;        /* 체크박스 위치 고정을 위해 추가 */
+    display: inline-block;     /* 가로 배열 유지 */
+    width: 120px;             /* 80px -> 120px로 확대 */
+    border: 1px solid #ddd; 
+    padding: 5px; 
+    text-align: center; 
+    border-radius: 5px; 
+    background: #f9f9f9; 
+    margin-right: 10px;        /* 아이템 간 간격 */
+    margin-bottom: 10px;
+}
+
+/* 이미지 크기 확대 및 꽉 차게 설정 */
+.img-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+/* 체크박스를 이미지 위(좌측 상단)로 올리기 */
+.img-item input[type="checkbox"] {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 18px;
+    height: 18px;
+    z-index: 2;
+    cursor: pointer;
+    accent-color: #ff0000;    /* 체크 시 빨간색 */
+}
+
+/* 삭제 글자 레이블 위치 조정 */
+.delete-label { 
+    position: absolute;
+    top: 11px;
+    left: 32px;
+    font-size: 11px; 
+    color: #ffffff; 
+    background: rgba(255, 0, 0, 0.7); /* 반투명 빨간 배경으로 가독성 확보 */
+    padding: 0 4px;
+    border-radius: 3px;
+    z-index: 2;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 새 이미지 추가 미리보기 크기 대응 */
+#image_preview img { 
+    width: 120px; 
+    height: 120px; 
+    object-fit: cover;
+    border: 2px solid #4CAF50; 
+    margin-right: 10px; 
+}
+
+/* --- 이하 기존 CSS 동일 (변수, table, btn-group 등) --- */
+:root {
+    --p-light: #E9C9F2;
+    --p-mid: #B06DF2;
+    --p-dark: #A36CD9;
+}
+
+/* 입력창 스타일 */
+input[type="text"], 
+select, 
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+input[type="text"]:focus, 
+textarea:focus {
+    border-color: var(--p-mid);
+}
+
+textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+/* 버튼 그룹을 우측으로 정렬 */
+.btn-group {
+    margin-top: 30px;
+    display: flex;         /* 가로 정렬 */
+    justify-content: flex-end; /* 오른쪽 끝으로 정렬 */
+    gap: 10px;             /* 버튼 사이 간격 */
+}
+
+/* 공통 버튼 스타일 */
+input[type="submit"], 
+input[type="button"] {
+    padding: 10px 25px;    /* 우측 정렬 시에는 너무 크지 않은 것이 예쁩니다 */
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.2s;
+    border: none;
+    box-sizing: border-box;
+}
+
+/* 정보수정 버튼 (포인트 컬러) */
+input[type="submit"] {
+    background-color: var(--p-mid);
+    color: white;
+}
+
+input[type="submit"]:hover {
+    background-color: var(--p-dark);
+}
+
+/* 뒤로가기 버튼 (연한 회색) */
+input[type="button"] {
+    background-color: #f8f9fa;
+    color: #666;
+    border: 1px solid #dee2e6;
+}
+
+input[type="button"]:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    color: #333;
+}
+
+/* 실제 못생긴 input은 숨김 */
+#p_upload {
+    display: none;
+}
+
+/* 커스텀 버튼 스타일 (label) */
+.file-label {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #fff;
+    color: var(--p-mid);
+    border: 1.5px solid var(--p-mid);
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.file-label:hover {
+    background-color: var(--p-mid);
+    color: #fff;
+}
+
+/* 파일 선택 안내 문구 */
+.file-info {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #888;
+}
+
+/* 새 이미지 미리보기 컨테이너 정렬 */
+#image_preview {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}

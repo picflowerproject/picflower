@@ -1,0 +1,20 @@
+/* 1. 모든 페이지 공통: 본문(main이나 div)을 중앙으로 정렬 */
+/* 헤더의 .top-header, .nav-container와 동일한 너비를 가집니다. */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body > main,
+.content-container {
+    max-width: 1200px;
+    margin: 0 auto;       /* 가로 중앙 정렬 */
+    padding: 40px 20px;   /* 상하 여백 40px, 좌우 여백 20px */
+    box-sizing: border-box;
+}
+
+/* 2. 헤더와 푸터는 배경이 꽉 차야 하므로 내부 컨테이너만 중앙 정렬 (이미 되어있음) */
+header, footer {
+    width: 100%;
+}
+
