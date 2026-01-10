@@ -10,6 +10,7 @@ import com.picflower.dao.ImemberDAO;
 import com.picflower.dto.memberDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class memberController {

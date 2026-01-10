@@ -3,6 +3,7 @@ package com.picflower.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.picflower.dto.boardDTO;
 
@@ -12,8 +13,28 @@ public interface IboardDAO {
 	public List<boardDTO> b_listDao(); //후기 글 목록 보기
 	public int b_deleteDao(int b_no); //후기 글 삭제
 	public int b_updateDao(boardDTO dto);  //후기 글 수정
-	public void upLike(int b_no); //특정 게시글의 좋아요 수 +1
-	public int getLikeCount(int b_no); // 현재 좋아요 수 가져오기
 	public List<boardDTO> b_listWithMemberDao(); //회원정보 가져오기
 	public boardDTO b_viewWithMemberDao(int b_no);
+	// 1. 좋아요 중복 체크 (결과가 1이면 이미 누름, 0이면 안 누름)
+    public int checkLikeDao(@Param("b_no") int b_no, @Param("m_no") int m_no);
+
+    // 2. board_like 테이블에 기록 추가
+    public int insertLikeDao(@Param("b_no") int b_no, @Param("m_no") int m_no);
+
+    // 3. board 테이블의 b_like 컬럼 숫자 +1 (기존 것 사용)
+    public int upLike(int b_no);
+    
+ // 좋아요 기록 삭제
+    public int deleteLikeDao(@Param("b_no") int b_no, @Param("m_no") int m_no);
+
+    // board 테이블의 b_like 컬럼 숫자 -1
+    public int downLike(int b_no);
+
+    // 4. 최신 좋아요 개수 가져오기 (기존 것 사용)
+    public int getLikeCount(int b_no);
+    
+
+ // 삭제 대신 상태를 변경하는 메서드 추가
+    public int updateStatusDao(@Param("b_no") int b_no);
+    
 }

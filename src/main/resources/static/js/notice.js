@@ -24,8 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // 1. 공지사항 삭제 함수
 function n_delete(n_no) {
     if(confirm("정말 이 공지사항을 삭제하시겠습니까?")) {
-        // 삭제 후 리스트로 돌아가도록 설정
-        location.href = contextPath + "/n_delete?n_no=" + n_no;
+        // 기존: location.href = contextPath + "/n_delete?n_no=" + n_no;
+        // 수정: /admin 경로를 추가
+        location.href = contextPath + "/admin/n_delete?n_no=" + n_no;
     }
 }
 

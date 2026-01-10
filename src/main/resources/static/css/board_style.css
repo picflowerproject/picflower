@@ -12,58 +12,213 @@
 h1 { color: #333; margin-bottom: 5px; font-size: 1.5rem; }
 button { cursor: pointer; transition: var(--transition); border: none; background: none; }
 
-/* [2] 게시글 레이아웃 (겹침 효과) */
+
+/* [1] 전체 컨테이너는 중앙 정렬만 담당 */
+.content-container {
+    width: 100%;
+    max-width: 1200px; /* 전체 최대 너비 확장 */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* [2] 상단 입력 폼 영역 (독립된 너비 설정) */
+.form-section {
+    width: 100%;
+    max-width: 900px;  /* 입력 폼은 넉넉하게 유지 */
+    margin: 0 auto 50px auto; /* 하단 리스트와 간격 */
+}
+
+/* [1] 게시글 컨테이너 및 구분선 설정 */
+.result-container {
+    position: relative;
+    padding-bottom: 80px;  /* 선 위쪽 여백 */
+    margin-bottom: 80px;   /* 선 아래쪽 여백 */
+    border-bottom: 1px solid #f0f0f0; /* 희미한 실선 */
+}
+
+/* [2] 구분선 중간의 꽃 아이콘 */
+.result-container::after {
+    content: "🌸"; 
+    position: absolute;
+    bottom: -11px;         /* 선 높이에 딱 걸치게 조정 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;     /* 선을 가리기 위한 배경색 */
+    padding: 0 15px;
+    color: #e1bee7;
+    font-size: 14px;
+    z-index: 2;
+}
+
+/* [3] 마지막 게시글 예외 처리 (선과 아이콘 모두 제거) */
+#review-list > .result-container:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+#review-list > .result-container:last-child::after {
+    display: none;         /* 마지막 아이콘 숨김 */
+}
+
+/* [2] 게시글 레이아웃 */
 .view-wrapper {
     display: flex;
-    align-items: flex-end; /* 하단 정렬로 겹침 극대화 */
+    align-items: flex-end; 
     justify-content: center;
-    max-width: 1100px;
-    margin: 0 auto 100px auto;
+    max-width: 1000px;
+    margin: 0 auto 80px auto;
     position: relative;
 }
 
-/* 짝수 게시물 반전 */
 .view-wrapper-reverse { flex-direction: row-reverse; }
 
 .image-area {
-    flex: 0 0 700px;
+    flex: 0 0 600px;
     z-index: 1;
     position: relative;
 }
 
 .image-area img {
     width: 100%;
-    height: 700px;
+    height: 550px;
     object-fit: cover;
     display: block;
     border-radius: 8px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* [3] 텍스트 영역 (종이 배경 + 기능 통합) */
+/* 사진 슬라이더 컨테이너 */
+.slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 550px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.4s ease-in-out;
+    height: 100%;
+}
+
+.slide {
+    min-width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+.slider-btn {
+    position: absolute;
+    bottom: 10px;
+    top: auto;
+    transform: none;
+    background: rgba(155, 89, 182, 0.1);
+    color: var(--point-purple);
+    border: 1px solid var(--point-purple);
+    font-size: 16px;
+    padding: 5px 10px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 1;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.slider-btn:hover { background: var(--point-purple); color: #fff; }
+.prev { left: 10px; }
+.next { right: 10px; }
+
+
+/* [3] 사진 갯수 표현 점 */
+.slider-dots {
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+    line-height: 0;
+}
+.dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50%;
+    margin: 0 4px;
+    transition: background 0.3s;
+}
+.dot.active { background: var(--point-purple); }
+
+/* [3] 텍스트 영역 (부모) */
 .text-area {
-    flex: 0 0 320px;
-    margin-left: -80px; 
+    height: 350px;
+    overflow-y: auto; /* 최대 높이를 넘으면 스크롤바가 생깁니다 */
+	overflow: visible !important; 
+    flex: 0 0 300px;
+    margin-left: -50px;
     margin-bottom: 80px;
-    min-height: 400px; 
-    max-height: 500px;
-    padding: 30px 25px;
+    padding: 25px 20px;
     background: transparent url('/assets/paper.png') no-repeat center / cover;
     z-index: 10;
     box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    position: relative; /* 드롭다운 기준점 */
+    position: relative;
+    box-sizing: border-box;
 }
 
-/* 반전 시 텍스트 위치 보정 */
+/* 게시글 본문 텍스트 (줄바꿈 허용) */
+.review-text { /* #text-p-ID 대신 이 공통 클래스 사용 */
+    flex-shrink: 0;
+    margin: 10px 0 20px 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    
+    /* 줄바꿈을 허용하는 핵심 설정 */
+    white-space: normal;    /* nowrap 속성 제거 */
+    overflow: visible;      /* hidden 속성 제거 */
+    text-overflow: clip;    /* ellipsis 속성 제거 */
+    word-break: break-word; /* 긴 단어 강제 줄바꿈 */
+	
+	max-height: 50px; /* 본문은 최대 3줄 정도만 보이게 고정 (원하는 대로 조절) */
+	overflow-y: auto; /* 본문이 더 길면 본문 안에서 스크롤 */
+	flex-shrink: 0;   /* 본문이 댓글창을 압박하지 않게 고정 */
+}
+
+.text-area > p {
+    flex-shrink: 0;         /* 본문이 댓글창을 밀어내지 않게 설정 */
+    margin: 5px 0 15px 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    
+    /* 본문이 너무 길면 댓글창이 아예 안 보일 수 있으므로 최대 2~3줄로 제한 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
 .view-wrapper-reverse .text-area {
     margin-left: 0;
-    margin-right: -80px; 
+    margin-right: -50px; 
     margin-bottom: -40px;
 }
 
-/* [4] 상단 정보바 및 드롭다운 (두 번째 코드 통합) */
+
 .menu-container {
     display: flex;
     justify-content: space-between;
@@ -72,20 +227,68 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 }
 
 .author-id { font-weight: bold; color: #000; }
-
 .menu-btn { font-size: 20px; color: #888; padding: 5px; }
 
+.rating-like-container { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.stars { color: var(--point-purple); }
+
+.like-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #666;
+}
+
+.like-btn.active {
+    border-color: var(--point-purple);
+    background-color: var(--light-purple);
+    color: var(--point-purple);
+    font-weight: bold;
+}
+
+/* 드롭다운 메뉴 위치 수정 */
 .dropdown-menu {
     display: none;
     position: absolute;
-    right: 20px;
-    top: 60px; /* 버튼 아래 위치 */
+    /* [핵심] 아래가 아니라 옆으로 배치 */
+    top: 0;                /* 버튼의 상단 높이에 맞춤 */
+    right: 110%;           /* 버튼의 왼쪽으로 튀어나오게 (버튼 너비의 110% 만큼 왼쪽으로) */
+    
+    /* 만약 버튼 오른쪽으로 보내고 싶다면 위 right 대신 아래 사용 */
+    /* left: 110%; */
+
     background-color: white;
-    min-width: 100px;
-    box-shadow: 0 4px 12px rgba(155, 89, 182, 0.2);
-    z-index: 1000;
-    border-radius: 5px;
+    min-width: 80px;       /* 메뉴 너비 최적화 */
+    box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.15); /* 그림자 방향도 옆으로 */
+    z-index: 10000;        /* 최상단 레이어 보장 */
+    border-radius: 6px;
     border: 1px solid var(--border-color);
+    white-space: nowrap;   /* 텍스트 줄바꿈 방지 */
+}
+
+.view-wrapper .dropdown-menu {
+    right: 105%; /* 버튼의 왼쪽 밖으로 */
+    left: auto;
+    top: 0;
+}
+/* 사진이 오른쪽, 글이 왼쪽인 반대 상태 (글의 오른쪽 허공으로) */
+.view-wrapper-reverse .dropdown-menu {
+    left: 105%;  /* 버튼의 오른쪽 밖으로 */
+    right: auto;
+    top: 0;
+}
+
+/* 부모 컨테이너의 overflow 설정이 메뉴를 자를 수 있으므로 확인 */
+.dropdown-wrapper {
+    position: relative; /* 기준점 설정 */
+}
+
+/* 게시글 메뉴 (정방향일 때 왼쪽으로) */
+.view-wrapper .dropdown-menu {
+    right: 110%;           /* 버튼의 왼쪽 밖으로 배치 */
 }
 
 .dropdown-menu button {
@@ -93,8 +296,11 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     width: 100%;
     padding: 10px;
     text-align: left;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #555;
+    background: white;
+    border: none;
+    cursor: pointer;
 }
 
 .dropdown-menu button:hover {
@@ -102,50 +308,7 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     color: var(--dark-purple);
 }
 
-/* [5] 스크롤 콘텐츠 (본문 + 댓글) */
-.scroll-content {
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-.scroll-content::-webkit-scrollbar { display: none; }
 
-.rating-like-container { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.stars { color: var(--point-purple); }
-
-/* 댓글 스타일 */
-.reply-list { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
-.reply-item {
-    background: rgba(255, 255, 255, 0.5);
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    word-break: break-all;
-}
-
-/* [6] 댓글 입력창 */
-.reply-input-wrapper {
-    margin-top: auto;
-    display: flex;
-    gap: 5px;
-    padding-top: 15px;
-}
-
-.reply-input-wrapper input {
-    flex: 1;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 0.9rem;
-}
-
-.btn-confirm {
-    background-color: var(--point-purple);
-    color: white;
-    padding: 0 12px;
-    border-radius: 4px;
-}
 
 /* [7] 모바일 대응 */
 @media (max-width: 768px) {
@@ -161,5 +324,6 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
         width: 95%;
         margin: -50px 0 0 0 !important;
         min-height: 300px;
+        height: auto;
     }
 }

@@ -4,7 +4,6 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-
 public class memberDTO {
 	private int m_no;
 	private String m_id;

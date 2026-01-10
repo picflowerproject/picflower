@@ -45,7 +45,7 @@
 		                
 		                <div class="action-buttons">
 		                    <a href="javascript:void(0);" onclick="toggleEdit('${dto.n_no}', true)" class="btn-update">수정</a>
-		                    <a href="javascript:void(0);" onclick="/admin/n_delete('${dto.n_no}')">삭제</a>
+		                    <a href="javascript:void(0);" onclick="n_delete('${dto.n_no}')" class="btn-delete">삭제</a>
 		                </div>
 		            </div>
 

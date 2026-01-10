@@ -3,63 +3,78 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.picflower.dao.IboardDAO">
-	 <!-- [설정] DB 컬럼 b_image를 DTO 필드 b_image_name에 매핑 -->
-    <resultMap id="boardResultMap" type="com.picflower.dto.boardDTO">
-        <id property="b_no" column="b_no" />
-        <result property="b_image_name" column="b_image"/>
-        <result property="m_id" column="m_id"/>
-    </resultMap>
 
-    <!-- 후기글 목록 보기 (회원정보 포함) -->
-    <select id="b_listDao" resultMap="boardResultMap">
+    <!-- 1. 후기글 목록 보기 -->
+    <select id="b_listWithMemberDao" resultType="com.picflower.dto.boardDTO">
         SELECT b.b_no, b.b_date, b.b_text, b.b_image, b.b_rating, b.b_like, b.m_no, m.m_id 
         FROM Board b 
         INNER JOIN member m ON b.m_no = m.m_no 
+        WHERE b.b_status = 1
         ORDER BY b.b_no DESC
     </select>
 
-    <!-- 인터페이스에 정의된 b_listWithMemberDao 매핑 -->
-    <select id="b_listWithMemberDao" resultMap="boardResultMap">
-        SELECT b.b_no, b.b_date, b.b_text, b.b_image, b.b_rating, b.b_like, b.m_no, m.m_id 
-        FROM Board b 
-        INNER JOIN member m ON b.m_no = m.m_no 
-        ORDER BY b.b_no DESC
-    </select>
-
-    <!-- 후기 글 입력 (m_no 포함) -->
+    <!-- 2. 후기 글 입력 -->
     <insert id="b_insertDao">
-        INSERT INTO board(b_no, b_date, b_image, b_text, b_rating, b_like, m_no)
-        VALUES (board_seq.nextval, SYSDATE, #{b_image_name, jdbcType=VARCHAR}, #{b_text}, #{b_rating}, 0, #{m_no})
+        INSERT INTO board(b_no, b_date, b_image, b_text, b_rating, b_like, m_no, b_status)
+        VALUES (board_seq.nextval, SYSDATE, #{b_image, jdbcType=VARCHAR}, #{b_text}, #{b_rating}, 0, #{m_no}, 1)
     </insert>
 
-    <!-- 특정 게시글 상세 보기 -->
-    <select id="b_viewWithMemberDao" resultMap="boardResultMap">
+    <!-- 3. 특정 게시글 상세 보기 (ID 중복 제거 후 b_viewWithMemberDao로 수정) -->
+    <select id="b_viewWithMemberDao" resultType="com.picflower.dto.boardDTO">
         SELECT b.*, m.m_id 
         FROM board b
         INNER JOIN member m ON b.m_no = m.m_no
         WHERE b.b_no = #{b_no}
     </select>
 
-    <update id="upLike">
-        UPDATE board SET b_like = b_like + 1 WHERE b_no = #{b_no}
-    </update>
+    <!-- 4. 좋아요 관련 쿼리들 -->
+    <select id="checkLikeDao" resultType="int">
+        SELECT COUNT(*) FROM board_like 
+        WHERE b_no = #{b_no} AND m_no = #{m_no}
+    </select>
+
+    <insert id="insertLikeDao">
+        INSERT INTO board_like (l_no, b_no, m_no, l_date)
+        VALUES (board_like_seq.NEXTVAL, #{b_no}, #{m_no}, SYSDATE)
+    </insert>
 
     <select id="getLikeCount" resultType="int">
         SELECT b_like FROM board WHERE b_no = #{b_no}
     </select>
 
-    <update id="b_updateDao">
-	    UPDATE board SET
-	        b_text = #{b_text},
-	        b_rating = #{b_rating}
-	        <if test="b_image_name != null">
-	            , b_image = #{b_image_name, jdbcType=VARCHAR}
-	        </if>
-	    WHERE b_no = #{b_no}
-	</update>
+    <update id="upLike">
+        UPDATE board SET b_like = b_like + 1 WHERE b_no = #{b_no}
+    </update>
 
+    <delete id="deleteLikeDao">
+        DELETE FROM board_like WHERE b_no = #{b_no} AND m_no = #{m_no}
+    </delete>
+
+    <update id="downLike">
+        UPDATE board SET b_like = b_like - 1 WHERE b_no = #{b_no}
+    </update>
+
+    <!-- 5. 후기 수정 -->
+    <update id="b_updateDao">
+        UPDATE board SET
+            b_text = #{b_text},
+            b_rating = #{b_rating}
+            <if test="b_image != null">
+                , b_image = #{b_image, jdbcType=VARCHAR}
+            </if>
+        WHERE b_no = #{b_no}
+    </update>
+
+    <!-- 6. 실제 삭제 -->
     <delete id="b_deleteDao">
         DELETE FROM board WHERE b_no = #{b_no}
     </delete>
-	
+    
+    <!-- 7. 논리 삭제 (상태값 변경) -->
+    <update id="updateStatusDao">
+        UPDATE board 
+        SET b_status = 0 
+        WHERE b_no = #{b_no}
+    </update>
+    
 </mapper>

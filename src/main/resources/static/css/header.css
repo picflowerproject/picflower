@@ -1,119 +1,148 @@
 @charset "UTF-8";
-    /* 기본 초기화 */
-    body { margin: 0; font-family: 'Pretendard', sans-serif; }
-    a { text-decoration: none; color: inherit; }
-    ul { list-style: none; padding: 0; margin: 0; }
 
-    /* 헤더 전체 컨테이너 */
-    header {
-        width: 100%;
-        background-color: #fff;
-    }
+/* 기존 기본 설정 유지 */
+body { margin: 0; font-family: 'Pretendard', sans-serif; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; padding: 0; margin: 0; }
 
-    /* 상단 영역 (로고, 검색, 유저메뉴) */
-    .top-header {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px;
-    }
+header { width: 100%; background-color: #fff; }
 
-    /* 1. 로고 */
-    .logo img {
-        height: 80px; /* 로고 높이 조절 */
-        width: auto;
-    }
+.top-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
 
-    /* 2. 검색창 디자인 */
-    .search-bar {
-        display: flex;
-        border: 2px solid #a36cd9; /* 꽃 테마 컬러 */
-        border-radius: 25px;
-        padding: 5px 15px;
-        width: 400px;
-    }
-    .search-bar input {
-        border: none;
-        outline: none;
-        width: 100%;
-        padding: 8px;
-        font-size: 14px;
-    }
-    .search-bar button {
-        background: none;
-        border: none;
-        color: #a36cd9;
-        font-weight: bold;
-        cursor: pointer;
-        white-space: nowrap; 
-   		padding-left: 10px;
-    }
+.logo img { height: 80px; width: auto; }
 
-    /* 3. 유저 메뉴 및 관리자 드롭박스 */
-    .user-menu {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        font-size: 14px;
-        color: #666;
-    }
-    .admin-select {
-        padding: 6px 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #f8f9fa;
-        cursor: pointer;
-        outline: none;
-    }
+/* 2. 검색창 디자인 (모양 깨짐 방지) */
+.search-bar {
+    display: flex;
+    align-items: center;
+    border: 2px solid #a36cd9; /* 기존 보라색 유지 */
+    border-radius: 25px;
+    padding: 5px 15px;
+    width: 400px;
+}
 
-    /* 4. 네비게이션 라인 */
-    .nav-bar {
-        border-top: 1px solid #eee;
-        border-bottom: 1px solid #eee;
-    }
-    .nav-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        gap: 30px;
-        padding: 15px 20px;
-        position: relative; /* 테마 드롭다운의 기준점 */
-    }
-    .nav-item {
-        font-weight: 600;
-        font-size: 16px;
-        transition: color 0.2s;
-    }
-    .nav-item:hover { color: #a36cd9; }
+/* form 내부 요소 한 줄 정렬 */
+.search-bar form {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
 
-    /* 테마 드롭다운 (details) 스타일 */
-    .theme-details summary {
-        list-style: none;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    .theme-details summary::-webkit-details-marker { display: none; } /* 화살표 제거 */
+.search-bar input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    background: transparent;
+}
 
-    .theme-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 20px;
-        background: white;
-        border: 1px solid #eee;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        padding: 10px 0;
-        z-index: 1000;
-        min-width: 150px;
-        display: flex;
-        flex-direction: column;
-    }
-    .theme-dropdown a {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-    .theme-dropdown a:hover {
-        background-color: #f2f2f2;
-        color: #a36cd9;
-    }
+.search-bar button {
+    background: none;
+    border: none;
+    color: #a36cd9; /* 기존 보라색 유지 */
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap; 
+    padding-left: 10px;
+}
+
+/* 3. 유저 메뉴 스타일 추가 */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.auth-links {
+    display: flex;
+    align-items: center;
+}
+
+.divider {
+    color: #ddd;
+    margin: 0 8px;
+}
+
+.welcome-msg {
+    color: #555;
+}
+
+.user-id {
+    color: #a36cd9; /* 기존 보라색으로 ID 강조 */
+    font-weight: bold;
+}
+
+.logout-link {
+    font-size: 13px;
+    color: #888;
+    transition: color 0.2s;
+}
+
+.logout-link:hover {
+    color: #a36cd9;
+}
+
+/* 관리자 드롭박스 */
+.admin-select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    outline: none;
+}
+
+/* 4. 네비게이션 라인 (기존 유지) */
+.nav-bar { border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 30px;
+    padding: 15px 20px;
+    position: relative;
+}
+.nav-item { font-weight: 600; font-size: 16px; transition: color 0.2s; }
+.nav-item:hover { color: #a36cd9; }
+
+
+
+/* 토스트 메시지 컨테이너 */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+}
+
+/* 개별 토스트 스타일 */
+.toast {
+    background-color: var(--dark-purple); /* 기존 보라색 변수 사용 */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    margin-top: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+}
+
+/* 나타날 때의 효과 */
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}

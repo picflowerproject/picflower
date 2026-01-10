@@ -3,23 +3,37 @@
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.picflower.dao.IreplyDAO">
-	<select id="r_listDao" resultType="com.picflower.dto.replyDTO">
-		select * from reply
-	</select>
-	<select id="r_listByB_no" resultType="com.picflower.dto.replyDTO">
-    SELECT * FROM reply 
-    WHERE b_no = #{b_no} 
-    ORDER BY r_no DESC
-</select>
-	<insert id="r_insertDao">
-		insert into reply(r_no, r_text, r_count, r_date, b_no)
-		values (reply_seq.nextval, #{r_text}, #{r_count},SYSDATE, #{b_no})
-	</insert>
-	<update id="r_updateDao">
-		update reply set r_text=#{r_text}, r_date = SYSDATE
-		where r_no=#{r_no}
-	</update>
-	<delete id="r_deleteDao">
-		delete reply where r_no=#{r_no}
-	</delete>
+    
+    <!-- 1. 댓글 목록 조회: member 테이블과 JOIN하여 m_id를 가져옴 -->
+    <select id="r_listByB_no" resultType="com.picflower.dto.replyDTO">
+        SELECT r.*, m.m_id 
+        FROM reply r
+        JOIN member m ON r.m_no = m.m_no 
+        WHERE r.b_no = #{b_no} 
+        ORDER BY r.r_no DESC
+    </select>
+
+    <!-- 2. 댓글 저장: m_no 컬럼을 반드시 추가해야 함 -->
+    <insert id="r_insertDao">
+        INSERT INTO reply(r_no, r_text, r_count, r_date, b_no, m_no)
+        VALUES (reply_seq.nextval, #{r_text}, #{r_count}, SYSDATE, #{b_no}, #{m_no})
+    </insert>
+
+    <!-- 3. 권한 확인을 위해 댓글 상세 조회 추가 (선택사항이나 권장) -->
+    <select id="findByR_no" resultType="com.picflower.dto.replyDTO">
+        SELECT r.*, m.m_id 
+        FROM reply r
+        JOIN member m ON r.m_no = m.m_no 
+        WHERE r.r_no = #{r_no}
+    </select>
+
+    <!-- 나머지 update, delete는 기존과 동일 -->
+    <update id="r_updateDao">
+        UPDATE reply SET r_text=#{r_text}, r_date = SYSDATE
+        WHERE r_no=#{r_no}
+    </update>
+    
+    <delete id="r_deleteDao">
+        DELETE FROM reply WHERE r_no=#{r_no}
+    </delete>
 </mapper>
