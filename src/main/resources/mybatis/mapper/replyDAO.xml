@@ -13,11 +13,15 @@
         ORDER BY r.r_no DESC
     </select>
 
-    <!-- 2. 댓글 저장: m_no 컬럼을 반드시 추가해야 함 -->
-    <insert id="r_insertDao">
-        INSERT INTO reply(r_no, r_text, r_count, r_date, b_no, m_no)
-        VALUES (reply_seq.nextval, #{r_text}, #{r_count}, SYSDATE, #{b_no}, #{m_no})
-    </insert>
+    <!-- 2. 댓글 저장: selectKey를 추가하여 생성된 번호를 DTO에 담아줍니다. -->
+	<insert id="r_insertDao">
+	    <selectKey keyProperty="r_no" resultType="int" order="BEFORE">
+	        SELECT reply_seq.nextval FROM DUAL
+	    </selectKey>
+	    
+	    INSERT INTO reply(r_no, r_text, r_count, r_date, b_no, m_no)
+	    VALUES (#{r_no}, #{r_text}, #{r_count}, SYSDATE, #{b_no}, #{m_no})
+	</insert>
 
     <!-- 3. 권한 확인을 위해 댓글 상세 조회 추가 (선택사항이나 권장) -->
     <select id="findByR_no" resultType="com.picflower.dto.replyDTO">

@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 <script>
     const contextPath = "${pageContext.request.contextPath}";
+	const isLogin = ${pageContext.request.userPrincipal != null};
 </script>
 <script src="${pageContext.request.contextPath}/js/board.js"></script>
 <script src="${pageContext.request.contextPath}/js/reply.js"></script>
@@ -68,18 +69,22 @@
 	                    <div class="menu-container">
 	                        <span class="author-id">${board.m_id}</span>
 	                        <div class="dropdown-wrapper">
-	                            <button class="menu-btn" onclick="toggleMenu(${board.b_no})">⋮</button>
-	                            <div id="dropdown-${board.b_no}" class="dropdown-menu">
-	                                <c:if test="${pageContext.request.userPrincipal.name == board.m_id}">
-	                                    <button type="button" onclick="showEditForm(${board.b_no})">수정하기</button>
-	                                </c:if>
-	                                <c:if test="${pageContext.request.userPrincipal.name == board.m_id || pageContext.request.isUserInRole('ROLE_ADMIN')}">
-	                                    <button type="button" onclick="deleteReview(${board.b_no})">삭제하기</button>
-	                                </c:if>
-	                            </div>
+								<sec:authorize access="isAuthenticated()">
+								           <!-- ✅ 본인 글이거나 관리자일 때만 버튼(⋮) 자체를 생성 -->
+								           <c:if test="${pageContext.request.userPrincipal.name == board.m_id || pageContext.request.isUserInRole('ROLE_ADMIN')}">
+								               <button class="menu-btn" onclick="toggleMenu(${board.b_no})">⋮</button>
+								               <div id="dropdown-${board.b_no}" class="dropdown-menu">
+								                   <!-- 수정하기는 본인만 -->
+								                   <c:if test="${pageContext.request.userPrincipal.name == board.m_id}">
+								                       <button type="button" onclick="showEditForm(${board.b_no})">수정하기</button>
+								                   </c:if>
+								                   <!-- 삭제하기는 본인 또는 관리자 -->
+								                   <button type="button" onclick="deleteReview(${board.b_no})">삭제하기</button>
+								               </div>
+								           </c:if>
+									</sec:authorize>
 	                        </div>
 	                    </div>
-
 	                    <div class="rating-like-container">
 	                        <div class="stars">
 	                            <c:forEach var="i" begin="1" end="5">
@@ -91,7 +96,6 @@
 	                            <span id="like-count-${board.b_no}">${board.b_like}</span>
 	                        </button>
 	                    </div>
-
 	                    <!-- 텍스트 및 댓글 섹션 -->
 	                        <p class="review-text" id="text-p-${board.b_no}">${board.b_text}</p>
 								<!-- 댓글 개수  -->
@@ -104,17 +108,37 @@
 	                            <div id="reply-list-${board.b_no}" class="reply-slider">
 	                                <c:forEach var="reply" items="${board.replies}">
 	                                    <div class="reply-item" id="reply-item-${reply.r_no}">
-	                                        <div class="reply-menu-container">
-	                                            <button type="button" class="menu-btn" onclick="toggleReplyMenu(event, ${reply.r_no})">⋮</button>
-	                                            <div id="reply-dropdown-${reply.r_no}" class="dropdown-menu">
-	                                                <c:if test="${pageContext.request.userPrincipal.name == reply.m_id}">
-	                                                    <button type="button" onclick="showReplyEditForm(${reply.r_no})">수정</button>
-	                                                </c:if>
-	                                                <c:if test="${pageContext.request.userPrincipal.name == reply.m_id || pageContext.request.isUserInRole('ADMIN')}">
-	                                                    <button type="button" onclick="deleteReply(${reply.r_no}, ${board.b_no})">삭제</button>
-	                                                </c:if>
-	                                            </div>
-	                                        </div>
+											<div class="reply-menu-container">
+												<!-- 로그인한 경우에만 점 3개 버튼 출력 -->
+												<sec:authorize access="isAuthenticated()">
+												       <!-- ✅ 본인 댓글이거나 관리자일 때만 버튼(⋮)과 메뉴 그룹 생성 -->
+												       <c:if test="${pageContext.request.userPrincipal.name == reply.m_id || pageContext.request.isUserInRole('ADMIN')}">
+												           <button type="button" class="menu-dot-btn" id="reply-dot-${reply.r_no}" onclick="showInlineMenu(${reply.r_no})">⋮</button>
+												           
+												           <div class="inline-menu-group" id="inline-menu-${reply.r_no}" style="display:none;">
+												               <!-- 수정은 본인만 -->
+												               <c:if test="${pageContext.request.userPrincipal.name == reply.m_id}">
+												                   <button type="button" class="inline-btn edit" onclick="showReplyEditForm(${reply.r_no})">수정</button>
+												               </c:if>
+												               <!-- 삭제는 본인 또는 관리자 -->
+												               <button type="button" class="inline-btn delete" onclick="deleteReply(${reply.r_no}, ${board.b_no})">삭제</button>
+												               <!-- 취소 버튼 -->
+												               <button type="button" class="inline-btn cancel" onclick="hideInlineMenu(${reply.r_no})">취소</button>
+												           </div>
+												       </c:if>
+												   </sec:authorize>
+											    <!-- [클릭 후] 전환될 메뉴 그룹 (기본 숨김) -->
+											    <div class="inline-menu-group" id="inline-menu-${reply.r_no}" style="display:none;">
+											        <c:if test="${pageContext.request.userPrincipal.name == reply.m_id}">
+											            <button type="button" class="inline-btn edit" onclick="showReplyEditForm(${reply.r_no})">수정</button>
+											        </c:if>
+											        <c:if test="${pageContext.request.userPrincipal.name == reply.m_id || pageContext.request.isUserInRole('ADMIN')}">
+											            <button type="button" class="inline-btn delete" onclick="deleteReply(${reply.r_no}, ${board.b_no})">삭제</button>
+											        </c:if>
+											        <!-- 다시 점으로 돌아가는 취소 버튼 -->
+											        <button type="button" class="inline-btn cancel" onclick="hideInlineMenu(${reply.r_no})">취소</button>
+											    </div>
+											</div>
 											<div id="reply-view-${reply.r_no}">
 											    <!-- 왼쪽: 작성자 아이콘 + ID + 내용 -->
 											    <div class="reply-main">
@@ -138,10 +162,13 @@
 	                        </div> <!-- .reply-section 닫기 -->
 	                    </div> <!-- .scroll-content 닫기 -->
 
-	                    <div class="reply-input-wrapper">
-	                        <input type="text" id="reply-input-${board.b_no}" placeholder="댓글을 입력하세요...">
-	                        <button onclick="addReply(${board.b_no})">등록</button>
-	                    </div>
+						<div class="reply-input-wrapper">
+						    <input type="text" 
+						           id="reply-input-${board.b_no}" 
+						           placeholder="${pageContext.request.userPrincipal != null ? '댓글을 입력하세요...' : '로그인이 필요한 서비스입니다.'}"
+						           ${pageContext.request.userPrincipal == null ? 'readonly' : ''}>
+						    <button onclick="addReply(${board.b_no})">등록</button>
+						</div>
 	                </div> <!-- .text-area 닫기 -->
 	            </div> <!-- #view-mode 닫기 -->
 
@@ -160,32 +187,43 @@
 	                                </div>
 	                            </td>
 	                        </tr>
-	                        <tr>
-	                            <td colspan="2" class="edit-image-cell">
-	                                <div class="file-input-wrapper">
-	                                    <div id="edit-preview-container-${board.b_no}" class="edit-preview-container">
-	                                        <c:forEach var="imgName" items="${board.b_image_list}">
-	                                            <img src="${pageContext.request.contextPath}/img/${imgName}" class="edit-preview-img">
-	                                        </c:forEach>
-	                                    </div>
-	                                    <input type="file" id="edit-file-${board.b_no}" name="b_upload_list" multiple style="display:none;" onchange="updatePreview(this, '${board.b_no}')">
-	                                    <label for="edit-file-${board.b_no}" class="file-input-label">📸 사진 변경하기</label>
-	                                </div>
-	                            </td>
-	                        </tr>
-	                        <tr>
-	                            <td>
-	                                <textarea id="edit-text-${board.b_no}" name="b_text" class="edit-textarea" rows="5">${board.b_text}</textarea>
-	                            </td>
-	                            <td class="edit-action-cell">
-	                                <div class="btn-group-vertical">
-	                                    <button type="button" class="btn-edit-action btn-save" onclick="submitUpdate(${board.b_no}, this)">수정</button>
-	                                    <button type="button" class="btn-edit-action btn-cancel" onclick="cancelEdit(${board.b_no})">취소</button>
-	                                </div>
-	                            </td>
-	                        </tr>
-	                    </table>
-	                </form>
+							<!-- [B] 게시글 수정 모드 내부 이미지 행 -->
+							<tr>
+							    <td colspan="2" class="edit-image-cell">
+							        <div class="file-input-wrapper">
+										<!-- 2. 버튼이 그 아래 왼쪽으로 배치됨 -->
+											<div class="file-btn-area">
+											<input type="file" id="edit-file-${board.b_no}" name="b_upload_list" multiple style="display:none;" onchange="updatePreview(this, '${board.b_no}')">
+											<label for="edit-file-${board.b_no}" class="file-input-label">
+											  📸 사진 변경하기
+											</label>
+										</div>										
+										
+							            <!-- 1. 사진 미리보기가 먼저 나옴 (가로 나열) -->
+							            <div id="edit-preview-container-${board.b_no}" class="edit-preview-container">
+							                <c:forEach var="imgName" items="${board.b_image_list}">
+							                    <img src="${pageContext.request.contextPath}/img/${imgName}" class="edit-preview-img">
+							                </c:forEach>
+							            </div>
+							            
+							            
+							        </div>
+							    </td>
+							</tr>
+							<!-- 3행: 텍스트 (가로 꽉 채우기) -->
+							            <tr>
+							                <td colspan="2">
+							                    <textarea id="edit-text-${board.b_no}" name="b_text" class="edit-textarea" rows="5">${board.b_text}</textarea>
+							                </td>
+							            </tr>
+							        </table>
+
+							        <!-- ✅ 수정/취소 버튼을 테이블 밖 오른쪽 하단으로 배치 -->
+							        <div class="edit-btn-wrapper">
+							            <button type="button" class="btn-edit-action btn-save" onclick="submitUpdate(${board.b_no}, this)">수정 완료</button>
+							            <button type="button" class="btn-edit-action btn-cancel" onclick="cancelEdit(${board.b_no})">취소</button>
+							        </div>
+							    </form>
 	            </div> <!-- #edit-mode 닫기 -->
 	        </div> <!-- .result-container 닫기 -->
 	    </c:forEach>

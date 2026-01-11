@@ -56,23 +56,25 @@
                         <label for="b_upload_insert" class="file-input-label">
                             📸 사진 여러 장 선택하기
                         </label>
-                        
                         <!-- 여러 장의 이미지가 보일 컨테이너 -->
                         <div id="image-preview-container"></div>
                     </div>
                 </td>
             </tr>
-            <!-- 3행: 텍스트 및 등록 버튼 -->
-            <tr>
-                <td>
-                    <textarea name="b_text" id="content" rows="6" placeholder="꽃과 함께한 행복한 순간을 적어주세요."></textarea>
-                </td>
-                <td style="width: 110px; text-align: center;">
-                    <input type="button" value="등록" class="btn-submit" onclick="submitReview()">
-                </td>
-            </tr>
-        </table>
-    </form>
+			
+			<!-- 3행: 텍스트 (가로 전체 차지) -->
+			<tr>
+			   <td colspan="2">
+			       <textarea name="b_text" id="content" rows="6" placeholder="꽃과 함께한 행복한 순간을 적어주세요."></textarea>
+			    </td>
+			 </tr>
+			</table>
+
+			 <!-- ✅ 표 아래 오른쪽 배치를 위한 버튼 영역 -->
+			 <div class="submit-btn-wrapper">
+			    <input type="button" value="등록" class="btn-submit" onclick="submitReview()">
+			 </div>
+		</form>
 </div>
 
 <script>

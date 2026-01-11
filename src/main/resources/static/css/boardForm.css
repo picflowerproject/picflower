@@ -76,8 +76,8 @@ textarea {
 
 /* 7. 등록 버튼 (연보라색 테마) */
 .btn-submit {
-    width: 100px;
-    height: 120px; /* textarea 높이에 맞춤 */
+    width: 120px;       /* 가로형 버튼에 맞는 너비 */
+    height: 45px;       /* 세로 높이를 일반적인 버튼 크기로 조정 */
     background-color: #dcbbf2;
     border: none;
     color: #000;
@@ -87,7 +87,21 @@ textarea {
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(163, 108, 217, 0.2);
     transition: all 0.2s;
+    /* margin-top: 10px; 등을 넣어 표와의 간격을 조절하세요 */
 }
+
+#reviewForm tr:last-child td {
+    border-bottom: none;       /* 표 마지막 행의 실선 제거 (선택 사항) */
+}
+
+/* [새로운 버튼 래퍼 추가] */
+.submit-btn-wrapper {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    margin-top: 15px;          /* 표와의 간격 */
+    padding-right: 5px;        /* 미세 조정 */
+}
+
 
 .btn-submit:hover {
     background-color: #c9a7e6;
