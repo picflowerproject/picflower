@@ -93,6 +93,73 @@ function showMessage(msg) {
 			</div>
         </div>
     </div>
+	
+	<div id="chat-icon" onclick="toggleChat()" style="position:fixed; bottom:20px; right:20px; cursor:pointer; z-index:999;">
+	    <div style="width:60px; height:60px; background:#ffc1cc; border-radius:30px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.2); font-size:30px;">🌸</div>
+	</div>
+
+	<div id="chat-window" style="display:none; position:fixed; bottom:90px; right:20px; width:330px; height:450px; background:white; border:1px solid #ddd; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.2); z-index:1000; flex-direction:column;">
+	    <div style="background:#ffc1cc; color:white; padding:15px; border-radius:15px 15px 0 0; font-weight:bold; display:flex; justify-content:space-between;">
+	        <span>Picflower AI 플로리스트</span>
+	        <span onclick="toggleChat()" style="cursor:pointer;">&times;</span>
+	    </div>
+	    <div id="chat-content" style="flex:1; overflow-y:auto; padding:15px; font-size:14px; display:flex; flex-direction:column; gap:10px;">
+	        <div style="background:#f1f1f1; padding:10px; border-radius:10px; align-self:flex-start; max-width:80%;">안녕하세요! 어떤 꽃을 찾으시나요?</div>
+	    </div>
+	    <div style="padding:15px; border-top:1px solid #ddd; display:flex; gap:5px;">
+	        <input type="text" id="chat-input" style="flex:1; border:1px solid #ddd; border-radius:5px; padding:8px;" placeholder="메시지를 입력하세요...">
+	        <button onclick="sendChatMessage()" style="background:#ffc1cc; border:none; color:white; padding:8px 15px; border-radius:5px; cursor:pointer;">전송</button>
+	    </div>
+	</div>
+
+	<script>
+	// 1. 창 열기/닫기
+	function toggleChat() {
+	    const win = document.getElementById('chat-window');
+	    win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
+	}
+
+	// 2. 메시지 전송
+	function sendChatMessage() {
+	    const input = document.getElementById('chat-input');
+	    const content = document.getElementById('chat-content');
+	    const msg = input.value.trim();
+	    
+	    if(!msg) return;
+
+	    // 사용자 메시지 추가
+	    const userDiv = document.createElement('div');
+	    userDiv.style.cssText = "align-self:flex-end; background:#ffeff2; padding:10px; border-radius:10px; max-width:80%; margin-bottom:5px;";
+	    userDiv.innerText = msg;
+	    content.appendChild(userDiv);
+	    
+	    input.value = "";
+	    content.scrollTop = content.scrollHeight;
+
+	    // 3. fetch API를 이용한 비동기 통신 (jQuery의 $.ajax 역할)
+	    fetch("/api/chat/send", {
+	        method: "POST",
+	        headers: { "Content-Type": "application/json" },
+	        body: JSON.stringify({ message: msg })
+	    })
+	    .then(response => response.text()) // 컨트롤러에서 String으로 반환하므로 .text()
+	    .then(data => {
+	        const aiDiv = document.createElement('div');
+	        aiDiv.style.cssText = "align-self:flex-start; background:#f1f1f1; padding:10px; border-radius:10px; max-width:80%; margin-bottom:5px;";
+	        aiDiv.innerText = "🌸 " + data;
+	        content.appendChild(aiDiv);
+	        content.scrollTop = content.scrollHeight;
+	    })
+	    .catch(error => {
+	        console.error("Error:", error);
+	    });
+	}
+
+	// 4. 엔터키 이벤트
+	document.getElementById('chat-input').addEventListener('keypress', function(e) {
+	    if(e.key === 'Enter') sendChatMessage();
+	});
+	</script>
 </footer>
 </body>
 </html>

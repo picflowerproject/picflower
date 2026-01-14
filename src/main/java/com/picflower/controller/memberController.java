@@ -6,9 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +44,65 @@ public class memberController {
 	}
 	
 	@RequestMapping("/home")
-	public String home() {
-		return "home";
+	public String home(@AuthenticationPrincipal Object principal, Model model, HttpSession session) {
+	    if (principal instanceof OAuth2User) {
+	        OAuth2User oauth2User = (OAuth2User) principal;
+	        
+	        String kakaoId = oauth2User.getAttribute("id").toString(); 
+	        Map<String, Object> properties = (Map<String, Object>) oauth2User.getAttributes().get("properties");
+	        String nickname = (String) properties.get("nickname");
+
+	        memberDTO dto = dao.findByM_id(kakaoId);
+
+	        if (dto == null) {
+	            dto = new memberDTO();
+	            dto.setM_id(kakaoId);
+	            dto.setM_name(nickname);
+	            dto.setM_pwd(passwordEncoder.encode("kakao_user_" + kakaoId));
+	            
+	            // 필수값(NOT NULL) 에러 방지를 위해 기본값 세팅
+	            dto.setM_gender("N");        // 미선택
+	            dto.setM_tel("010-0000-0000"); // 임시 번호
+	            dto.setM_birth("1900-01-01");
+	            dto.setM_addr(" ");
+	            dto.setM_flower("없음");
+	            dto.setM_email("kakao@user.com");
+	            dto.setM_auth("MEMBER");  // 시큐리티 권한 (WebSecurityConfig와 맞출 것)
+	            
+	            dao.memberWriteDao(dto);
+	            // 가입 후 다시 조회하여 m_no 등 자동 생성된 값을 포함한 완전한 객체 확보
+	            dto = dao.findByM_id(kakaoId);
+	            System.out.println("새로운 카카오 유저 가입 및 정보 생성 완료");
+	        }
+
+	     // --- 여기서부터 권한 강제 갱신 로직 시작 ---
+	        // 1. DB에서 가져온 m_auth("MEMBER") 값을 GrantedAuthority 리스트로 변환
+	        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(dto.getM_auth());
+
+	        // 2. 현재의 principal과 권한 정보를 합쳐 새로운 Authentication 객체 생성
+	        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+	            principal, 
+	            null, 
+	            authorities
+	        );
+
+	        // 3. 시큐리티 컨텍스트에 새 인증 객체를 셋팅 (이게 핵심!)
+	        SecurityContextHolder.getContext().setAuthentication(newAuth);
+	        // --- 권한 강제 갱신 로직 끝 ---
+
+	        session.setAttribute("m_id", dto.getM_id());
+	        session.setAttribute("m_name", dto.getM_name());
+	        session.setAttribute("m_auth", dto.getM_auth()); 
+	        
+	        model.addAttribute("userName", nickname);
+
+	    } else if (principal instanceof UserDetails) {
+	        UserDetails userDetails = (UserDetails) principal;
+	        model.addAttribute("userName", userDetails.getUsername());
+	        session.setAttribute("m_id", userDetails.getUsername());
+	    }
+	    
+	    return "home";
 	}
 	
 	@RequestMapping("/guest/loginForm")
@@ -140,33 +203,28 @@ public class memberController {
 	}
 	
 	@GetMapping("/member/memberDetailId")
-	public String memberDetail(@RequestParam(value="m_id", required=false) String m_id, Principal principal, Model model) {
-	    System.out.println("=== 요청된 m_id 파라미터: " + m_id + " ===");
-	    System.out.println("=== 접속한 사용자(Principal): " + (principal != null ? principal.getName() : "비로그인") + " ===");
-	    // 1. 세션에서 로그인한 사용자의 아이디를 가져옵니다.
+	public String memberDetail(Principal principal, Model model) {
+	    if (principal == null) return "redirect:/guest/loginForm";
+
+	    // 1. principal.getName()은 일반 로그인은 아이디, 카카오는 고유번호를 반환함
 	    String loginId = principal.getName(); 
+	    System.out.println("로그인 아이디: " + loginId);
 	    
-	    // 2. 위에서 정의한 loginId 변수를 사용하여 DB에서 정보를 조회합니다.
-	    // (기존 m_id에서 loginId로 변경)
+	    // 2. DB에서 회원 정보 조회 (카카오 ID도 m_id 컬럼에 저장되어 있음)
 	    memberDTO detail = dao.findByM_id(loginId);
 	    
-	    // 3. 모델에 회원 정보 담기
-	    model.addAttribute("detail", detail);
-	    
-	    // 4. 찾아낸 회원 정보에서 m_no를 꺼내 주문 내역을 조회함
 	    if (detail != null) {
+	        model.addAttribute("detail", detail);
+	        
+	        // 3. m_no를 사용하여 주문 내역 조회
 	        int m_no = detail.getM_no();
 	        List<orderRequestDTO> orderList = orderDao.selectMyOrderList(m_no);
 	        model.addAttribute("orderList", orderList);
+	    } else {
+	        // 혹시라도 DB에 정보가 없으면 가입 유도
+	        return "redirect:/guest/loginForm";
 	    }
-	    
-	    
-	    if (detail != null) {
-	        int m_no = detail.getM_no();
-	        List<orderRequestDTO> orderList = orderDao.selectMyOrderList(m_no);
-	        System.out.println("주문 내역 개수: " + (orderList != null ? orderList.size() : "null")); // 로그 확인
-	        model.addAttribute("orderList", orderList);
-	    }
+
 	    return "member/memberDetail"; 
 	}
 	
@@ -180,6 +238,15 @@ public class memberController {
 	    
 	    if (auth == null || !auth.isAuthenticated()) {
 	        response.put("success", false);
+	        return response;
+	    }
+	    
+	 // 1. 카카오 로그인 유저인지 확인
+	    if (auth.getPrincipal() instanceof OAuth2User) {
+	        // 카카오 유저는 비밀번호 확인 절차 없이 즉시 성공 처리
+	        response.put("success", true);
+	        response.put("isSocial", true); // 프론트에서 알림창 띄울 때 활용 가능
+	        session.setAttribute("pwVerified", true);
 	        return response;
 	    }
 	    

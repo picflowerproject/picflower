@@ -41,7 +41,7 @@
 		        <div class="user-info-box">
 				    <div class="icon-group">
 				        <!-- 마이페이지 -->
-				        <a href="/member/memberDetailId?m_id=<sec:authentication property='principal.username'/>" title="마이페이지">
+				        <a href="/member/memberDetailId?m_id=<sec:authentication property='principal.name'/>" title="마이페이지">
 				            <i class="fa-regular fa-user"></i>
 				        </a>
 				        <!-- 장바구니 -->
@@ -69,7 +69,7 @@
 				    </div>
 				    
 				    <div class="welcome-msg">
-				        <strong><sec:authentication property="principal.username"/></strong>님 환영합니다.
+				        <strong><sec:authentication property="principal.name"/></strong>님 환영합니다.
 				    </div>
 				</div>
 		    </sec:authorize>

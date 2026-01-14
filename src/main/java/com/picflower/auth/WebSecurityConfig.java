@@ -11,45 +11,52 @@ import jakarta.servlet.DispatcherType;
 
 @Configuration
 public class WebSecurityConfig {
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-		http.csrf((csrf) -> csrf.disable()) // CSRF 보호 비활성화
-			.cors((cors) -> cors.disable()) // CORS 비활성화
-			.authorizeHttpRequests(request -> request
-					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 내부 포워드 요청 허용
-					.requestMatchers("/","/home","/loginForm").permitAll() // 루트(/)는 모두 허용
-					.requestMatchers("/guest/jusoPopup").permitAll() 
-					.requestMatchers("/css/**","/js/**","/img/**","/assets/**", "/product_img/**","/flower_img/**").permitAll() // 정적 리소스 모두 허용
-					.requestMatchers("/","/guest/**","/guest/loginForm","/guest/memberWriteForm").permitAll() // guest 폴더는 모두 허용 (게스트 페이지)
-					.requestMatchers("/admin/**").hasRole("ADMIN") // admin 폴더는 ADMIN만 허용 (관리자 페이지)
-					.requestMatchers("/member/**").hasAnyRole("MEMBER","ADMIN") // MEMBER 폴더는 USER, ADMIN만 허용 (회원 페이지)
-					.requestMatchers("/common/**").authenticated() 
-					.anyRequest().authenticated() // 나머지는 모두 인증 필요
-			);
-		
-		//로그인
-		http.formLogin((formLogin) -> formLogin
-				.loginPage("/guest/loginForm") // 기본값 : /login
-				.loginProcessingUrl("/j_spring_security_check")
-				.usernameParameter("j_username")
-				.passwordParameter("j_password")
-				.defaultSuccessUrl("/",true)
-				.failureUrl("/loginForm?error") // 기본값: /login?error
-				.permitAll()
-				);
-		
-		//로그아웃
-		http.logout((logout) -> logout
-				.logoutUrl("/logout")
-				.logoutSuccessUrl("/home")
-				.permitAll()
-				);
-		
-		return http.build();
-	}
-}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf((csrf) -> csrf.disable())
+            .cors((cors) -> cors.disable())
+            .authorizeHttpRequests(request -> request
+                .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+                // 1. 카카오 로그인 관련 경로를 명시적으로 허용 (매우 중요)
+                .requestMatchers("/login/oauth2/**", "/oauth2/**").permitAll() 
+                .requestMatchers("/", "/home", "/guest/**").permitAll()
+                .requestMatchers("/api/chat/**").permitAll() // 챗봇 API 허용
+                .requestMatchers("/css/**", "/js/**", "/img/**", "/assets/**", "/product_img/**", "/flower_img/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/member/**").hasAnyAuthority("MEMBER", "ADMIN")
+                .anyRequest().authenticated()
+            );
+
+        // 폼 로그인
+        http.formLogin((formLogin) -> formLogin
+                .loginPage("/guest/loginForm")
+                .loginProcessingUrl("/j_spring_security_check")
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/guest/loginForm?error") // 경로 수정
+                .permitAll()
+        );
+
+        // OAuth2 로그인 (카카오)
+        http.oauth2Login((oauth2) -> oauth2
+                .loginPage("/guest/loginForm")
+                .defaultSuccessUrl("/", true)
+                .permitAll()
+        );
+
+        // 로그아웃
+        http.logout((logout) -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/home")
+                .permitAll()
+        );
+
+        return http.build();
+    }
+}

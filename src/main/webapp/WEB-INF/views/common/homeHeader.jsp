@@ -39,7 +39,7 @@
 		        <sec:authorize access="isAuthenticated()">
 		            <!-- 로그인한 모든 사용자에게 보이는 메뉴 -->
 		            <span class="welcome-msg">
-		                <strong class="user-id"><sec:authentication property="principal.username"/></strong>님 반갑습니다
+		                <strong class="user-id">${userName}</strong>님 반갑습니다
 		            </span>
 		            <span class="divider">|</span>
 		            <a href="/logout" class="logout-link">로그아웃</a>

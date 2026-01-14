@@ -21,6 +21,13 @@
             </div>
             
             <input type="submit" value="로그인" class="login-btn">
+			
+			<div style="margin-top: 15px;">
+			                <a href="/oauth2/authorization/kakao">
+			                    <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/W6wL4S1DComponentSnc0WSh6zIFGkB/o.jpg" 
+			                         width="100%" alt="카카오 로그인 버튼">
+			                </a>
+			            </div>
             <input type="reset" value="취소" class="login-btn" style="background-color: #eee; color: #666; margin-top: 5px;">
         </form>
         

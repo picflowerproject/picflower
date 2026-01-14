@@ -46,7 +46,7 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-taglibs:6.2.3'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
-
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 eclipse.wtp.facet {
