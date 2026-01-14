@@ -99,7 +99,11 @@ public class noticeController {
 		public String n_delete(@RequestParam("n_no") int n_no) {
 			dao.n_deleteDao(n_no);
 			return "redirect:/guest/notice";
-		}
-
+	}
+	
+	@RequestMapping("/guest/termsOfUse")
+	public String termsOfUse() {
+		return "guest/termsOfUse";
+	}
 	
 }

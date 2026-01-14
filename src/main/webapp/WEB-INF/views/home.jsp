@@ -15,17 +15,8 @@
 <main>
 <h1>main</h1>
 <section>
-<h2>section1</h2>
+<img src="${pageContext.request.contextPath}/assets/home1.jpg" alt="Home Image">
 </section>
-
-<section>
-<h2>section2</h2>
-</section>
-
-<section>
-<h2>section3</h2>
-</section>
-
 </main>
 
 <footer>

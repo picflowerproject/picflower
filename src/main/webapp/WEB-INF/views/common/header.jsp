@@ -65,7 +65,7 @@
                 <a href="/guest/productList" class="nav-item">테마 상품</a>
             </div>
             <a href="/guest/b_list" class="nav-item">상품 후기</a>
-            <a href="/guest/b_list" class="nav-item">트렌드 픽</a>
+            <a href="/guest/trendPic" class="nav-item">트렌드 픽</a>
         </div>
     </nav>
 </header>

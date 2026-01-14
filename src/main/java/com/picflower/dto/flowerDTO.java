@@ -13,6 +13,7 @@ public class flowerDTO {
 	private String f_ename;
 	private List<MultipartFile> f_upload;
 	private String f_image;
+    private List<String> f_imageUrlList; 
 	private String f_language;
 	private String f_detail;
 	private String f_use;

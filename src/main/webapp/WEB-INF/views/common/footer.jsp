@@ -69,7 +69,7 @@ function showMessage(msg) {
             <nav class="footer-nav">
                 <a href="/guest/notice">공지사항</a>
                 <a href="/guest/about">회사소개</a>
-                <a href="/guest/terms">이용약관</a>
+                <a href="/guest/termsOfUse">이용약관</a>
                 <a href="/guest/privacy" class="priority">개인정보처리방침</a>
                 <a href="/guest/customerCenter">고객센터</a>
             </nav>

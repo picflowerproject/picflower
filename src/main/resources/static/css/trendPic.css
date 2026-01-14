@@ -1,0 +1,144 @@
+/* 상단 전체 레이아웃 */
+/* 1. 상단 전체 배경 (화면 끝까지 꽉 참) */
+.main-layout-container {
+    width: 100%;
+    background-color: #ffffff;
+    /* 헤더와 너무 붙지 않게 여백 추가 */
+    margin-top: 40px; 
+    padding: 60px 0;
+    box-sizing: border-box;
+}
+
+/* 2. 중앙 정렬의 핵심 (반드시 margin: 0 auto가 있어야 합니다) */
+.main-layout-inner {
+    display: flex !important;
+    flex-direction: row !important;
+    max-width: 1200px; /* 이 너비 안에서 중앙에 모입니다 */
+    margin: 0 auto !important; /* 좌우 마진 auto가 가로 중앙 정렬을 만듭니다 */
+    gap: 60px;
+    padding: 0 20px;
+    align-items: flex-start; /* 텍스트 길이에 상관없이 위쪽 라인 고정 */
+}
+
+/* 왼쪽 텍스트 영역 */
+.left-section {
+    flex: 1.2; /* 텍스트 공간 약간 더 확보 */
+    min-width: 0; /* flex 자식 박스 깨짐 방지 */
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* 오른쪽 이미지 영역 - 크기 고정의 핵심 */
+.right-section {
+    flex: 0.8; /* 이미지 크기가 너무 커지지 않도록 조정 */
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    max-width: 500px; /* 이미지 최대 너비 제한 */
+}
+
+/* 텍스트 스타일링 */
+.main-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.flower-info-section {
+    margin-bottom: 30px;
+}
+
+.flower-info-section div:nth-child(1) { font-size: 1.8rem; color: #ff6b6b; font-weight: bold; }
+.flower-info-section div:nth-child(2) { font-size: 1.1rem; color: #999; font-style: italic; }
+.flower-info-section div:nth-child(3) { font-size: 1.2rem; color: #555; margin-top: 5px; }
+
+/* 정보 텍스트 박스 슬라이드 */
+.text-box {
+    background: #fdfdfd;
+    padding: 25px;
+    border-radius: 15px;
+    border-left: 5px solid #ff6b6b;
+    height: 250px; 
+    position: relative;
+}
+
+.badge {
+    display: inline-block;
+    background: #ff6b6b;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+}
+
+.content-slide {
+    display: none;
+    line-height: 1.6;
+    color: #666;
+    animation: fadeIn 0.5s;
+}
+
+.content-slide.active { display: block; }
+
+/* 이미지 슬라이더 */
+/* 슬라이더 부모 영역 */
+.custom-slider {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden; /* 영역 밖 이미지는 숨김 */
+    border-radius: 20px;
+}
+
+/* 이미지가 일렬로 늘어선 컨테이너 */
+.slider-wrapper {
+    display: flex; /* 가로 정렬 */
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out; /* 부드러운 이동 효과 */
+}
+
+
+/* 각 슬라이드 크기 고정 */
+.slide {
+    flex: 0 0 100%; /* 부모 너비의 100% 차지 */
+    width: 100%;
+    height: 100%;
+}
+
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 기존 active 애니메이션 제거 */
+.slide.active {
+    display: block; /* 가로 정렬을 위해 active 시에도 display 변화 없음 */
+    animation: none; 
+}
+
+
+
+.prev-btn, .next-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.7); border: none;
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+    transition: 0.3s;
+}
+.prev-btn:hover, .next-btn:hover { background: #ff6b6b; color: white; }
+.prev-btn { left: 15px; }
+.next-btn { right: 15px; }
+
+/* 애니메이션 */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes zoomIn {
+    from { transform: scale(1.1); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}

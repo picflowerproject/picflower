@@ -57,7 +57,7 @@ function submitForm() {
 </header>
 <main>
      <h2>상품 등록</h2>
-    <form name="product" method="post" action="/productWrite" enctype="multipart/form-data">
+    <form name="product" method="post" action="/admin/productWrite" enctype="multipart/form-data">
          <table>
             <tr>
                 <td>상품 제목</td>
@@ -107,7 +107,7 @@ function submitForm() {
             </tr>	
         </table>
         
-        <input type="hidden" name="m_no" value="1001">
+        <input type="hidden" name="m_no" value="1041">
         
         <div class="btn-group">
         	<input type="reset" value="취소">
