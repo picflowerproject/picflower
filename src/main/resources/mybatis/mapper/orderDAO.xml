@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.picflower.dao.IorderDAO">
+<insert id="insertOrder" parameterType="com.picflower.dto.orderRequestDTO">
+    <selectKey keyProperty="o_no" resultType="int" order="BEFORE">
+        SELECT orders_seq.NEXTVAL FROM DUAL
+    </selectKey>
+    INSERT INTO orders (
+        o_no, m_no, o_name, o_tel, o_addr, o_total_price, o_date, o_status, imp_uid
+    )
+    VALUES (
+        #{o_no}, #{m_no}, #{o_name}, #{o_tel}, #{o_addr}, #{o_total_price}, SYSDATE, '결제완료', #{imp_uid}
+    )
+</insert>
+
+<insert id="insertOrderDetail">
+    INSERT INTO order_detail (od_no, o_no, p_no, od_count, od_price)
+    VALUES (order_detail_seq.NEXTVAL, #{o_no}, #{p_no}, #{od_count}, #{od_price})
+</insert>
+
+<update id="reduceStock">
+    UPDATE product 
+    SET p_stock = p_stock - #{count} 
+    WHERE p_no = #{p_no} AND p_stock >= #{count}
+</update>
+
+<select id="selectMyOrderList" resultType="com.picflower.dto.orderRequestDTO">
+    SELECT 
+        o.o_no,
+        o.o_name,
+        o.o_total_price,
+        o.o_date,
+        o.o_status,
+        o.imp_uid,
+        (SELECT MAX(p.p_title) 
+         FROM order_detail od 
+         JOIN product p ON od.p_no = p.p_no 
+         WHERE od.o_no = o.o_no AND ROWNUM = 1) AS p_title,
+        (SELECT COUNT(*) 
+         FROM order_detail 
+         WHERE o_no = o.o_no) AS product_count
+    FROM orders o
+    WHERE o.m_no = #{m_no} 
+    ORDER BY o.o_date DESC
+</select>
+
+<update id="updateOrderStatus">
+    UPDATE orders 
+    SET o_status = #{status} 
+    WHERE o_no = #{o_no}
+</update>
+
+<select id="selectOrderStatus" resultType="String">
+    SELECT o_status
+    FROM orders
+    WHERE o_no = #{o_no}
+</select>
+
+<select id="selectOrderDetailList" resultType="com.picflower.dto.orderDetailDTO">
+    SELECT p_no, od_count
+    FROM order_detail
+    WHERE o_no = #{o_no}
+</select>
+
+<update id="restoreStock">
+    UPDATE product
+    SET p_stock = p_stock + #{count}
+    WHERE p_no = #{p_no}
+</update>
+
+</mapper>

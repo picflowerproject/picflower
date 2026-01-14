@@ -10,7 +10,6 @@
 <title>TrendPic</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/trendPic.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/trendPic2.css">
 <style>
     .seconde-love-container {
         padding: 120px 20px;

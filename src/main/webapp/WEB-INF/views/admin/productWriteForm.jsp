@@ -7,6 +7,7 @@
 <title>상품 등록</title>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/productWriteForm.css">
 <link rel="stylesheet" href="cdnjs.cloudflare.com">
+<script src="${pageContext.request.contextPath}/js/productWriteForm.js"></script>
 <script>
 function readURL(input) {
     const previewContainer = document.getElementById('image_preview');
@@ -36,19 +37,7 @@ function readURL(input) {
         });
     }
 }
-/* function inputNumberFormat(obj) {
-    // 1. 숫자 이외의 문자 제거
-    let value = obj.value.replace(/[^0-9]/g, "");
-    
-    // 2. 천 단위 콤마 추가 후 다시 input에 설정
-    obj.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-function submitForm() {
-    let priceInput = document.getElementById("price");
-    // 콤마 제거 후 숫자만 추출
-    let rawValue = priceInput.value.replace(/[^\d]+/g, ""); 
-    console.log("서버로 보낼 값:", rawValue);
-} */
+
 </script>
 </head>
 <body>
@@ -71,6 +60,10 @@ function submitForm() {
                 <td>가격</td>
                 <td><input type="text" name="p_price" onkeyup="inputNumberFormat(this)" placeholder="숫자만 입력하세요" required></td>
             </tr>
+             <tr>
+                <td>재고</td>
+                <td><input type="text" name="p_stock" onkeyup="inputNumberFormat(this)" placeholder="재고수량을 입력하세요" value="1000" required></td>
+            </tr>
             <tr>
                 <td>분류</td>
                 <td>
@@ -81,10 +74,6 @@ function submitForm() {
                         <option value="결혼/장례">결혼/장례</option>
                     </select>
                 </td>
-            </tr>
-            <tr>
-                <td>연관 꽃</td>
-                <td><input type="text" name="f_no" placeholder="연관 꽃번호를 적어주세요" value="112"required></td>
             </tr>
            <tr>
                 <td>이미지 등록</td>
@@ -103,11 +92,11 @@ function submitForm() {
             </tr>
            <tr>
                 <td>상세정보</td>
-                <td><textarea name="p_detail" placeholder="상세정보를 적어주세요."></textarea></td>
+                <td><textarea name="p_detail" placeholder="상세정보 이미지 링크를 입력하세요."></textarea></td>
             </tr>	
         </table>
         
-        <input type="hidden" name="m_no" value="1041">
+        <input type="hidden" name="m_no" value="1001">
         
         <div class="btn-group">
         	<input type="reset" value="취소">

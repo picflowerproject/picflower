@@ -15,4 +15,5 @@ public interface ImemberDAO {
 	public int memberDeleteDao(int m_no);
 	public memberDTO findByM_id(String m_id);
 	public int checkMemberFindPasswd(String m_id,String m_pwd);
+	public int updatePassword(int m_no, String m_pwd);
 }

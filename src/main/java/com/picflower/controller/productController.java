@@ -2,20 +2,28 @@ package com.picflower.controller;
 
 import java.io.File;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.picflower.dao.IboardDAO;
 import com.picflower.dao.IcartDAO;
 import com.picflower.dao.ImemberDAO;
 import com.picflower.dao.IproductDAO;
+import com.picflower.dao.IreplyDAO;
+import com.picflower.dto.boardDTO;
 import com.picflower.dto.cartDTO;
 import com.picflower.dto.memberDTO;
+import com.picflower.dto.orderDetailDTO;
+import com.picflower.dto.orderRequestDTO;
 import com.picflower.dto.productDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +33,12 @@ public class productController {
 	@Autowired
 	IproductDAO dao;
 	
+	@Autowired
+	IboardDAO boardDao; // 후기 DAO 주입
+
+	@Autowired
+	IreplyDAO replyDao; // 댓글 DAO 주입
+	
 	@RequestMapping("/admin/productWriteForm") 
 	public String productWriteForm() {
 		return "admin/productWriteForm";
@@ -33,7 +47,7 @@ public class productController {
 	@RequestMapping("/admin/productWrite")
 	public String productWrite(productDTO dto) throws Exception {
 		 List<MultipartFile> files = dto.getP_upload();
-		    String filePath = "C:\\Springboot\\Picflower\\src\\main\\resources\\static\\img\\";
+		    String filePath = "C:\\Springboot\\Picflower\\src\\main\\resources\\static\\product_img\\";
 		    
 		    // 파일명들을 합쳐서 저장할 객체
 		    StringBuilder fileNames = new StringBuilder();
@@ -63,22 +77,70 @@ public class productController {
 	}
 	
 	@RequestMapping("/guest/productList") 
-	public String productList(@RequestParam(value="p_category", required=false) String p_category, Model model) {
-	    // category 파라미터가 없으면 null이 들어가서 전체 리스트를 조회하고,
-	    // category=꽃다발 처럼 값이 넘어오면 해당 카테고리만 조회합니다.
-	    model.addAttribute("list", dao.productListDao(p_category));
+	public String productList(
+	        @RequestParam(value="p_category", required=false) String p_category, 
+	        @RequestParam(value="page", defaultValue="1") int page, // 추가: 기본값 1페이지
+	        Model model) {
 	    
-	    // 현재 선택된 카테고리를 JSP에서 알 수 있도록 다시 넘겨줍니다 (선택된 메뉴 강조용)
+	    int pageSize = 20; // 한 페이지에 보여줄 상품 개수
+	    // Oracle ROWNUM 기준 시작과 끝 번호 계산
+	    int start = (page - 1) * pageSize + 1;
+	    int end = page * pageSize;
+
+	    // 1. 해당 페이지의 데이터만 조회 (DAO 메서드 변경 필요)
+	    List<productDTO> list = dao.productListPagedDao(p_category, start, end);
+	    
+	    // 2. 페이지 번호 생성을 위한 전체 개수 조회
+	    int totalCount = dao.getTotalCountDao(p_category);
+	    
+	    // 3. 전체 페이지 수 계산 (올림 처리)
+	    int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+	    model.addAttribute("list", list);
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("totalPages", totalPages);
 	    model.addAttribute("selectedCategory", p_category);
 	    
 	    return "guest/productList"; 
 	}
 	
 	@RequestMapping("/guest/productDetail") 
-	public String productDetail(HttpServletRequest request, Model model) {
-		int p_no = Integer.parseInt(request.getParameter("p_no"));
-		model.addAttribute("detail", dao.productViewDao(p_no));
-		return "guest/productDetail"; 
+	public String productDetail(HttpServletRequest request, Model model, Principal principal) {
+	    int p_no = Integer.parseInt(request.getParameter("p_no"));
+	    
+	    // 1. 상품 상세 정보 가져오기
+	    model.addAttribute("detail", dao.productViewDao(p_no));
+	    
+	    // 2. 해당 상품의 후기 리스트 가져오기 (p_no 기준)
+	    List<boardDTO> boardList = boardDao.b_listByProductDao(p_no);
+	    
+	    // 3. 후기별 이미지 리스트화 및 로그인 유저 좋아요 체크
+	    Integer current_m_no = null;
+	    if (principal != null) {
+	        memberDTO member = memberDao.findByM_id(principal.getName());
+	        if (member != null) current_m_no = member.getM_no();
+	    }
+	    
+	    for(boardDTO board : boardList) {
+	        // 댓글 목록 가져오기
+	        board.setReplies(replyDao.r_listByB_no(board.getB_no()));
+	        
+	        // 좋아요 체크
+	        if (current_m_no != null) {
+	            board.setUserLiked(boardDao.checkLikeDao(board.getB_no(), current_m_no) > 0);
+	        }
+	        
+	        // 후기 이미지 리스트 변환 (쉼표로 구분된 문자열을 리스트로)
+	        if (board.getB_image() != null && !board.getB_image().isEmpty()) {
+	            String[] imgArray = board.getB_image().split(",");
+	            board.setB_image_list(java.util.Arrays.asList(imgArray));
+	        }
+	    }
+	    
+	    // 4. 모델에 후기 리스트 추가
+	    model.addAttribute("reviewList", boardList);
+	    
+	    return "guest/productDetail"; 
 	}
 	
 	@RequestMapping("/admin/productUpdateForm")
@@ -93,7 +155,7 @@ public class productController {
 	                            @RequestParam(value="delete_images", required=false) String[] deleteImages,
 	                            @RequestParam(value="all_existing_images", required=false) String[] allExistingImages) throws Exception {
 	    
-	    String filePath = "C:\\Springboot\\Picflower\\src\\main\\resources\\static\\img\\";
+	    String filePath = "C:\\Springboot\\Picflower\\src\\main\\resources\\static\\product_img\\";
 	    StringBuilder finalImages = new StringBuilder();
 	    
 	    if (allExistingImages != null) {
@@ -154,6 +216,48 @@ public class productController {
 	@Autowired
 	ImemberDAO memberDao;
 	
+	//바로구매 컨트롤러 추가
+	@PostMapping("/member/directOrderForm")
+	public String directOrderForm(@RequestParam("p_no") int p_no, 
+	                              @RequestParam("o_count") int o_count, 
+	                              Principal principal, // 로그인 정보 확인을 위해 추가
+	                              Model model) {
+	    
+	    // 1. 배송 정보 자동 입력을 위한 회원 정보 조회 (핵심!)
+	    if (principal != null) {
+	        String loginId = principal.getName();
+	        // memberDao.findByM_id 혹은 기존에 사용하시는 회원 조회 메서드 호출
+	        memberDTO member = memberDao.findByM_id(loginId); 
+	        model.addAttribute("mDto", member); // JSP의 ${mDto.m_name} 등과 매칭
+	    }
+	    
+	    // 2. 상품 정보 조회
+	    productDTO product = dao.productViewDao(p_no);
+	    
+	    // 3. 주문 객체(orderRequestDTO) 구성
+	    orderDetailDTO detail = new orderDetailDTO();
+	    detail.setP_no(p_no);
+	    detail.setOd_count(o_count);
+	    detail.setOd_price(product.getP_price());
+	    
+	    List<orderDetailDTO> items = new ArrayList<>();
+	    items.add(detail);
+	    
+	    orderRequestDTO orderReq = new orderRequestDTO();
+	    orderReq.setOrderItems(items);
+	    orderReq.setO_total_price(product.getP_price() * o_count);
+	    
+	    // 4. JSP에서 사용할 데이터 모델에 담기
+	    model.addAttribute("orderReq", orderReq);
+	    model.addAttribute("product", product);
+	    model.addAttribute("isDirectOrder", true);
+	    
+	    // JSP 상단의 c:set이 동작하도록 totalMoney도 함께 보내주면 좋습니다.
+	    model.addAttribute("totalMoney", product.getP_price() * o_count);
+	    
+	    return "member/orderForm";
+	}
+	
 	@RequestMapping("/member/addCart")
 	public String addCart(cartDTO dto, Principal principal) {
 	    if (principal == null) return "redirect:/guest/loginForm";
@@ -213,10 +317,21 @@ public class productController {
 	        return "redirect:/guest/loginForm";
 	    }
 	}
+	@GetMapping("/member/cartUpdate")
+	public String cartUpdate(@RequestParam("c_no") int c_no, 
+	                         @RequestParam("c_count") int c_count) {
+	    
+	    // 1. 주석을 풀고 실제 DAO의 메서드를 호출하여 DB 값을 변경합니다.
+	    cartDao.updateCartQtyDao(c_no, c_count); 
+	    
+	    // 2. 업데이트 완료 후 다시 장바구니 목록으로 리다이렉트
+	    return "redirect:/member/cartList"; 
+	}
 
 	@RequestMapping("/member/cartDelete")
 	public String cartDelete(@RequestParam("c_no") int c_no) {
 	    cartDao.deleteCartDao(c_no);
 	    return "redirect:/member/cartList";
 	}
+	
 }

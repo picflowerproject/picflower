@@ -4,18 +4,93 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Home</title>
+<title>이용약관</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css">
+<style>
+	/* 탭 버튼 영역 */
+	.tabs {
+	    display: flex;
+	    border-bottom: 2px solid #ddd;
+	    margin-bottom: 20px;
+	}
+
+	.tab-link {
+	    background: none;
+	    border: none;
+	    outline: none;
+	    cursor: pointer;
+	    padding: 14px 25px;
+	    font-size: 16px;
+	    transition: 0.3s;
+	    font-weight: bold;
+	    color: #666;
+	}
+
+	/* 마우스 올렸을 때 및 활성화 상태 */
+	.tab-link:hover {
+	    color: #6a5acd; /* 라벤더 색상 */
+	}
+
+	.tab-link.active {
+	    color: #6a5acd;
+	    border-bottom: 3px solid #6a5acd;
+	}
+
+	/* 탭 내용 제어 */
+	.tab-content {
+	    display: none; /* 기본적으로 숨김 */
+	    padding: 20px;
+	    line-height: 1.8;
+	    background: #fdfdfd;
+	    border-radius: 8px;
+	}
+
+	.tab-content.active {
+	    display: block; /* 활성화된 탭만 표시 */
+	}
+</style>
+<script>
+	function openTab(evt, tabName) {
+	    // 1. 모든 탭 내용 숨기기
+	    const tabContents = document.getElementsByClassName("tab-content");
+	    for (let i = 0; i < tabContents.length; i++) {
+	        tabContents[i].style.display = "none";
+	        tabContents[i].classList.remove("active");
+	    }
+
+	    // 2. 모든 탭 버튼에서 'active' 클래스 제거
+	    const tabLinks = document.getElementsByClassName("tab-link");
+	    for (let i = 0; i < tabLinks.length; i++) {
+	        tabLinks[i].classList.remove("active");
+	    }
+
+	    // 3. 현재 클릭한 탭 표시 및 버튼 활성화
+	    document.getElementById(tabName).style.display = "block";
+	    document.getElementById(tabName).classList.add("active");
+	    evt.currentTarget.classList.add("active");
+	}
+</script>
 </head>
 <body>
 <header>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 </header>
 <main>
-<h1>main</h1>
 <section>
-	주식회사청년들-꽃집청년들 이용약관<br/>
+	<main class="content-container">
+	    <h1>서비스 정책</h1>
+	
+	<!-- 탭 메뉴 -->
+	   <div class="tabs">
+	       <button class="tab-link active" onclick="openTab(event, 'ServiceTerms')">이용약관</button>
+	       <button class="tab-link" onclick="openTab(event, 'DeliveryTerms')">배송약관</button>
+	   </div>
+
+	
+ <div id="ServiceTerms" class="tab-content active">
+	<h3>Picflower 이용약관</h3>
 	제1조 (목적)<br/>
-	이 약관은 주식회사청년들이 운영하는 꽃집청년들(이하 “회사”)에서 제공하는 전자상거래 관련 서비스(이하 “서비스”)를 이용함에 있어 상품거래 시 회원과 회사 간의 권리 · 의무 · 책임사항 및 회원의 서비스 이용절차 등에 관한 사항을 규정함을 목적으로 합니다.<br/>
+	이 약관은 주식회사청년들이 운영하는 Picflower(이하 “회사”)에서 제공하는 전자상거래 관련 서비스(이하 “서비스”)를 이용함에 있어 상품거래 시 회원과 회사 간의 권리 · 의무 · 책임사항 및 회원의 서비스 이용절차 등에 관한 사항을 규정함을 목적으로 합니다.<br/>
 	<br/>
 	제2조 (용어의 정의)<br/>
 	① 이 약관에서 사용하는 용어의 정의는 다음과 같습니다.<br/>
@@ -256,13 +331,43 @@
 	전부터 홈페이지의 ’이용약관’란을 통해 알릴 것입니다.<br/>
 	<br/>
 	<br/>
-	<span>2020. 07. 18 ~ 2023. 09. 06 적용 (클릭)</span><br/>
-	<span>2019. 10. 25 ~ 2020. 07. 17 적용 (클릭)</span><br/>
-	<span>2018. 09. 12 ~ 2019. 10. 24 적용 (클릭)</span><br/>
-	<span>2011. 04. 12 ~ 2018. 09. 11 적용 (클릭)</span><br/>
+	<span>2020. 07. 18 ~ 2023. 09. 06 적용 </span><br/>
+	<span>2019. 10. 25 ~ 2020. 07. 17 적용 </span><br/>
+	<span>2018. 09. 12 ~ 2019. 10. 24 적용 </span><br/>
+	<span>2011. 04. 12 ~ 2018. 09. 11 적용 </span><br/>
 	<br/>
+	</div>
+	
+	
 
 </section>
+<div id="DeliveryTerms" class="tab-content">
+
+	<h3>청약철회 반품/교환/환불/취소 등 </h3>
+	<br/>
+	① ‘전자상거래 등에서의 소비자보호에 관한 법률’ 제17조에 따라 회원은 상품을 배송 받은 날로부터 7일 이내에 반품 또는 교환을 요청할 수 있으며, 반품에 관한 일반적인 사항은 ’전자상거래 등에서의 소비자보호에 관한 법률’ 등 관련 법령이 판매자가 제시한 조건보다 우선합니다. 단, 다음 각 호의 경우에는 회원이 반품이나 교환을 요청할 수 없습니다.<br/>
+	<br/>
+	1. 회원의 귀책사유로 말미암아 오배송 되었거나 상품이 훼손된 경우<br/>
+	2. 회원의 사용 또는 일부 소비로 말미암아 상품의 가치가 현저히 감소한 경우<br/>
+	3. 시간이 지나 재판매가 어려울 정도로 상품의 가치가 현저히 감소한 경우<br/>
+	4. 복제가 가능한 상품의 포장을 훼손한 경우<br/>
+	5. 기타 회원이 환불이나 교환을 요청할 수 없는 합리적인 사유가 있는 경우 <br/>
+	※당사 상품의 특성상 주문·제작이 이루어지거나 판매되고 난 뒤 짧은 기간에 상품가치가 현저히 감소하여 재판매가 어려운 상품으로 배송된 뒤 주문자의 주관적인 판단으로 환불 또는 교환이 거절 되거나 상품금액의 일부금액을 공제한 금액이 환불될 수 있습니다.<br/>
+	<br/>
+	② 회사는 회원으로부터 교환 또는 반품의 의사표시를 접수하면, 즉시 그러한 사실을 판매자에게 통보합니다.<br/>
+	<br/>
+	③ 반품이나 교환에 필요한 왕복 배송비와 기타 필요한 비용은 귀책사유가 있는 쪽에서 부담합니다. <br/>
+	<br/>
+	④ 교환에 드는 비용은 물품하자의 경우에는 판매자가 왕복배송비를 부담하나 회원의 변심에 의한 경우에는 회원이 부담합니다.<br/>
+	<br/>
+	⑤ 배송상의 문제로 회원이 손해를 보았을 때 그에 대한 책임은 해당 배송업체를 지정한 회사에게 있습니다. <br/>
+	<br/>
+	⑥ 확인된 거래가 취소되어 결제대금을 환불할 경우는 회사는 거래가 취소된 날로부터 2영업일 이내에 회원에게 환불에 필요한 조치를 합니다. 신용카드로 결제했을 때는 환불을 요청한 즉시 결제 승인이 취소됩니다. 그러나 카드사 결제일에 따라 실제 환불까지는 2주 이상이 시간이 소요될 수 있습니다. <br/>
+	<br/>
+	⑦ 회원은 상품이 제작되기 전까지 구매를 취소할 수 있으며, 제작 후에는 상품의 종류에 따라 일정금액을 제한 금액이 환불되거나 재판매가 어려운 상품의 경우에는 환불 및 구매취소가 안될 수 있습니다. 따라서 주문상태가 ‘상품 준비' 상태이거나 출고 및 도착 이후에 단순 변심으로 인한 교환/환불은 불가합니다.
+		
+    </div>
+
 </main>
 
 <footer>

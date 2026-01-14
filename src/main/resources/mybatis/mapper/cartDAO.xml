@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.picflower.dao.IcartDAO">
+
+    <!-- 1. 장바구니 추가 -->
+    <insert id="addCartDao">
+        INSERT INTO cart (c_no, c_count, m_no, p_no)
+        VALUES (cart_seq.NEXTVAL, #{c_count}, #{m_no}, #{p_no})
+    </insert>
+
+    <!-- 2. 장바구니 목록 조회 (상품 정보와 JOIN) -->
+    <select id="listCartDao" resultType="com.picflower.dto.cartDTO">
+        SELECT c.c_no, c.c_count, c.p_no, p.p_title, p.p_price, p.p_image,
+               (p.p_price * c.c_count) AS money
+        FROM cart c JOIN product p ON c.p_no = p.p_no
+        WHERE c.m_no = #{m_no}
+        ORDER BY c.c_no DESC
+    </select>
+
+    <!-- 3. 동일 상품이 있는지 확인 -->
+    <select id="checkProductDao" resultType="int">
+        SELECT COUNT(*) FROM cart WHERE m_no = #{m_no} AND p_no = #{p_no}
+    </select>
+
+    <!-- 4. 동일 상품이 있을 경우 수량만 변경 -->
+    <update id="updateCountDao">
+        UPDATE cart SET c_count = c_count + #{c_count}
+        WHERE m_no = #{m_no} AND p_no = #{p_no}
+    </update>
+    <update id="updateCartQtyDao">
+	    UPDATE cart 
+	    SET c_count = #{param2} 
+	    WHERE c_no = #{param1}
+	</update>
+
+    <!-- 5. 장바구니 개별 삭제 -->
+    <delete id="deleteCartDao">
+        DELETE FROM cart WHERE c_no = #{c_no}
+    </delete>
+    <delete id="deleteCartAllDao">
+   	 DELETE FROM cart WHERE m_no = #{m_no}
+	</delete>
+
+</mapper>

@@ -1,14 +1,25 @@
 package com.picflower.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +34,8 @@ import com.picflower.dto.boardDTO;
 import com.picflower.dto.memberDTO;
 import com.picflower.dto.replyDTO;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class boardController {
 	@Autowired
@@ -33,7 +46,24 @@ public class boardController {
 	
 	@Autowired
     ImemberDAO memberDao;
-	
+		
+	@RequestMapping("/member/b_write_view")
+	public String b_write_view(HttpSession session, Model model) {
+	    Integer m_no = (Integer) session.getAttribute("m_no");
+	    if (m_no == null) return "redirect:/login";
+	    
+	    // 최근 구매 상품 최대 3개 가져오기
+	    List<boardDTO> productList = dao.getRecentProduct(m_no);
+	    model.addAttribute("productList", productList);
+	    
+	    // 로그 출력: 리스트 크기와 첫 번째 상품명 확인
+	    System.out.println("가져온 상품 개수: " + productList.size());
+	    if(!productList.isEmpty()) {
+	        System.out.println("첫번째 상품명: " + productList.get(0).getP_title());
+	    }
+	    
+	    return "boardForm";
+	}
 	
 	//후기글 조회 + 각 글의 댓글 조회
 	@RequestMapping("/guest/b_list")
@@ -63,6 +93,16 @@ public class boardController {
 	            String[] imgArray = board.getB_image().split(",");
 	            board.setB_image_list(java.util.Arrays.asList(imgArray));
 	        }
+	    }
+	    
+	 // ★ 2. 추가: 후기 작성 폼을 위한 상품 목록 가져오기
+	    // 로그인한 상태일 때만 최근 상품 목록을 모델에 담습니다.
+	    if (current_m_no != null) {
+	        List<boardDTO> productList = dao.getRecentProduct(current_m_no);
+	        model.addAttribute("productList", productList);
+	        
+	        // 데이터 확인용 로그
+	        System.out.println("작성폼용 상품 개수: " + productList.size());
 	    }
 
 	    model.addAttribute("list", boardList);

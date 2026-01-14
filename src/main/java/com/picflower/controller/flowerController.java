@@ -20,15 +20,15 @@ public class flowerController {
 	@Autowired
 	IflowerDAO dao;
 	
-	@RequestMapping("/flowerWriteForm") 
+	@RequestMapping("/admin/flowerWriteForm") 
 	public String flowerWriteForm() {
-		return "flowerWriteForm";
+		return "admin/flowerWriteForm";
 	}
 	
-	@RequestMapping("/flowerWrite")
+	@RequestMapping("/admin/flowerWrite")
 	public String flowerWrite(flowerDTO dto) throws Exception {
 	    List<MultipartFile> files = dto.getF_upload();
-	    String filePath = "C:\\Springboot\\Picflower\\src\\main\\resources\\static\\img\\";
+	    String filePath = "C:\\Springboot\\Picflower\\src\\main\\resources\\static\\flower_img\\";
 	    
 	    // 파일명들을 합쳐서 저장할 객체
 	    StringBuilder fileNames = new StringBuilder();
@@ -53,34 +53,34 @@ public class flowerController {
 	    dto.setF_image(fileNames.toString());
 	    
 	    dao.flowerWriteDao(dto); 
-	    return "redirect:/flowerList";
+	    return "redirect:/admin/flowerList";
 	}
 	
-	@RequestMapping("/flowerList") 
+	@RequestMapping("/admin/flowerList") 
 	public String flowerList(Model model) {
 		model.addAttribute("list", dao.flowerListDao());
 		
-		return "flowerList"; 
+		return "admin/flowerList"; 
 	}
 	
-	@RequestMapping("/flowerDetail") 
+	@RequestMapping("/admin/flowerDetail") 
 	public String flowerDetail(HttpServletRequest request, Model model) {
 		int f_no = Integer.parseInt(request.getParameter("f_no"));
 		model.addAttribute("detail", dao.flowerViewDao(f_no));
-		return "flowerDetail"; 
+		return "admin/flowerDetail"; 
 	}
 	
-	@RequestMapping("/flowerUpdateForm")
+	@RequestMapping("/admin/flowerUpdateForm")
 	public String flowerUpdateForm(Model model, HttpServletRequest request) {
 		int f_no = Integer.parseInt(request.getParameter("f_no"));
 		model.addAttribute("edit", dao.flowerViewDao(f_no));
-		return "flowerUpdateForm";
+		return "admin/flowerUpdateForm";
 	}
 	
-	@RequestMapping("/flowerUpdate")
+	@RequestMapping("/admin/flowerUpdate")
 	public String flowerUpdate(flowerDTO dto) throws Exception {
 		List<MultipartFile> files = dto.getF_upload();
-	    String filePath = "C:\\Springboot\\Picflower\\src\\main\\resources\\static\\img\\";
+	    String filePath = "C:\\Springboot\\Picflower\\src\\main\\resources\\static\\flower_img\\";
 	    
 	    // 파일명들을 합쳐서 저장할 객체
 	    StringBuilder fileNames = new StringBuilder();
@@ -105,14 +105,14 @@ public class flowerController {
 	    dto.setF_image(fileNames.toString());
 		dao.flowerUpdateDao(dto); 
 		
-		return "redirect:/flowerList";
+		return "redirect:/admin/flowerList";
 	}
 	
-	@RequestMapping("/flowerDelete")
+	@RequestMapping("/admin/flowerDelete")
 	public String deleteFower(HttpServletRequest request) {
 		int f_no = Integer.parseInt(request.getParameter("f_no"));
 		dao.flowerDeleteDao(f_no);
-		return "redirect:/flowerList";
+		return "redirect:/admin/flowerList";
 	}
 	
 }

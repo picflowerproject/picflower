@@ -1,0 +1,32 @@
+/* 메인 슬라이드 컨테이너 */
+.main-slide {
+    width: 100%;
+    overflow: hidden; /* 영역 밖 이미지 숨김 */
+    position: relative;
+}
+
+/* 슬라이드 뭉치 */
+.slide-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+/* 개별 슬라이드 칸 */
+.slide {
+    min-width: 100%; /* 화면 가로를 100% 꽉 채움 */
+    flex-shrink: 0;
+}
+
+/* 이미지 스타일 (여기서 크기를 조절합니다) */
+.slide img {
+    width: 100%;    /* 가로를 브라우저 너비에 맞게 꽉 채움 */
+    height: 750px;  /* 세로 높이를 더 늘림 (기존 600px -> 750px로 수정) */
+    
+    /* 핵심 속성: 
+       cover로 설정하면 이미지가 늘어나더라도 비율을 유지하며 
+       화면 빈틈 없이 꽉 채웁니다. (약간 잘릴 수 있지만 가장 깔끔함) 
+    */
+    object-fit: cover; 
+    
+    display: block;
+}

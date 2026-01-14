@@ -82,6 +82,10 @@ function inputNumberFormat(obj) {
             <td><input type="text" name="p_price" onkeyup="inputNumberFormat(this)" value="${edit.p_price}" required></td>
         </tr>
         <tr>
+            <td>재고</td>
+            <td><input type="text" name="p_stock" onkeyup="inputNumberFormat(this)" placeholder="재고수량을 입력하세요" value="${edit.p_stock}" required></td>
+        </tr>
+        <tr>
             <td>분류</td>
             <td>
                 <select name="p_category">
@@ -92,10 +96,6 @@ function inputNumberFormat(obj) {
                     </select>
                 </td>
         </tr>
-         <tr>
-                <td>연관 꽃</td>
-                <td><input type="text" name="f_no" placeholder="연관 꽃번호를 적어주세요" value="112"required></td>
-            </tr>
         <tr>
             <td>현재 이미지 관리</td>
             <td>
@@ -137,7 +137,7 @@ function inputNumberFormat(obj) {
 		</tr>
         <tr>
             <td>상세정보</td>
-            <td><textarea name="p_detail" cols="50" rows="5">${edit.p_detail}</textarea></td>
+            <td><textarea name="p_detail" cols="50" rows="5" placeholder="상세정보 링크를 입력하세요.">${edit.p_detail}</textarea></td>
         </tr>
     </table>
     

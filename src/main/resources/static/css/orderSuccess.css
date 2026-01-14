@@ -1,0 +1,86 @@
+@charset "UTF-8";
+/* 전체 컨테이너 스타일 */
+.success-container {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #ffffff;
+    max-width: 600px;
+    margin: 40px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 제목 (주문 완료되었습니다!) */
+.success-container h1 {
+    color: #4CAF50; /* 성공을 나타내는 녹색 */
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+/* 일반 텍스트 단락 */
+.success-container p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* 주문 정보 요약 박스 */
+.order-info {
+    background: #f9f9f9;
+    padding: 25px;
+    border-radius: 8px;
+    margin: 30px auto;
+    border: 1px solid #eee;
+    text-align: left; /* 정보는 왼쪽 정렬로 가독성 높이기 */
+}
+
+.order-info p {
+    margin: 10px 0;
+    color: #333;
+}
+
+/* 금액 강조 스타일 */
+.order-info span {
+    color: #9b59b6; /* 이미지의 등록하기 버튼과 유사한 보라색 계열 */
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* 버튼 그룹 컨테이너 */
+.btn-group {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* 버튼 사이 간격 */
+}
+
+/* 기본 버튼 스타일 (쇼핑 계속하기) */
+.btn {
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    border: 1px solid transparent;
+}
+
+/* 메인 액션 버튼 (주문 내역 확인하기) - 이미지의 보라색 버튼 스타일 적용 */
+a[href*="myOrderList"] {
+    background-color: #9b59b6; /* 보라색 배경 */
+    color: white;
+}
+
+a[href*="myOrderList"]:hover {
+    background-color: #8e44ad;
+}
+
+/* 보조 버튼 (쇼핑 계속하기) - 이미지의 취소 버튼 스타일 적용 */
+a.btn-home {
+    background-color: #ecf0f1; /* 연한 회색 배경 */
+    color: #7f8c8d; /* 진한 회색 글씨 */
+    border-color: #bdc3c7;
+}
+
+a.btn-home:hover {
+    background-color: #bdc3c7;
+}

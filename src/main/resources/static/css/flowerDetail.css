@@ -1,0 +1,129 @@
+@charset "UTF-8";
+/* 기본 레이아웃 */
+body {
+    font-family: 'Pretendard', sans-serif;
+    background-color: #fcfaff;
+    margin: 0;
+    padding: 0;
+    color: #444;
+}
+
+h2 {
+    color: #A36CD9;
+    text-align: center;
+    font-size: 1.8rem;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+/* 테이블 컨테이너 및 기본 스타일 */
+table {
+    width: 900px;
+    margin: 0 auto 30px;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(176, 109, 242, 0.1);
+    border: none;
+}
+
+/* 각 행과 열 스타일 */
+td {
+    padding: 15px 20px;
+    border: 1px solid #f0e6f7;
+}
+
+/* 항목 이름 컬럼 (번호, 꽃 이름 등) */
+td[width="120"] {
+    background-color: #f8f0ff;
+    color: #A36CD9;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* 하단 긴 텍스트 영역 제목 (꽃 정보, 이용, 기르기 등) */
+td[colspan="3"]:not(:last-child) {
+    background-color: #DCBBF2;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+
+/* 하단 텍스트 내용 영역 */
+td[colspan="3"] {
+    line-height: 1.6;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* 이미지 영역 스타일 */
+.main-img {
+    width: 350px !important;
+    height: 400px !important;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid #E9C9F2 !important;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+.thumb-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 10px;
+}
+
+.thumb-img {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.thumb-img:hover {
+    border-color: #B06DF2 !important;
+    transform: translateY(-3px);
+}
+
+/* 하단 버튼 그룹 스타일 */
+.button-group {
+    width: 900px;
+    margin: 0 auto 50px;
+    text-align: right;
+}
+
+.button-group a {
+    display: inline-block;
+    padding: 10px 22px;
+    margin-left: 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+/* 목록 버튼 */
+.button-group a:nth-child(1) {
+    background-color: #E9C9F2;
+    color: #A36CD9;
+}
+
+/* 수정 버튼 */
+.button-group a:nth-child(2) {
+    background-color: #B06DF2;
+    color: white;
+}
+
+/* 삭제 버튼 */
+.button-group a:nth-child(3) {
+    background-color: #f5f5f5;
+    color: #999;
+}
+
+.button-group a:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
+}

@@ -22,7 +22,8 @@ public class WebSecurityConfig {
 			.authorizeHttpRequests(request -> request
 					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 내부 포워드 요청 허용
 					.requestMatchers("/","/home","/loginForm").permitAll() // 루트(/)는 모두 허용
-					.requestMatchers("/css/**","/js/**","/img/**","/assets/**").permitAll() // 정적 리소스 모두 허용
+					.requestMatchers("/guest/jusoPopup").permitAll() 
+					.requestMatchers("/css/**","/js/**","/img/**","/assets/**", "/product_img/**","/flower_img/**").permitAll() // 정적 리소스 모두 허용
 					.requestMatchers("/","/guest/**","/guest/loginForm","/guest/memberWriteForm").permitAll() // guest 폴더는 모두 허용 (게스트 페이지)
 					.requestMatchers("/admin/**").hasRole("ADMIN") // admin 폴더는 ADMIN만 허용 (관리자 페이지)
 					.requestMatchers("/member/**").hasAnyRole("MEMBER","ADMIN") // MEMBER 폴더는 USER, ADMIN만 허용 (회원 페이지)

@@ -21,7 +21,7 @@ public interface IboardDAO {
     // 2. board_like 테이블에 기록 추가
     public int insertLikeDao(@Param("b_no") int b_no, @Param("m_no") int m_no);
 
-    // 3. board 테이블의 b_like 컬럼 숫자 +1 (기존 것 사용)
+	// 3. board 테이블의 b_like 컬럼 숫자 +1 (기존 것 사용)
     public int upLike(int b_no);
     
  // 좋아요 기록 삭제
@@ -36,5 +36,13 @@ public interface IboardDAO {
 
  // 삭제 대신 상태를 변경하는 메서드 추가
     public int updateStatusDao(@Param("b_no") int b_no);
+    
+    // 1. 특정 상품(p_no)에 달린 후기 목록만 가져오기 (상품 상세페이지용)
+    public List<boardDTO> b_listByProductDao(int p_no);
+
+    // 2. 후기 목록 조회 시 상품 이름까지 포함해서 가져오기 (전체 후기 게시판용)
+    public List<boardDTO> b_listWithProductDao(); 
+    
+    public List<boardDTO> getRecentProduct(@Param("m_no") int m_no);
     
 }

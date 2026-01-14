@@ -15,13 +15,119 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/boardUpdateForm.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reply.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+<style>
+/* 1. 플러스 버튼 컨테이너 (JSP의 style="top:..; left:..;"과 결합) */
+.fixed-plus-container {
+    position: absolute;
+    z-index: 100;
+    /* 버튼의 정중앙이 해당 좌표에 오도록 설정 */
+    transform: translate(-50%, -50%);
+    display: inline-block;
+}
+
+/* 2. 항상 보이는 플러스 버튼 전용 */
+.plus-btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(163, 108, 217, 0.9);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+/* 3. 상품 정보 툴팁 (이상하게 늘어나는 문제 해결) */
+.info-tooltip {
+    position: absolute;
+    /* 버튼 아래쪽에 위치 고정 */
+    top: 40px; 
+    left: 50%;
+    /* 가로 길이를 고정하여 길쭉해짐 방지 */
+    width: 160px; 
+    /* 정중앙 정렬 및 아래에서 위로 나타나는 효과 */
+    transform: translateX(-50%) translateY(10px);
+    
+    background: white;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 101;
+    text-align: center;
+}
+
+/* 4. 마우스 올렸을 때 인터랙션 */
+.fixed-plus-container:hover .info-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.fixed-plus-container:hover .plus-btn {
+    transform: rotate(45deg); /* 플러스가 X로 회전 */
+    background: #a36cd9;
+    box-shadow: 0 0 15px rgba(163, 108, 217, 0.5);
+}
+
+/* 5. 툴팁 내부 텍스트 정리 */
+.tooltip-p-title {
+    color: #333;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    /* 한 줄 처리 및 말줄임표 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.tooltip-link {
+    color: #a36cd9;
+    font-size: 11px;
+    text-decoration: none;
+    font-weight: bold;
+    border-top: 1px solid #eee;
+    display: block;
+    padding-top: 8px;
+}
+
+.tooltip-link:hover {
+    text-decoration: underline;
+}
+</style>
+
+
 <script>
     const contextPath = "${pageContext.request.contextPath}";
 	const isLogin = ${pageContext.request.userPrincipal != null};
 </script>
 <script src="${pageContext.request.contextPath}/js/board.js"></script>
 <script src="${pageContext.request.contextPath}/js/reply.js"></script>
-
+<script>
+function showProductInfo(p_no, p_title) {
+    if (!p_no || p_no === '0') {
+        alert("연동된 상품 정보가 없습니다.");
+        return;
+    }
+    
+    // 예시 1: 간단한 확인 메시지
+    // alert("이 사진의 상품은 [" + p_title + "] 입니다.");
+    
+    // 예시 2: 상품 상세 페이지로 이동 (프로젝트 경로에 맞게 수정)
+    location.href = contextPath + "/guest/product_detail?p_no=" + p_no;
+}
+</script>
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -49,10 +155,38 @@
 	                            </c:if>
 	                            <div class="slider-track" id="track-${board.b_no}">
 	                                <c:forEach var="imgName" items="${board.b_image_list}">
-	                                    <div class="slide">
-	                                        <img src="${pageContext.request.contextPath}/img/${imgName}" alt="후기사진">
-	                                    </div>
-	                                </c:forEach>
+	                                    <div class="slide" style="position: relative;">
+											    <img src="${pageContext.request.contextPath}/img/${imgName}" alt="후기사진">
+											    
+											   <c:if test="${not empty board.p_title}">
+												    <%-- 4개 구석 중 하나를 결정 (0:좌상, 1:우상, 2:좌하, 3:우하) --%>
+												    <c:set var="q" value="${board.b_no % 4}" />
+												    
+												    <%-- 상하 위치 계산 (10~25% 또는 70~85%) --%>
+												    <c:set var="rTop" value="${(q < 2) ? (10 + (board.b_no % 15)) : (70 + (board.b_no % 15))}" />
+												    
+												    <%-- 좌우 위치 계산 (10~25% 또는 70~85%) --%>
+												    <c:set var="rLeft" value="${(q % 2 == 0) ? (10 + (board.b_no % 15)) : (70 + (board.b_no % 15))}" />
+												
+												    <div class="fixed-plus-container" style="top: ${rTop}%; left: ${rLeft}%;">
+													    <span class="plus-btn">+</span>
+													    
+													    <div class="info-tooltip">
+													        <!-- ✅ 상품 이미지 미리보기 추가 -->
+													        <c:if test="${not empty board.p_image}">
+													            <c:set var="p_img_list" value="${fn:split(board.p_image, ',')}" />
+														            <div class="tooltip-img-box">
+														                <img src="${pageContext.request.contextPath}/product_img/${fn:trim(p_img_list[0])}" alt="상품이미지">
+														            </div>
+													        </c:if>
+													        
+													        <p class="tooltip-p-title">${board.p_title}</p>
+													        <a href="${pageContext.request.contextPath}/guest/productDetail?p_no=${board.p_no}" class="tooltip-link">상품 상세보기 ❯</a>
+													    </div>
+													</div>
+												</c:if>
+											</div>
+					                 </c:forEach>
 	                            </div>
 	                            <c:if test="${fn:length(board.b_image_list) > 1}">
 	                                <div class="slider-dots" id="dots-${board.b_no}">
@@ -67,7 +201,14 @@
 
 	                <div class="text-area">
 	                    <div class="menu-container">
-	                        <span class="author-id">${board.m_id}</span>
+	                        <div class="author-id">${board.m_id}</div>
+	                        	<div>
+	                         	<c:if test="${not empty board.p_title}">
+								        <span class="product-name-badge" style="color: #a36cd9; font-weight: bold; margin-left: 8px;">
+								            [${board.p_title}]
+								        </span>
+								</c:if>
+								</div>
 	                        <div class="dropdown-wrapper">
 								<sec:authorize access="isAuthenticated()">
 								           <!-- ✅ 본인 글이거나 관리자일 때만 버튼(⋮) 자체를 생성 -->

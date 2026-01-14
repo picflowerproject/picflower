@@ -10,19 +10,25 @@
 </head>
 <body>
 <div class="pagination">
+    <c:set var="pageCut" value="5" /> <%-- 현재 페이지 기준 앞뒤로 5개씩만 보여줌 --%>
+    <c:set var="startPage" value="${currentPage - pageCut > 1 ? currentPage - pageCut : 1}" />
+    <c:set var="endPage" value="${currentPage + pageCut < totalPages ? currentPage + pageCut : totalPages}" />
+
     <!-- 이전 버튼 -->
     <c:if test="${currentPage > 1}">
-        <a href="?page=${currentPage - 1}" class="page-link">&laquo;</a>
+        <%-- param. 을 반드시 붙여야 합니다 --%>
+        <a href="?page=${currentPage - 1}${param.appendQuery}" class="page-link">&laquo;</a>
     </c:if>
 
-    <!-- 페이지 번호 -->
-    <c:forEach var="i" begin="1" end="${totalPages}">
-        <a href="?page=${i}" class="page-link ${i == currentPage ? 'active' : ''}">${i}</a>
+    <!-- 페이지 번호 루프 (시작/끝 제한) -->
+    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+        <a href="?page=${i}${param.appendQuery}" 
+           class="page-link ${i == currentPage ? 'active' : ''}">${i}</a>
     </c:forEach>
 
     <!-- 다음 버튼 -->
     <c:if test="${currentPage < totalPages}">
-        <a href="?page=${currentPage + 1}" class="page-link">&raquo;</a>
+        <a href="?page=${currentPage + 1}${param.appendQuery}" class="page-link">&raquo;</a>
     </c:if>
 </div>
 </body>
