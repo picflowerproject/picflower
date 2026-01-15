@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %> 
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,11 +21,12 @@
 	<h1>공지사항</h1>
 	
 		<!-- 1. 제목 바로 아래에 공지 입력 링크 추가 -->
-	    <div class="add-notice-container">
-	        <a href="/admin/n_insertForm">
-	            ➕ 새 공지사항 등록하기
-	        </a>
-	    </div>
+		<!-- 상단 새 공지사항 등록 버튼 -->
+		<sec:authorize access="hasAuthority('ROLE_ADMIN')">
+		    <div class="add-notice-container">
+		        <a href="/admin/n_insertForm">➕ 새 공지사항 등록하기</a>
+		    </div>
+		</sec:authorize>
 	
 		<c:forEach var="dto" items="${list}">
 		    <details id="notice_${dto.n_no}" name="notice-item" class="notice-item">
@@ -43,14 +45,17 @@
 		                    </div>
 		                </c:if>
 		                
-		                <div class="action-buttons">
-		                    <a href="javascript:void(0);" onclick="toggleEdit('${dto.n_no}', true)" class="btn-update">수정</a>
-		                    <a href="javascript:void(0);" onclick="n_delete('${dto.n_no}')" class="btn-delete">삭제</a>
-		                </div>
+						<div class="action-buttons">
+						    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+						        <a href="javascript:void(0);" onclick="toggleEdit('${dto.n_no}', true)" class="btn-update">수정</a>
+						        <a href="javascript:void(0);" onclick="n_delete('${dto.n_no}')" class="btn-delete">삭제</a>
+						    </sec:authorize>
+						</div>
 		            </div>
 
 		
 		            <!-- [수정 모드] -->
+					<sec:authorize access="hasAuthority('ROLE_ADMIN')">
 		            <div id="edit_area_${dto.n_no}" class="edit-area" style="display: none;">
 		                <form action="/admin/n_update" method="post" enctype="multipart/form-data">
 		                    <input type="hidden" name="n_no" value="${dto.n_no}">
@@ -92,27 +97,16 @@
 		                    </div>
 		                </form>
 		            </div>
+					</sec:authorize>
 		        </div>
 		    </details>
 		</c:forEach>
 
-	<c:choose>
-		<c:when test="${not empty pageContext.request.userPrincipal}">
-        	<c:choose>
-            	<c:when test="${pageContext.request.userPrincipal.name == 'admin'}">
-                	<div class="add">
-						 <a href="/admin/n_insertForm">공지 입력하기</a>
-					</div>
-            	</c:when>
-            	<c:otherwise>
-            
-            	</c:otherwise>
-        	</c:choose>
-    	</c:when>
-    	<c:otherwise>
-
-    	</c:otherwise>
-	</c:choose>
+		<sec:authorize access="hasAuthority('ADMIN')">
+		    <div class="add">
+		         <a href="/admin/n_insertForm">공지 입력하기</a>
+		    </div>
+		</sec:authorize>
 <%@ include file="/WEB-INF/views/common/pagination.jsp"%>
 
 </div>

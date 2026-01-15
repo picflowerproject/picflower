@@ -30,10 +30,18 @@
         UPDATE cart SET c_count = c_count + #{c_count}
         WHERE m_no = #{m_no} AND p_no = #{p_no}
     </update>
+    <update id="updateCartQtyDao">
+	    UPDATE cart 
+	    SET c_count = #{param2} 
+	    WHERE c_no = #{param1}
+	</update>
 
     <!-- 5. 장바구니 개별 삭제 -->
     <delete id="deleteCartDao">
         DELETE FROM cart WHERE c_no = #{c_no}
     </delete>
+    <delete id="deleteCartAllDao">
+   	 DELETE FROM cart WHERE m_no = #{m_no}
+	</delete>
 
 </mapper>

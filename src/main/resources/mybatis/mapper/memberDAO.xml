@@ -7,14 +7,59 @@
 		select * from member order by m_no desc
 	</select>
 	<insert id="memberWriteDao">
-		insert into member values(member_seq.nextval, #{m_id}, #{m_pwd}, #{m_name}, #{m_gender}, #{m_birth}, #{m_tel}, #{m_addr}, #{m_email}, #{m_flower}, sysdate, #{m_auth})
-	</insert>
+    INSERT INTO member (
+        m_no, 
+        m_id, 
+        m_pwd, 
+        m_name, 
+        m_gender, 
+        m_birth, 
+        m_tel, 
+        m_addr, 
+        m_email, 
+        m_flower, 
+        m_date, 
+        m_auth
+    ) VALUES (
+        member_seq.nextval, 
+        #{m_id}, 
+        #{m_pwd}, 
+        #{m_name}, 
+        #{m_gender}, 
+        TO_DATE(#{m_birth}, 'YYYY-MM-DD'), 
+        #{m_tel}, 
+        #{m_addr}, 
+        #{m_email}, 
+        #{m_flower}, 
+        SYSDATE, 
+        #{m_auth}
+    )
+</insert>
 	<select id="memberViewDao" resultType="com.picflower.dto.memberDTO">
 		select * from member where m_no=#{param1}
 	</select>
-	<update id="memberUpdateDao">
-		update member set m_name = #{m_name}, m_gender = #{m_gender}, m_birth = #{m_birth}, m_tel = #{m_tel}, m_addr = #{m_addr}, m_email = #{m_email}, m_flower = #{m_flower}, m_auth = #{m_auth} where m_no = #{m_no} 
+	<!-- 비밀번호만 단독 변경 -->
+	<update id="updatePassword">
+	    UPDATE member 
+	    SET m_pwd = #{param2} 
+	    WHERE m_no = #{param1}
 	</update>
+	
+	<update id="memberUpdateDao">
+    update member 
+    set 
+        m_name = #{m_name, jdbcType=VARCHAR}, 
+        m_gender = #{m_gender, jdbcType=VARCHAR}, 
+        m_birth = #{m_birth, jdbcType=DATE},
+        m_tel = #{m_tel, jdbcType=VARCHAR}, 
+        m_addr = #{m_addr, jdbcType=VARCHAR}, 
+        m_email = #{m_email, jdbcType=VARCHAR}, 
+        m_flower = #{m_flower, jdbcType=VARCHAR}, 
+        m_auth = #{m_auth, jdbcType=VARCHAR} 
+    where 
+        m_no = #{m_no}
+	</update>
+	
 	<delete id="memberDeleteDao">
 		delete from member where m_no=#{param1}
 	</delete>

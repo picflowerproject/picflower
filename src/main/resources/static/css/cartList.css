@@ -1,0 +1,70 @@
+/* 전체 레이아웃 구성 */
+main { max-width: 1000px; margin: 50px auto; padding: 0 20px; font-family: 'Pretendard', sans-serif; }
+/* 보라색 강조 라인으로 변경 */
+h2 { font-size: 24px; margin-bottom: 30px; border-bottom: 2px solid #6f42c1; padding-bottom: 10px; }
+
+/* 장바구니 테이블 스타일링 */
+.cart-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+.cart-table th { padding: 15px; color: #666; font-weight: 500; border-bottom: 1px solid #eee; } /* 폰트 색상 살짝 연하게 */
+.cart-table td { padding: 20px 10px; background: #fff; border-bottom: 1px solid #f1f1f1; vertical-align: middle; }
+
+/* 상품 이미지 및 텍스트 */
+.cart-table img { border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.product-title { font-weight: bold; color: #333; }
+
+/* 결제 영역 */
+.total-area { 
+    background: #fcfcfc; padding: 30px; border-radius: 12px; margin-top: 40px; 
+    border: 1px solid #eee; text-align: right; 
+}
+/* 금액 강조 색상 (이미지의 보라색 톤에 맞춤) */
+.total-area span { font-size: 28px; margin-left: 15px; color: #6f42c1; }
+
+/* 버튼 스타일 */
+.btn-group { margin-top: 40px; display: flex; justify-content: center; gap: 15px; }
+.btn-group button, .btn-group a { 
+    padding: 15px 40px; border-radius: 5px; font-size: 16px; cursor: pointer; border: none; text-decoration: none;
+    transition: background-color 0.2s;
+}
+/* 계속 쇼핑하기 버튼 스타일 유지 (취소 버튼 역할) */
+.btn-shop { background: #e9ecef; color: #333; }
+.btn-shop:hover { background: #dee2e6; }
+/* 주문하기 버튼 (이미지의 '등록하기' 버튼 스타일 적용) */
+.btn-order { background: #6f42c1; color: #fff; font-weight: bold; }
+.btn-order:hover { background: #5a369a; }
+/* 삭제 버튼 색상 유지 (위험 요소는 빨간색이 명확) */
+.btn-delete { color: #dc3545; text-decoration: none; font-size: 0.9em; }
+.btn-delete:hover { text-decoration: underline; }
+
+
+/* 수량 조절 UI */
+.qty-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 110px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+.qty-wrapper button {
+    width: 35px;
+    height: 35px;
+    border: none;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s;
+}
+.qty-wrapper button:hover { background: #e9ecef; }
+.qty-wrapper input {
+    width: 40px;
+    height: 35px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-size: 14px;
+    font-weight: 600;
+}

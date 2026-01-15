@@ -1,0 +1,208 @@
+@charset "UTF-8";
+body {
+    font-family: 'Pretendard', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* 섹션 헤더 레이아웃 조정 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee; /* 구분선 추가 */
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.section-header h3 {
+    margin: 0 !important; /* h3 기본 마진 제거 */
+}
+
+/* 페이코 버튼 전용 스타일 */
+.pay-btn.payco {
+    background-color: #fff;
+    border: 1px solid #e1e1e1;
+}
+
+.pay-btn.payco:hover {
+    border-color: #ff0000; /* 페이코 상징색으로 호버 포인트 */
+}
+
+/* 체크박스 정렬 보정 */
+.checkbox-group input[type="checkbox"] {
+    margin-top: 0;
+    vertical-align: middle;
+    width: auto; /* 기존 100% 설정 해제 */
+}
+
+.checkbox-group label {
+    display: inline-block;
+    margin-top: 0; /* 기존 label의 상단 마진 제거 */
+    font-weight: 500;
+}
+
+/* 1. 메인 컨테이너 스타일 (이미지의 카드형 레이아웃 반영) */
+.order-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 8px; /* 이미지처럼 살짝 둥근 모서리 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 2. 섹션 타이틀 (이미지의 왼쪽 보라색 라인 디자인 반영) */
+.order-container h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 30px 0 15px 0;
+    border: none; /* 기존 border-bottom 제거 */
+    padding-bottom: 0;
+    position: relative;
+    padding-left: 10px; /* 라인 공간 확보 */
+}
+
+.order-container h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%; /* 이미지와 유사한 높이 */
+    background-color: #673ab7; /* 이미지의 보라색 강조색 */
+    border-radius: 2px;
+}
+
+/* 3. 입력 필드 그룹 및 입력창 스타일 */
+.order-form label {
+    display: block;
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 8px;
+    margin-top: 20px;
+}
+
+.order-form input {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    background-color: #fafafa; /* 이미지 배경색 */
+}
+
+.order-form input:focus {
+    border-color: #673ab7; /* 보라색 테두리 강조 */
+    outline: none;
+    box-shadow: 0 0 0 1px #673ab7;
+    background-color: #fff;
+}
+
+/* 4. 주문 상품 목록 (이미지 디자인에 맞춰 단순화) */
+.order-item-list {
+    background: #fff;
+    border: 1px solid #eee; /* 리스트 아이템 구분선 추가 */
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+/* 5. 총 금액 섹션 (일반적인 회색 배경) */
+.order-form .total {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #f1f3f5;
+    border-radius: 4px;
+    text-align: right;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.payment-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* 공통 버튼 스타일 */
+.pay-btn {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    width: 160px; /* 버튼 너비 조절 */
+    height: 60px;  /* 버튼 높이 조절 */
+}
+
+.pay-btn img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.pay-btn.payco {
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payco-text {
+    font-family: 'Arial Black', sans-serif; /* 두꺼운 폰트 적용 */
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: #333; /* 기본 PAYCO 글자색 */
+}
+
+.payco-p {
+    color: #ff0000; /* 페이코 상징 레드 */
+    font-style: italic; /* 약간 기울어진 느낌 */
+    margin-right: 1px;
+}
+
+/* 페이코 버튼 호버 효과 */
+.pay-btn.payco:hover {
+    border-color: #ff0000;
+    background-color: #fff5f5; /* 아주 연한 빨간 배경 */
+    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.1);
+}
+
+/* 기존 카카오, 토스 버튼과 높이를 맞추기 위한 공통 설정 확인 */
+.pay-btn {
+    width: 160px;
+    height: 60px;
+    border-radius: 8px;
+    font-family: 'Pretendard', sans-serif;
+}
+
+/* 마우스 호버 효과 */
+.pay-btn:hover {
+    border-color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 개별 배경색 포인트 (선택 사항) */
+.pay-btn.kakao { background-color: #FFEB00; border: none; }
+.pay-btn.toss { background-color: #fff; }
+.pay-btn.payco { background-color: #fff; }

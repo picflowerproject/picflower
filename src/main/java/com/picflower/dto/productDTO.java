@@ -13,6 +13,7 @@ public class productDTO {
 	private String p_title;
 	private String p_subtitle;
 	private int p_price;
+	private int p_stock;
 	private String p_category;
 	private List<MultipartFile> p_upload;
 	private String p_image;
@@ -20,5 +21,4 @@ public class productDTO {
 	private Date p_date;
 	private int m_no;
 	private int h_no;
-	private int f_no;
 }

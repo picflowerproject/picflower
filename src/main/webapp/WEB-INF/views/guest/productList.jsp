@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <title>Premium Flower Shop</title>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/productList.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/pagenation.css">
 </head>
 <body>
 <header>
@@ -44,7 +45,7 @@
                 <div class="product-img-box">
                     <c:set var="firstImg" value="${fn:split(list.p_image, ',')[0]}" />
                     <a href="productDetail?p_no=${list.p_no}">
-                        <img src="/img/${firstImg}" alt="${list.p_title}"/>
+                        <img src="${pageContext.request.contextPath}/product_img/${firstImg}" alt="${list.p_title}"/>
                     </a>
                 </div>
                 
@@ -60,24 +61,18 @@
             </div>
         </c:forEach>
     </div>
-   <!-- 페이지 번호 출력 영역 -->
-	<div class="pagination">
-	    <!-- 이전 버튼 -->
-	    <c:if test="${currentPage > 1}">
-	        <a href="productList?page=${currentPage - 1}${not empty selectedCategory ? '&p_category=' += selectedCategory : ''}" class="page-btn">&lt;</a>
-	    </c:if>
-	
-	    <!-- 페이지 번호 루프 -->
-	    <c:forEach var="i" begin="1" end="${totalPages}">
-	        <a href="productList?page=${i}${not empty selectedCategory ? '&p_category=' += selectedCategory : ''}" 
-	           class="page-btn ${i == currentPage ? 'active' : ''}">${i}</a>
-	    </c:forEach>
-	
-	    <!-- 다음 버튼 -->
-	    <c:if test="${currentPage < totalPages}">
-	        <a href="productList?page=${currentPage + 1}${not empty selectedCategory ? '&p_category=' += selectedCategory : ''}" class="page-btn">&gt;</a>
-	    </c:if>
-	</div>
+    
+    
+<%-- pagination.jsp 호출 직전 --%>
+<c:set var="appendQuery" value="" />
+<c:if test="${not empty selectedCategory}">
+    <%-- 카테고리가 있으면 쿼리 스트링 생성 --%>
+    <c:set var="appendQuery" value="&p_category=${selectedCategory}" />
+</c:if>
+
+<jsp:include page="/WEB-INF/views/common/pagination.jsp">
+    <jsp:param name="appendQuery" value="${appendQuery}" />
+</jsp:include>
 </main>
 
 <footer>

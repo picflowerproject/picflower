@@ -1,0 +1,190 @@
+@charset "UTF-8";
+/* 전체 컨테이너 */
+.product-review-container {
+    max-width: 1000px;
+    margin: 50px auto;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+}
+
+/* 테이블 기본 스타일 리셋 */
+.review-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 셀 너비를 설정한 %값으로 고정 */
+    border-top: 2px solid #333;
+}
+
+/* 헤더 영역 */
+.review-table th {
+    background-color: #fcfcfc;
+    padding: 15px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+/* 셀 스타일 */
+.review-table td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;  /* 모든 셀 내용 수직 중앙 */
+    text-align: center;      /* 기본적으로 중앙 정렬 */
+}
+
+.review-table td:nth-child(2) {
+    text-align: left;
+}
+
+/* 작성자 & 등록일 & 사진 셀 정렬 */
+.text-center {
+    text-align: center; /* 수평 중앙 정렬 */
+}
+
+/* 후기 사진 썸네일 개선 */
+.review-thumb-container {
+    display: flex;
+    justify-content: center; /* 수평 중앙 */
+    align-items: center;     /* 수직 중앙 */
+    min-height: 120px;       /* 사진 높이에 맞춤 */
+}
+
+.review-thumb {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+    display: block;
+    margin: 0 auto; /* 블록 요소 중앙 정렬 */
+}
+
+
+.review-thumb:hover {
+    transform: scale(1.08); /* 호버 시 확대 효과 강조 */
+}
+
+/* 후기 텍스트 컨텐츠 */
+.review-text-content strong {
+    font-size: 15px;
+    color: #222;
+    line-height: 1.5;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* 별점 표시 */
+.star-display {
+    display: inline-flex;    /* flex로 변경하여 내부 별 모양 정렬 */
+    justify-content: center;
+    align-items: center;
+    width: 100%;             /* 셀 전체 너비 확보 */
+    font-size: 16px;
+    letter-spacing: 2px;     /* 별 사이 간격 약간 추가 */
+    color: #ffb8
+}
+/* 댓글 영역 스타일링 */
+.review-replies {
+    display: none; /* 처음에 숨김 */
+    margin-top: 12px;
+    background: #f8f9fa;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #f1f1f1;
+}
+
+.review-replies p {
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 6px !important;
+}
+
+.reply-item {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.reply-item strong {
+    color: #444;
+    margin-right: 5px;
+}
+
+/* 데이터가 없을 때 */
+.no-reviews {
+    padding: 80px 0;
+    text-align: center;
+    color: #bbb;
+    font-size: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 토글 버튼 디자인 개선 */
+.btn-reply-toggle {
+    background-color: #f3ebff;    /* 아주 연한 보라색 배경 */
+    color: #8a4af3;               /* 진한 보라색 글자 */
+    border: 1px solid #e0cfff;    /* 연보라 테두리 */
+    padding: 6px 14px;
+    border-radius: 20px;          /* 둥근 캡슐 모양 */
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;                     /* 글자와 아이콘 간격 */
+    transition: all 0.2s ease;    /* 부드러운 상태 변화 */
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* 마우스를 올렸을 때 */
+.btn-reply-toggle:hover {
+    background-color: #8a4af3;    /* 배경이 보라색으로 */
+    color: #ffffff;               /* 글자가 흰색으로 */
+    transform: translateY(-1px);  /* 살짝 위로 뜨는 효과 */
+    box-shadow: 0 4px 8px rgba(138, 74, 243, 0.2);
+}
+
+/* 버튼이 활성화(댓글이 열림) 되었을 때 */
+.btn-reply-toggle.active {
+    background-color: #6c32c4;
+    color: #ffffff;
+    border-color: #6c32c4;
+}
+
+/* 아이콘 스타일 */
+.btn-reply-toggle .icon {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+
+/* 활성화 시 아이콘 회전 */
+.btn-reply-toggle.active .icon {
+    transform: rotate(180deg);
+}
+
+/* 댓글 영역 기본 숨김 */
+.review-replies {
+    display: none;
+    margin-top: 10px;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+/* 열렸을 때 화살표 방향 변경을 위한 클래스 (선택 사항) */
+.btn-reply-toggle.active i {
+    transform: rotate(180deg);
+}
+/* 반응형 조정 */
+@media (max-width: 768px) {
+    /* 모바일에서 사진이 너무 크면 100px로 조절 */
+    .review-thumb {
+        width: 100px;
+        height: 100px;
+    }
+    .review-table { font-size: 13px; }
+}

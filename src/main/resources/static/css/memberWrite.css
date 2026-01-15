@@ -1,0 +1,161 @@
+/* 1. 기본 레이아웃 */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    font-family: 'Malgun Gothic', sans-serif;
+    font-size: 15px; 
+    color: #333;
+}
+
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    padding-bottom: 80px;
+}
+
+.content-container {
+    width: 500px; 
+    padding: 20px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #B06DF2;
+    padding-bottom: 12px;
+}
+
+/* 2. 테이블 레이아웃 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none !important;
+}
+
+table tr {
+    border-bottom: 1px solid #f2f2f2;
+}
+
+table td {
+    padding: 10px 5px;
+    border: none !important;
+}
+
+table td:first-child {
+    width: 100px;
+    font-weight: bold;
+    color: #444;
+}
+
+/* 3. 입력창 공통 스타일 */
+input[type="text"], 
+input[type="password"], 
+select {
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+    /* [추가] 모든 입력창의 기본 외곽 여백 제거 */
+    margin: 0; 
+}
+
+/* 일반 입력창 너비 (아이디, 비번, 이름 등) */
+input[name="m_id"], 
+input[name="m_pwd"], 
+input[name="m_pwd2"], 
+input[name="m_name"],
+input[name="m_birth"],
+input[name="m_flower"] {
+    width: 250px !important;
+}
+
+/* [핵심 수정] 연락처 입력란 - 너비 강제 고정 */
+select[name="m_tel1"] { width: 75px !important; display: inline-block; }
+input[name="m_tel2"], 
+input[name="m_tel3"] { width: 65px !important; display: inline-block; }
+
+/* [핵심 수정] 이메일 입력란 - 너비 강제 고정 */
+input[name="m_email1"] { width: 120px !important; display: inline-block; }
+select[name="m_email2"] { width: 130px !important; display: inline-block; }
+
+/* 주소 입력란 너비 고정 */
+#m_zipcode { 
+    width: 85px !important; 
+    background-color: #f9f9f9; 
+    display: inline-block; 
+    margin-bottom: 4px; /* 우편번호 아래 간격 */
+}
+#m_addr_base { 
+    width: 320px !important; 
+    display: block; 
+    margin-bottom: 2px !important; /* 기본 주소와 상세 주소 사이 간격 최소화 */
+}
+#m_addr_detail { 
+    width: 320px !important; 
+    display: block; 
+    margin-top: 0 !important; /* 위쪽 여백 제거 */
+}
+td br {
+    display: none;
+}
+/* 4. 버튼 디자인 */
+.button-group {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-submit {
+    width: 140px;
+    height: 45px;
+    background-color: #B06DF2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    width: 100px;
+    height: 45px;
+    background-color: #E9C9F2;
+    color: #554466;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-addr {
+    height: 36px;
+    background-color: #A36CD9;
+    color: white;
+    border: none;
+    padding: 0 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 5. 푸터 */
+footer {
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid #eee;
+    text-align: center;
+}

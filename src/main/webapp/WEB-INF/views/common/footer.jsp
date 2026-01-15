@@ -6,6 +6,32 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/footer.css">
+<script>
+function showMessage(msg) {
+	// 1. 컨테이너가 없으면 생성
+	let container = document.getElementById('toast-container');
+	if (!container) {
+		container = document.createElement('div');
+		container.id = 'toast-container';
+		document.body.appendChild(container);
+	}
+
+	// 2. 새로운 토스트 생성
+	const toast = document.createElement('div');
+	toast.className = 'toast';
+	toast.innerText = msg;
+	container.appendChild(toast);
+
+	// 3. 살짝 시간차를 두고 등장 애니메이션
+	setTimeout(() => toast.classList.add('show'), 10);
+
+	// 4. 3초 후 사라지고 제거
+	setTimeout(() => {
+	toast.classList.remove('show');
+	setTimeout(() => toast.remove(), 400);
+	}, 3000);
+}
+</script>
 
 </head>
 <body>

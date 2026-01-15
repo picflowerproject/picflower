@@ -25,7 +25,7 @@
         </form>
         
         <div class="login-footer">
-            <a href="//memberWriteForm">회원가입</a>
+            <a href="/guest/memberWriteForm">회원가입</a>
         </div>
     </div>
 </div>

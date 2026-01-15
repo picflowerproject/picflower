@@ -1,148 +1,168 @@
-@charset "UTF-8";
+:root { 
+    --main-purple: #a36cd9; 
+    --text-color: #444; 
+}
 
-/* 기존 기본 설정 유지 */
-body { margin: 0; font-family: 'Pretendard', sans-serif; }
-a { text-decoration: none; color: inherit; }
-ul { list-style: none; padding: 0; margin: 0; }
-
-header { width: 100%; background-color: #fff; }
+header { width: 100%; background: #fff; border-bottom: 1px solid #eee; }
 
 .top-header {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
+    align-items: center; 
+    justify-content: space-between; /* 요소들 사이에 균등 배분 */
+    padding: 15px 20px;
+    height: 100px;
 }
 
-.logo img { height: 80px; width: auto; }
-
-/* 2. 검색창 디자인 (모양 깨짐 방지) */
-.search-bar {
+/* 1. 로고 */
+.logo { 
+    flex: 1; /* 동일한 비율 할당 */
     display: flex;
-    align-items: center;
-    border: 2px solid #a36cd9; /* 기존 보라색 유지 */
-    border-radius: 25px;
-    padding: 5px 15px;
-    width: 400px;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+}
+.logo img { 
+    height: 70px; 
+    display: block; 
 }
 
-/* form 내부 요소 한 줄 정렬 */
-.search-bar form {
+/* 2. 검색창 */
+.search-bar {
+    flex: 1; /* 동일한 비율 할당 */
+    display: flex;
+    justify-content: center; 
+}
+.search-form {
     display: flex;
     width: 100%;
-    align-items: center;
+    max-width: 450px;
+    border: 2px solid var(--main-purple);
+    border-radius: 25px;
+    padding: 3px 15px;
 }
+.search-form input { border: none; outline: none; flex: 1; padding: 7px; font-size: 14px; }
+.search-form button { background: none; border: none; color: var(--main-purple); font-weight: bold; cursor: pointer; }
 
-.search-bar input {
-    border: none;
-    outline: none;
-    flex: 1;
-    padding: 8px;
-    font-size: 14px;
-    background: transparent;
-}
-
-.search-bar button {
-    background: none;
-    border: none;
-    color: #a36cd9; /* 기존 보라색 유지 */
-    font-weight: bold;
-    cursor: pointer;
-    white-space: nowrap; 
-    padding-left: 10px;
-}
-
-/* 3. 유저 메뉴 스타일 추가 */
+/* 3. 우측 메뉴 (메시지가 위, 아이콘이 아래) */
 .user-menu {
+    flex: 1; /* 동일한 비율 할당 */
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+}
+
+.user-info-box {
+    display: flex;
+    /* 순서 변경을 위해 column-reverse 또는 순서 직접 배치 */
+    flex-direction: column; 
+    align-items: flex-end; /* 우측 정렬 유지 */
+    justify-content: center;
+}
+
+/* 환영 메시지 (위쪽 배치) */
+.welcome-msg { 
+    font-size: 13px; 
+    color: #888; 
+    margin-bottom: 8px; /* 아래 아이콘 그룹과의 간격 */
+    margin-right: 2px;
+    letter-spacing: -0.5px;
+}
+.welcome-msg strong { color: var(--text-color); font-weight: 600; }
+
+/* 아이콘 그룹 (아래쪽 배치) */
+.icon-group { 
+    display: flex; 
+    align-items: center; 
+    gap: 18px; 
+    margin-top: 10px; /* 기존 하단 여백 제거 */
+}
+
+.icon-group a { 
+    color: var(--text-color); 
+    font-size: 20px; 
     display: flex;
     align-items: center;
-    gap: 20px;
-    font-size: 14px;
-    color: #666;
+    transition: color 0.2s;
 }
+
+.icon-group a:hover {
+    color: var(--main-purple);
+}
+
+/* 관리자 메뉴 설정 */
+.admin-menu-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+}
+
+.admin-icon { 
+    font-size: 20px;
+    color: var(--text-color); 
+}
+
+.admin-select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; 
+    cursor: pointer;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* 4. 네비게이션 */
+.nav-bar { border-top: 1px solid #f8f8f8; background: #fff; }
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    gap: 40px;
+    justify-content: flex-start;
+}
+.nav-item { font-size: 16px; font-weight: 600; color: var(--text-color); text-decoration: none; }
+.nav-item:hover { color: var(--main-purple); }
 
 .auth-links {
     display: flex;
     align-items: center;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-.divider {
-    color: #ddd;
-    margin: 0 8px;
-}
-
-.welcome-msg {
-    color: #555;
-}
-
-.user-id {
-    color: #a36cd9; /* 기존 보라색으로 ID 강조 */
-    font-weight: bold;
-}
-
-.logout-link {
-    font-size: 13px;
-    color: #888;
-    transition: color 0.2s;
-}
-
-.logout-link:hover {
-    color: #a36cd9;
-}
-
-/* 관리자 드롭박스 */
-.admin-select {
-    padding: 6px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f8f9fa;
-    cursor: pointer;
-    outline: none;
-}
-
-/* 4. 네비게이션 라인 (기존 유지) */
-.nav-bar { border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 30px;
-    padding: 15px 20px;
+/* 로그인, 회원가입 링크 공통 */
+.auth-links a {
+    text-decoration: none;
+    color: #666; /* 기본 텍스트보다 살짝 연하게 */
+    transition: all 0.2s ease-in-out;
+    padding: 5px 10px;
     position: relative;
 }
-.nav-item { font-weight: 600; font-size: 16px; transition: color 0.2s; }
-.nav-item:hover { color: #a36cd9; }
 
-
-
-/* 토스트 메시지 컨테이너 */
-#toast-container {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10000;
+/* 마우스 호버 시 효과 */
+.auth-links a:hover {
+    color: var(--main-purple); /* 보라색으로 강조 */
 }
 
-/* 개별 토스트 스타일 */
-.toast {
-    background-color: var(--dark-purple); /* 기존 보라색 변수 사용 */
-    color: white;
-    padding: 12px 25px;
-    border-radius: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    margin-top: 10px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.4s ease;
+/* 구분선 (|) 스타일링 */
+.auth-links span {
+    font-size: 12px;
+    color: #ddd !important; /* 구분선은 아주 연하게 */
+    user-select: none; /* 드래그 방지 */
 }
 
-/* 나타날 때의 효과 */
-.toast.show {
-    opacity: 1;
-    transform: translateY(0);
+/* 반응형 */
+@media (max-width: 900px) {
+    .top-header { height: auto; flex-direction: column; gap: 15px; padding: 20px; }
+    .logo, .search-bar, .user-menu { width: 100%; justify-content: center; align-items: center; text-align: center; }
+    .user-info-box { align-items: center; } /* 모바일에서는 중앙 정렬 */
+    .auth-links {
+        justify-content: center;
+        margin-top: 5px;
+    }
 }

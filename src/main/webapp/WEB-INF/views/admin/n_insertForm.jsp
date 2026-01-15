@@ -7,12 +7,13 @@
 <title>공지사항 입력</title>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/n_insertForm.css">
-
 <script src="${pageContext.request.contextPath}/js/n_insertForm.js" defer></script>
-
 </head>
 <body>
-<%@ include file="/WEB-INF/views/common/header.jsp" %>
+<header>
+	<%@ include file="/WEB-INF/views/common/header.jsp" %>
+</header>
+<main>
 <div class="content-container">
    <h1>공지 사항 입력</h1>
    <form name ="notice" method="post" action="n_insert" enctype="multipart/form-data">
@@ -64,6 +65,10 @@
       </table>
    </form>
 </div>
-<%@ include file="/WEB-INF/views/common/footer.jsp" %>
+</main>
+
+<footer>
+	<%@ include file="/WEB-INF/views/common/footer.jsp" %>	
+</footer>
 </body>
 </html>

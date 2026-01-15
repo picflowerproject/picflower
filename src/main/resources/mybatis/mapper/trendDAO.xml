@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 네임스페이스를 ItrendPicDAO 인터페이스 경로로 수정 -->
+<mapper namespace="com.picflower.dao.ItrendPicDAO"> 
+    <select id="selectBirthFlowerByDate" resultType="com.picflower.dto.flowerDTO">
+        SELECT 
+            f_no, 
+            f_name, 
+            f_ename,
+            f_image,
+            f_language,
+            f_detail,
+            f_use,
+            f_raise,
+            f_birth,
+            m_no
+        FROM FLOWER
+        WHERE F_BIRTH = #{month} || '월 ' || #{day} || '일'
+    </select>
+     <!-- 제품 상세 정보 쿼리 추가 -->
+    <select id="productListViewDao" resultType="com.picflower.dto.productDTO">
+   	 	SELECT * FROM product 
+    	WHERE p_no IN 
+    <foreach item="id" collection="p_nos" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+</select>
+
+<select id="selectBestProducts" resultType="com.picflower.dto.productDTO">
+    SELECT * FROM (
+        SELECT 
+            p.p_no, 
+            p.p_title, 
+            p.p_price, 
+            p.p_image, 
+            SUM(od.od_count) as total_sales
+        FROM product p
+        LEFT JOIN order_detail od ON p.p_no = od.p_no
+        GROUP BY p.p_no, p.p_title, p.p_price, p.p_image
+        ORDER BY total_sales DESC NULLS LAST, p.p_no ASC
+    )
+    <![CDATA[
+    WHERE ROWNUM <= 7
+    ]]>
+</select>
+</mapper>

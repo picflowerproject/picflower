@@ -1,0 +1,83 @@
+/* 기본 레이아웃 - 배경을 완전히 흰색으로 */
+body {
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    padding: 40px 20px;
+}
+
+h2 {
+    text-align: center;
+    color: #333; /* 제목도 검정색으로 변경하여 차분하게 */
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* 테이블 - 선을 아주 연하게 */
+table {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+/* 헤더 - 보라색 배경을 없애고 텍스트 색상과 하단 선으로만 포인트 */
+tr:first-child {
+    border-bottom: 2px solid #DCBBF2; /* 지정색 중 연한 보라색 사용 */
+}
+
+td {
+    padding: 18px 12px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0; /* 일반 행은 아주 연한 회색 */
+    font-size: 14px;
+}
+
+/* 헤더 글자색 */
+tr:first-child td {
+    font-weight: 600;
+    color: #A36CD9; /* 헤더 글자만 포인트 */
+}
+
+/* 아이디 링크 - 밑줄 없이 깔끔하게 */
+a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid #E9C9F2; /* 링크에만 살짝 포인트 */
+}
+
+a:hover {
+    color: #B06DF2;
+    border-bottom-color: #B06DF2;
+}
+
+/* 버튼 컨테이너 */
+.button-container {
+    max-width: 1000px;
+    margin: 25px auto;
+    text-align: right;
+}
+
+/* 선택 삭제 버튼 - 회색 위주에 호버 시에만 보라색 */
+button {
+    background-color: #fff;
+    color: #888; /* 기본은 차분한 회색 */
+    border: 1px solid #ddd;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+button:hover {
+    color: #A36CD9;
+    border-color: #A36CD9;
+    background-color: #fdfbff;
+}
+
+/* 체크박스 - 포인트 컬러 */
+input[type="checkbox"] {
+    accent-color: #A36CD9;
+}

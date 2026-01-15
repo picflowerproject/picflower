@@ -43,6 +43,17 @@ function moveSlider(b_no, step) {
 
 // 2. 좋아요 (AJAX)
 function likeUp(b_no) {
+	// 1. 로그인 여부 체크
+	   if (!isLogin) {
+	       // confirm 대신 토스트 메시지만 띄움
+	       if (typeof showMessage === 'function') {
+	           showMessage("로그인이 필요한 서비스입니다. 🔒");
+	       } else {
+	           alert("로그인이 필요한 서비스입니다.");
+	       }
+	       return; // 더 이상 진행하지 않고 종료
+	   }
+
     const btn = event.currentTarget;
 
     $.ajax({
@@ -50,23 +61,27 @@ function likeUp(b_no) {
         type: 'POST',
         data: { "b_no": b_no },
         success: function(res) {
-            // res가 "plus:10" 또는 "minus:9" 형태로 오는지 확인
             const parts = res.split(":");
-            const type = parts[0];   // plus 또는 minus
-            const count = parts[1];  // 숫자
+            const type = parts[0];   
+            const count = parts[1];  
 
             $("#like-count-" + b_no).text(count);
 
             if (type === "plus") {
                 $(btn).addClass("active");
                 $(btn).find(".flower-icon").text("🌸");
+                // ✅ alert 대신 토스트 메시지 호출
+                showMessage("좋아요를 눌렀습니다! ❤️"); 
             } else {
                 $(btn).removeClass("active");
                 $(btn).find(".flower-icon").text("☆");
+                // ✅ 취소 시에도 토스트 출력 가능 (선택 사항)
+                showMessage("좋아요를 취소했습니다. 💔");
             }
         },
-        error: function() {
-            alert("서버 통신 중 오류가 발생했습니다.");
+        error: function(xhr) {
+            // ✅ 서버 오류 시에도 alert 대신 토스트 호출
+            showMessage("서버 통신 중 오류가 발생했습니다. 😥");
         }
     });
 }

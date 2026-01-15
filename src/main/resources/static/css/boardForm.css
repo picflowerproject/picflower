@@ -1,101 +1,144 @@
-/* 1. 테이블 전체 외곽선 및 카드 느낌 설정 */
+/* [1. 전체 레이아웃] */
+#reviewForm {
+    display: none; 
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #333;
+    background-color: #fff;
+    /* 층위가 느껴지는 이중 그림자 */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 4px 10px rgba(0, 0, 0, 0.03);
+    border-radius: 16px;
+    padding: 10px;
+}
+
+#reviewForm.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* [2. 후기 작성 테이블] */
 #reviewForm table {
     width: 100%;
     border-collapse: separate; 
     border-spacing: 0;
-    margin-top: 20px;
-    border: 2px solid #f2e9fb; /* 연보라색 테두리 */
+    border: 1px solid #eee; /* 테두리 연하게 */
     border-radius: 12px;
     overflow: hidden;
     background-color: #fff;
 }
 
-/* 2. 행 간 구분선 (마지막 행 제외) */
-#reviewForm tr:not(:last-child) td {
-    border-bottom: 1px solid #f2e9fb;
-}
-
 #reviewForm td {
     padding: 15px;
-    vertical-align: middle;
+    border-bottom: 1px solid #f8f9fa;
 }
 
-/* 3. 배경색 포인트 (입력 영역 강조) */
-.bg-point {
-    background-color: #faf8ff;
-}
-
-/* 4. 별점 시스템 디자인 */
+/* [3. 별점 시스템] */
 .star-rating {
     display: flex;
-    flex-direction: row-reverse; /* 별점 로직을 위한 역순 배치 유지 */
-    justify-content: flex-end;    /* row-reverse 상황에서 왼쪽 끝으로 붙게 함 */
+    flex-direction: row-reverse;
+    justify-content: center;
     font-size: 35px;
-    width: fit-content;          /* 별점 영역만큼만 너비 차지 */
 }
-#reviewForm td.bg-point {
-    text-align: left;            /* 텍스트 정렬을 왼쪽으로 */
-}
-
 .star-rating input { display: none; }
-
 .star-rating label {
-    color: #ddd;
+    color: #eee; /* 빈 별색상 */
     cursor: pointer;
-    transition: color 0.2s;
 }
-
-/* 마우스 호버 및 선택 시 보라색 변화 */
 .star-rating input:checked ~ label,
 .star-rating label:hover,
 .star-rating label:hover ~ label {
-    color: #a36cd9;
+    color: #FFD700; /* 포인트 컬러 유지 */
 }
 
-/* 5. 텍스트 입력창 */
+/* [4. 텍스트 입력창] */
 textarea {
-    width: 100%;
+    width: 95%;
+    min-height: 100px;
     padding: 15px;
-    border: 1px solid #ced4da;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    box-sizing: border-box;
-    font-family: inherit;
+    font-size: 15px;
+    color: #444; /* 글자색: 연한 검은색 */
+    background-color: #fff;
     resize: none;
-    display: block;
+}
+textarea::placeholder {
+    color: #aaa;
+}
+textarea:focus {
+    outline: none; 
+    border: 1px solid #a36cd9;
 }
 
-/* 6. 이미지 미리보기 규격 고정 */
-#preview {
-    max-width: 300px;
-    max-height: 300px;
-    border-radius: 8px;
-    display: none; /* 초기 상태 숨김 */
-    margin-top: 10px;
-    border: 1px solid #eee;
+/* [5. 가짜 입력창 (트리거) - 색상 변경] */
+.review-trigger-container {
+    padding: 20px 0;
 }
-
-/* 7. 등록 버튼 (연보라색 테마) */
-.btn-submit {
-    width: 100px;
-    height: 120px; /* textarea 높이에 맞춤 */
-    background-color: #dcbbf2;
-    border: none;
-    color: #000;
-    font-weight: bold;
-    font-size: 16px;
-    border-radius: 8px;
+.fake-input {
+    width: 80%;
+    max-width: 600px;
+    height: 55px; /* 높이 약간 조절 */
+    background: #ffffff !important;
+    border: 1px solid #eee !important;
+    border-radius: 30px !important;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(163, 108, 217, 0.2);
-    transition: all 0.2s;
+    color: #777 !important;
+    font-size: 15px;
+    
+    /* 입체감을 주는 이중 음영 설정 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    position: relative;
+    overflow: hidden;
 }
 
+/* 마우스 호버 시 효과 */
+.fake-input:hover {
+    transform: translateY(-2px); /* 살짝 위로 떠오르는 효과 */
+    border-color: #a36cd9 !important;
+    color: #a36cd9 !important;
+    /* 음영을 더 깊게 만들어 강조 */
+    box-shadow: 0 8px 25px rgba(163, 108, 217, 0.15), 0 3px 6px rgba(0, 0, 0, 0.05);
+    background: #fff !important;
+}
+
+/* 클릭하는 순간 살짝 눌리는 느낌 */
+.fake-input:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 왼쪽이나 오른쪽에 아이콘 포인트를 주어 시선 유도 (선택 사항) */
+.fake-input::before {
+    content: '✍️';
+    margin-right: 10px;
+    font-size: 18px;
+}
+/* [6. 등록 버튼] */
+.btn-submit {
+    width: 150px;
+    height: 45px;
+    background-color:#a36cd9; /* 버튼색을 차분한 검은색으로 변경 */
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+}
 .btn-submit:hover {
-    background-color: #c9a7e6;
-    transform: translateY(-2px);
+    background-color: #a36cd9; /* 호버시에만 보라색 포인트 */
 }
 
-/* 1. 기본 input 파일 숨기기 */
-.file-input-wrapper input[type="file"] {
+/* input 파일 태그를 숨김 */
+#b_upload_insert {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -106,72 +149,38 @@ textarea {
     border: 0;
 }
 
-/* 2. 가짜 버튼(label) 디자인 */
+/* 레이블 디자인 (필요 시 수정) */
 .file-input-label {
     display: inline-block;
-    padding: 8px 16px;
-    background-color: #fff;
-    color: #a36cd9; /* 테마 보라색 */
-    border: 1px solid #dcbbf2;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    margin-bottom: 10px;
 }
 
-/* 마우스 올렸을 때 효과 */
 .file-input-label:hover {
-    background-color: #f2e9fb;
-    border-color: #a36cd9;
+    background-color: #e0e0e0;
 }
 
-/* 선택된 파일명 표시 (선택사항) */
-.file-name-display {
-    font-size: 12px;
-    color: #888;
-    margin-left: 10px;
-}
-
-#preview {
-    max-width: 300px;
-    max-height: 300px;
-    border-radius: 8px;
-    display: none; 
-    margin-bottom: 15px; /* 사진 아래쪽에 여백 추가 */
-    border: 1px solid #eee;
-}
-
-/* 버튼 주변 여백 정리 */
-.file-input-wrapper {
-    margin-top: 10px; /* 버튼 위쪽 여백 */
-    display: block;   /* 한 줄을 차지하도록 설정 */
-}
-
-.file-input-label {
-    display: inline-block;
-    padding: 10px 20px; /* 버튼을 좀 더 클릭하기 좋게 키움 */
-    background-color: #fff;
-    color: #a36cd9;
-    border: 1px solid #dcbbf2;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-bottom: 0; /* 불필요한 하단 여백 제거 */
-}
-
-/* 모든 textarea 클릭(포커스) 시 스타일 */
-textarea:focus {
-    /* 1. 기본 검은색 테두리 제거 */
-    outline: none; 
+    /* 다중 이미지 미리보기를 위한 스타일 추가 */
+    #image-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .preview-img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
     
-    /* 2. 보라색 테마 테두리로 변경 */
-    border: 1.5px solid #a36cd9 !important; 
-    
-    /* 3. 은은한 광채 효과 추가 (선택 사항) */
-    box-shadow: 0 0 8px rgba(163, 108, 217, 0.2);
-    
-    /* 4. 부드러운 변화를 위해 추가 */
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
+     .product-selection { display: flex; gap: 15px; margin-bottom: 20px; justify-content: center; }
+    .product-item { cursor: pointer; text-align: center; border: 2px solid transparent; padding: 5px; border-radius: 10px; transition: 0.3s; width: 100px; }
+    .product-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; }
+    .product-item p { font-size: 12px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* 선택되었을 때 효과 */
+    .product-item.active { border-color: #ff6b6b; background-color: #fff0f0; }

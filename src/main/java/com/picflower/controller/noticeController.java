@@ -5,6 +5,7 @@ import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -100,6 +101,11 @@ public class noticeController {
 			dao.n_deleteDao(n_no);
 			return "redirect:/guest/notice";
 		}
+	
+	@GetMapping("/guest/terms")
+	public String terms() {
+	    return "guest/termsOfUse"; // WEB-INF/views/guest/terms.jsp로 연결
+	}
 
 	
 }

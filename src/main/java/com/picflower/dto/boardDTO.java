@@ -23,4 +23,11 @@ public class boardDTO {
 	private String m_id;
 	private List<replyDTO> replies; //댓글 모음
 	private boolean userLiked; 
+	
+	 // --- 상품 연동을 위한 추가 필드 ---
+    private int p_no;       // DB의 p_no 컬럼과 매칭
+    private String p_title;   // 상품명 (조인해서 가져올 용도)
+    private String p_image;  // 상품 썸네일 (필요 시)
+    // ------------------------------
+	
 }
