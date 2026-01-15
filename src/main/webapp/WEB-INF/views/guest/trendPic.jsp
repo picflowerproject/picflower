@@ -10,6 +10,45 @@
 <title>TrendPic</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/trendPic.css">
+
+<script>
+let currentIndex = 0;
+
+function moveSlide(step) {
+    const wrapper = document.getElementById('sliderWrapper');
+    const slides = document.querySelectorAll('.slide');
+    const contentSlides = document.querySelectorAll('.content-slide'); 
+    const totalSlides = slides.length;
+
+    if (totalSlides === 0) return;
+
+    // 1. 인덱스 계산
+    currentIndex += step;
+
+    if (currentIndex >= totalSlides) {
+        currentIndex = 0;
+    } else if (currentIndex < 0) {
+        currentIndex = totalSlides - 1;
+    }
+
+    // 2. 이미지 이동 (Transform 방식)
+    if (wrapper) {
+        const translateValue = -currentIndex * 100;
+        wrapper.style.transform = `translateX(${translateValue}%)`;
+    }
+
+    // 3. 텍스트 변경 (에러 방지 로직 적용)
+    contentSlides.forEach((content, index) => {
+        // [수정 포인트] content가 존재하는지 먼저 확인
+        if (content) { 
+            content.classList.remove('active');
+            if (index === currentIndex) {
+                content.classList.add('active');
+            }
+        }
+    });
+}
+</script>
 <style>
     .seconde-love-container {
         padding: 120px 20px;
@@ -462,11 +501,11 @@
 	    </div>
 	    
 	    <div class="third-apology-inner"> 
-	        <c:forEach var="product" items="${productList}">
+	        <c:forEach var="forgive" items="${forgiveList}">
 	            <div class="apology-item-card">
-	                <a href="${pageContext.request.contextPath}/guest/productDetail?p_no=${product.p_no}" class="apology-link">
+	                <a href="${pageContext.request.contextPath}/guest/productDetail?p_no=${forgive.p_no}" class="apology-link">
 	                    <div class="apology-thumb-wrap">
-	                        <c:set var="imgs" value="${fn:split(product.p_image, ',')}" />
+	                        <c:set var="imgs" value="${fn:split(forgive.p_image, ',')}" />
 	                        <c:if test="${not empty imgs}">
 	                            <img src="${pageContext.request.contextPath}/product_img/${fn:trim(imgs[0])}" 
 	                                 class="apology-thumb-img" alt="사과와 화해" />
@@ -475,10 +514,10 @@
 	                        <!-- Hover 시 나타날 정보 영역 -->
 	                        <div class="apology-hover-overlay">
 	                            <div class="hover-content">
-	                                <p class="hover-title">${product.p_title}</p>
+	                                <p class="hover-title">${forgive.p_title}</p>
 	                                <div class="hover-line"></div>
 	                                <p class="hover-price">
-	                                    <fmt:formatNumber value="${product.p_price}" type="number"/>원
+	                                    <fmt:formatNumber value="${forgive.p_price}" type="number"/>원
 	                                </p>
 	                                <span class="hover-view-more">VIEW MORE</span>
 	                            </div>

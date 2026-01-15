@@ -53,6 +53,26 @@ function inputNumberFormat(obj) {
     let value = obj.value.replace(/[^0-9]/g, "");
     obj.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+function handlePriceInput(obj) {
+    // 1. 숫자만 추출
+    let rawValue = obj.value.replace(/[^0-9]/g, "");
+    
+    // 2. 숨겨진 필드에 순수 숫자 저장 (서버로 전송될 값)
+    document.getElementById("p_price_hidden").value = rawValue;
+    
+    // 3. 화면 노출용 필드에 콤마 포맷팅
+    obj.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// 초기 로딩 시 기존 값이 있다면 콤마 처리 (Optional)
+window.onload = function() {
+    const hiddenVal = document.getElementById("p_price_hidden").value;
+    if(hiddenVal) {
+        const displayInput = document.querySelector('input[type="text"][required]');
+        displayInput.value = hiddenVal.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+};
 </script>
 </head>
 <body>
@@ -79,7 +99,12 @@ function inputNumberFormat(obj) {
         </tr>
         <tr>
             <td>가격</td>
-            <td><input type="text" name="p_price" onkeyup="inputNumberFormat(this)" value="${edit.p_price}" required></td>
+            <td>
+           		 <!-- 서버 전송용 hidden 필드 -->
+       			 <input type="hidden" name="p_price" id="p_price_hidden" value="${edit.p_price}">
+        		 <!-- 사용자 노출용 필드 (name 제거) -->
+       			 <input type="text" onkeyup="handlePriceInput(this)" value="${edit.p_price}" required>
+            </td>
         </tr>
         <tr>
             <td>재고</td>
@@ -111,7 +136,7 @@ function inputNumberFormat(obj) {
 					            <input type="checkbox" name="delete_images" value="${fn:trim(img)}">
 					            <span class="delete-label">삭제</span>
 					            
-					            <img src="${pageContext.request.contextPath}/img/${fn:trim(img)}">
+					            <img src="${pageContext.request.contextPath}/product_img/${fn:trim(img)}">
 					            
 					            <input type="hidden" name="all_existing_images" value="${fn:trim(img)}">
 					        </div>

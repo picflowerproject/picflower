@@ -35,23 +35,25 @@
 	
 </style>
 <script>
-	function addToCart() {
-	    const form = document.querySelector('form[action="/member/addCart"]');
-	    const formData = new FormData(form);
+function addToCart() {
+    const form = document.getElementById('orderForm');
+    const countInput = document.getElementById('o_count');
+    
+    // name을 장바구니용 c_count로 원복 (바로구매 클릭 후 돌아온 경우 대비)
+    if(countInput) countInput.setAttribute("name", "c_count");
 
-	    fetch("/member/addCart", {
-	        method: "POST",
-	        body: new URLSearchParams(formData)
-	    })
-	    .then(res => {
-	        // 성공 시 모달 띄우기
-	        document.getElementById('cartModal').style.display = 'flex';
-	        
-	        // 또는 토스트 메시지만 띄우고 싶다면 아래 주석 해제
-	        /* showToast(); */
-	    })
-	    .catch(err => alert("오류가 발생했습니다."));
-	}
+    if (!form) return;
+
+    const formData = new FormData(form);
+    fetch("/member/addCart", {
+        method: "POST",
+        body: new URLSearchParams(formData)
+    })
+    .then(res => {
+        document.getElementById('cartModal').style.display = 'flex';
+    })
+    .catch(err => alert("오류가 발생했습니다."));
+}
 
 	function closeCartModal() {
 	    document.getElementById('cartModal').style.display = 'none';
@@ -74,12 +76,27 @@
 	        }
 	        return; // 로그인 안 되어 있으면 여기서 중단
 	    </sec:authorize>
+	 // 1. 가격 정보 가져오기 (문자열에서 콤마 제거 후 숫자로 변환)
+	    const priceText = "${detail.p_price}"; // 2026년 기준 JSP 변수값
+	    const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+	    const count = parseInt(countInput.value);
+	    const totalPrice = price * count;
 
-	    // 3. 목적지를 바로구매 전용 컨트롤러 주소로 변경
+	    // 2. 총 결제 금액을 담을 hidden input 생성 (이미 있다면 값만 변경)
+	    let totalInput = form.querySelector('input[name="o_total_price"]');
+	    if(!totalInput) {
+	        totalInput = document.createElement('input');
+	        totalInput.type = 'hidden';
+	        totalInput.name = 'o_total_price';
+	        form.appendChild(totalInput);
+	    }
+	    totalInput.value = totalPrice;
+
+	    // 3. 목적지 및 필드명 변경
 	    form.action = "/member/directOrderForm"; 
-	    
-	    // 4. [중요] 기존 name="c_count"를 서버가 원하는 "o_count"로 변경하여 전송
 	    countInput.setAttribute("name", "o_count"); 
+	    
+	    console.log("전송 데이터 - 상품번호:", form.p_no.value, "총액:", totalPrice);
 	    
 	    form.submit();
 	}

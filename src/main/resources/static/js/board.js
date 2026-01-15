@@ -69,12 +69,12 @@ function likeUp(b_no) {
 
             if (type === "plus") {
                 $(btn).addClass("active");
-                $(btn).find(".flower-icon").text("🌸");
+                $(btn).find(".flower-icon").text("❤️");
                 // ✅ alert 대신 토스트 메시지 호출
                 showMessage("좋아요를 눌렀습니다! ❤️"); 
             } else {
                 $(btn).removeClass("active");
-                $(btn).find(".flower-icon").text("☆");
+                $(btn).find(".flower-icon").text("🤍");
                 // ✅ 취소 시에도 토스트 출력 가능 (선택 사항)
                 showMessage("좋아요를 취소했습니다. 💔");
             }

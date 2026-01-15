@@ -16,54 +16,65 @@ const IMP = window.IMP;
 IMP.init("imp76644727"); 
 
 function requestPay(payMethod) {
-    // 1. 폼 데이터 및 결제 정보 설정
-    const totalAmount = document.querySelector('input[name="o_total_price"]').value;
-    const buyerName = document.querySelector('input[name="o_name"]').value;
-    const orderName = "테스트 상품 결제";
+    console.log("결제 함수 시작됨. 선택된 수단:", payMethod); // 1번 확인
 
-    // 2. pgCode 선언 (한 번만 선언해야 에러가 나지 않습니다)
-    let pgCode = "";
-    switch(payMethod) {
-        case 'kakao': pgCode = "kakaopay.TC0ONETIME"; break;
-        case 'toss':  pgCode = "tosspayments.iamporttest_3"; break; 
-        case 'payco': pgCode = "payco.PARTNERTEST"; break;
-        default: return;
-    }
-
-    // 3. 아임포트 결제 요청
-    IMP.request_pay({
-        pg: pgCode,
-        //pay_method: "",
-       pay_method: "card",
-        merchant_uid: "mid_" + new Date().getTime(),
-        name: orderName,
-        amount: totalAmount, // 100원 대신 실제 주문 금액 사용 권장
-        buyer_name: buyerName,
-        buyer_tel: "010-1234-5678",
-    }, function (rsp) {
-        if (rsp.success) {
-            // [중요] 결제 성공 시 서버의 orderProcess로 폼 제출
-            console.log("결제 성공:", rsp);
-            const form = document.querySelector('.order-form');
-            
-            // 결제 고유 번호를 서버로 넘겨주기 위해 hidden 필드 생성
-            const impInput = document.createElement('input');
-            impInput.type = 'hidden';
-            impInput.name = 'imp_uid';
-            impInput.value = rsp.imp_uid;
-            form.appendChild(impInput);
-
-            // 서버 경로 재확인 (컨트롤러 설정에 맞춰 제출)
-            form.submit(); 
-        } else {
-            alert("결제 실패: " + rsp.error_msg);
+    try {
+        // ID로 요소를 직접 찾음
+        const priceElement = document.getElementById('o_total_price');
+        
+        if (!priceElement) {
+            console.error("오류: id가 'o_total_price'인 요소를 찾을 수 없습니다.");
+            alert("결제 금액 요소를 찾을 수 없습니다.");
+            return false;
         }
-    });
 
-    // 버튼 클릭 시 폼이 바로 제출(새로고침)되는 것을 방지
+        const totalAmount = priceElement.value;
+        console.log("읽어온 결제 금액 문자열:", totalAmount); // 2번 확인
+
+        if (!totalAmount || totalAmount == "0") {
+            alert("결제 금액이 0원이거나 없습니다.");
+            return false;
+        }
+
+        const buyerName = document.getElementById('o_name').value || "미입력";
+        
+        // pgCode 설정
+        let pgCode = "";
+        if(payMethod === 'kakao') pgCode = "kakaopay.TC0ONETIME";
+        else if(payMethod === 'toss') pgCode = "tosspayments.iamporttest_3";
+        else if(payMethod === 'payco') pgCode = "payco.PARTNERTEST";
+
+        console.log("최종 요청 정보:", { pg: pgCode, amount: totalAmount, buyer: buyerName });
+
+        IMP.request_pay({
+            pg: pgCode,
+            pay_method: "card",
+            merchant_uid: "mid_" + new Date().getTime(),
+            name: "테스트 상품 결제",
+            amount: parseInt(totalAmount), // 숫자로 변환
+            buyer_name: buyerName,
+            buyer_tel: "010-1234-5678",
+        }, function (rsp) {
+            if (rsp.success) {
+                // 성공 로직
+                const form = document.querySelector('.order-form');
+                const impInput = document.createElement('input');
+                impInput.type = 'hidden';
+                impInput.name = 'imp_uid';
+                impInput.value = rsp.imp_uid;
+                form.appendChild(impInput);
+                form.submit();
+            } else {
+                alert("결제 실패: " + rsp.error_msg);
+            }
+        });
+
+    } catch (e) {
+        console.error("자바스크립트 실행 중 에러 발생:", e);
+    }
+    
     return false;
 }
-
 
 function copyMemberInfo() {
     const isChecked = document.getElementById('sameAsMember').checked;
@@ -71,24 +82,51 @@ function copyMemberInfo() {
     // JSP의 mDto 데이터를 자바스크립트 변수에 할당
     const memberName = "${mDto.m_name}";
     const memberTel = "${mDto.m_tel}";
-    const memberAddr = "${mDto.m_addr}";
+    const memberAddr = "${mDto.m_addr}"; // 예: "부산광역시 부산진구,101호"
 
     // 입력 필드 객체들 가져오기
     const oNameInput = document.getElementById('o_name');
     const oTelInput = document.getElementById('o_tel');
     const oAddrInput = document.getElementById('o_addr');
+    const oAddrDetailInput = document.getElementById('o_addr_detail'); // 상세주소 필드 추가
 
     if (isChecked) {
-        // 체크되었을 때: 로그인 유저 정보로 채우기
         oNameInput.value = memberName;
         oTelInput.value = memberTel;
-        oAddrInput.value = memberAddr;
+
+        // 쉼표(,)를 기준으로 주소 분리
+        if (memberAddr.includes(',')) {
+            const addrParts = memberAddr.split(',');
+            oAddrInput.value = addrParts[0].trim();       // 쉼표 앞 (기본주소)
+            oAddrDetailInput.value = addrParts[1].trim(); // 쉼표 뒤 (상세주소)
+        } else {
+            // 쉼표가 없는 경우 전체를 기본주소에 넣음
+            oAddrInput.value = memberAddr;
+            oAddrDetailInput.value = "";
+        }
     } else {
-        // 체크 해제되었을 때: 입력 필드 비우기
         oNameInput.value = "";
         oTelInput.value = "";
         oAddrInput.value = "";
+        oAddrDetailInput.value = "";
     }
+}
+
+//주소 팝업창 호출
+function goAddrPopup() {
+    // 팝업 호출 경로를 현재 프로젝트의 주소 팝업 JSP 경로로 설정하세요.
+    // 예: /guest/jusoPopup.jsp 또는 /member/jusoPopup
+    var pop = window.open("/guest/jusoPopup", "pop", "width=570,height=420,scrollbars=yes,resizable=yes");
+}
+
+// 팝업에서 호출하는 콜백 함수 (이름이 반드시 jusoCallBack이어야 함)
+function jusoCallBack(roadFullAddr, roadAddrPart1, addrDetail, roadAddrPart2, engAddr, jibunAddr, zipNo) {
+    // roadAddrPart1: 도로명 주소 (예: 서울특별시 강남구 강남대로 123)
+    // addrDetail: 고객이 직접 입력한 상세주소 (예: 101호)
+    // roadAddrPart2: 참고주소 (예: (역삼동))
+    
+    document.getElementById("o_addr").value = roadAddrPart1 + "," + roadAddrPart2;
+    document.getElementById("o_addr_detail").value = addrDetail;
 }
 </script>
 </head>
@@ -100,10 +138,15 @@ function copyMemberInfo() {
 <header>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 </header>
-<main class="order-container"> 
+  <main class="order-container"> 
     <form action="/member/orderProcess" method="post" class="order-form">
-	  	<input type="hidden" name="m_no" value="${mDto.m_no}">
-	    <input type="hidden" name="o_total_price" value="${totalMoney}">
+	  	<!-- 금액 정보를 담는 유일한 input 필드 -->
+		<input type="hidden" name="o_total_price"  id="o_total_price" value="50000"> 
+		
+        <input type="hidden" name="isDirectOrder" value="${isDirectOrder}">
+        
+        <!-- [추가됨] 결제 완료 후 JavaScript에서 imp_uid를 채워 넣을 필드 -->
+        <input type="hidden" name="imp_uid" id="imp_uid_input" value="">
 	
 		<div class="section-header" style="display: flex; align-items: center; justify-content: space-between; margin-top: 30px;">
 	    <h3 style="margin: 0;">배송 정보</h3>
@@ -124,40 +167,41 @@ function copyMemberInfo() {
 		        <input type="text" name="o_tel" id="o_tel" required>
 		    </div>
 		    <div class="input-row">
-		        <label>주소</label>
-		        <input type="text" name="o_addr" id="o_addr" class="full-width" required>
-		    </div>
+				    <label>주소</label>
+				    <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+				        <!-- o_addr은 API가 주는 도로명주소를 담습니다 -->
+				        <input type="text" name="o_addr" id="o_addr" class="full-width" readonly required placeholder="주소 검색을 눌러주세요">
+				        <button type="button" onclick="goAddrPopup()" class="btn-sub" style="white-space: nowrap;">주소 검색</button>
+				    </div>
+				    <!-- 상세주소를 따로 입력받는 필드 -->
+				    <input type="text" id="o_addr_detail" class="full-width" placeholder="상세 주소를 입력해주세요">
+				</div>
 		</div>
 	
 		<h3>주문 상품 확인</h3>
-		<c:forEach var="row" items="${list}" varStatus="i">
-		    <!-- 데이터 전송용 hidden 필드 -->
-		    <input type="hidden" name="orderItems[${i.index}].p_no" value="${row.p_no}">
-		    
-		    <%-- 수량 결정: 바로구매(od_count)인지 장바구니(c_count)인지 체크 --%>
-		    <c:set var="itemCount" value="${isDirectOrder ? row.od_count : row.c_count}" />
-		    <%-- 가격 결정: 바로구매(od_price)인지 장바구니(p_price)인지 체크 --%>
-		    <c:set var="itemPrice" value="${isDirectOrder ? row.od_price : row.p_price}" />
+		
+<c:forEach var="row" items="${list}" varStatus="i">
+    <div class="order-item-list">
+        <span>
+            <strong>${row.p_title}</strong> 
+        </span>
+        <span>
+            ${row.c_count}개 / <fmt:formatNumber value="${row.p_price}" pattern="#,###"/>원
+        </span>
+    </div>
 
-		    <input type="hidden" name="orderItems[${i.index}].od_count" value="${itemCount}">
-		    <input type="hidden" name="orderItems[${i.index}].od_price" value="${itemPrice}">
-		    
-		    <div class="order-item-list">
-		        <span>
-		            <strong>
-		                <c:choose>
-		                    <c:when test="${isDirectOrder}">${product.p_title}</c:when>
-		                    <c:otherwise>${row.p_title}</c:otherwise>
-		                </c:choose>
-		            </strong>
-		        </span>
-		        <span>
-		            ${itemCount}개 / <fmt:formatNumber value="${itemPrice}" pattern="#,###"/>원
-		        </span>
-		    </div>
-		</c:forEach>
-	
-	  	<div class="total">총 금액: <fmt:formatNumber value="${totalMoney}" pattern="#,###"/>원</div>
+    <!-- DB 저장을 위해 orderRequestDTO의 orderItems(List<orderDetailDTO>) 필드와 매핑 -->
+    <!-- name 속성 값이 orderRequestDTO의 구조와 일치해야 합니다 -->
+    <input type="hidden" name="orderItems[${i.index}].p_no" value="${row.p_no}">
+    <input type="hidden" name="orderItems[${i.index}].od_count" value="${row.c_count}">
+    <input type="hidden" name="orderItems[${i.index}].od_price" value="${row.p_price}">
+</c:forEach>
+
+<!-- 총 결제 금액 표시 영역 -->
+<div class="total">
+    총 금액: <fmt:formatNumber value="${totalMoney}" pattern="#,###"/>원
+</div>
+			
 	  	<h3>결제 수단 선택</h3>
 			<div class="payment-buttons">
 			   <button type="button" onclick="requestPay('kakao')" class="pay-btn kakao">

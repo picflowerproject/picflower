@@ -62,7 +62,7 @@
 		          <span id="display_title" style="font-weight:bold; color:#a36cd9; font-size:16px;"></span>
 		      </div>
 		  </div>
-
+			
 		  <!-- 기존 hidden input -->
 		  <input type="hidden" name="p_no" id="selected_p_no">
         <table>
@@ -111,7 +111,10 @@
 			 <!-- ✅ 표 아래 오른쪽 배치를 위한 버튼 영역 -->
 			 <div class="submit-btn-wrapper">
 			    <input type="button" value="등록" class="btn-submit" onclick="submitReview()">
+			    <!-- 취소 버튼 추가 -->
+   				<input type="button" value="취소" class="btn-cancel" onclick="resetReviewForm()">
 			 </div>
+			 
 		</form>
 </div>
 
@@ -198,6 +201,24 @@ function confirmProduct(element, p_no, p_title, img_src) {
             form.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
     }
+}
+
+//후기작성 취소 폼 닫힘
+function resetReviewForm() {
+    if (!confirm("작성 중인 내용을 취소하시겠습니까?")) return;
+
+    // 1. UI 상태 복구
+    document.getElementById('reviewForm').style.display = 'none';           // 폼 숨기기
+    document.getElementById('selected_product_info').style.display = 'none'; // 상품정보 숨기기
+    document.querySelector('.review-trigger-container').style.display = 'block'; // '행복한 순간...' 버튼 다시 보이기
+
+    // 2. 입력 데이터 초기화
+    document.getElementById('reviewForm').reset(); // 폼 전체 데이터(텍스트, 별점 등) 초기화
+    document.getElementById('selected_p_no').value = ""; // hidden 상품번호 초기화
+    document.getElementById('image-preview-container').innerHTML = ""; // 이미지 미리보기 제거
+    
+    // 페이지 최상단으로 부드럽게 이동 (선택 사항)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 </script>

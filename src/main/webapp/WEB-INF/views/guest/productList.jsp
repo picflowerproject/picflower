@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,11 +16,10 @@
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
 </header>
 
-<main>
-    <h2>테마 상품</h2>
+<main class="shop-main-content"> <!-- 클래스 추가 -->
+    <h2 class="main-title">테마 상품</h2>
     
-    <!-- 카테고리 메뉴를 클래스로 관리 -->
-	<nav class="category-nav">
+    <nav class="category-nav">
 	    <!-- 전체보기: p_category 파라미터가 비어있을 때 active -->
 	    <a href="productList" class="${empty param.p_category ? 'active' : ''}">전체</a>
 	    
@@ -43,11 +43,22 @@
             <div class="product-card">
                 <!-- 이미지 섹션 -->
                 <div class="product-img-box">
-                    <c:set var="firstImg" value="${fn:split(list.p_image, ',')[0]}" />
-                    <a href="productDetail?p_no=${list.p_no}">
-                        <img src="${pageContext.request.contextPath}/product_img/${firstImg}" alt="${list.p_title}"/>
-                    </a>
-                </div>
+					    <c:choose>
+					        <%-- 1. 이미지 데이터가 실제로 있을 때만 split 실행 --%>
+					        <c:when test="${not empty list.p_image}">
+					            <c:set var="imgArray" value="${fn:split(list.p_image, ',')}" />
+					            <a href="productDetail?p_no=${list.p_no}">
+					                <img src="${pageContext.request.contextPath}/product_img/${imgArray[0]}" alt="${list.p_title}"/>
+					            </a>
+					        </c:when>
+					        <%-- 2. 이미지 데이터가 없을(NULL) 경우 대체 이미지 표시 --%>
+					        <c:otherwise>
+					            <a href="productDetail?p_no=${list.p_no}">
+					                <img src="${pageContext.request.contextPath}/assets/no_image.png" alt="이미지 없음"/>
+					            </a>
+					        </c:otherwise>
+					    </c:choose>
+					</div>
                 
                 <!-- 정보 섹션 -->
                 <div class="product-info">

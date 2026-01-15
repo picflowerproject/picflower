@@ -61,10 +61,10 @@
 					<tr>
 					    <td>주소</td>
 					    <td>
-					        <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-					            <input type="text" name="m_zipcode" id="m_zipcode" placeholder="우편번호" readonly style="width:80px;">
-					            <button type="button" onclick="goPopup()" class="btn-addr">주소 검색</button>
-					        </div>
+					       <div class="addr-group">
+							    <input type="text" name="m_zipcode" id="m_zipcode" placeholder="우편번호" readonly>
+							    <button type="button" onclick="goPopup()" class="btn-addr">주소 검색</button>
+							</div>
 					        <input type="text" name="m_addr_base" id="m_addr_base" placeholder="기본 주소" readonly style="width:100%; margin-bottom:5px;">
 					        <input type="text" name="m_addr_detail" id="m_addr_detail" placeholder="상세 주소 입력" style="width:100%;">
 					    </td>
@@ -88,7 +88,6 @@
                 </table>
                 <div class="button-group">
                     <input type="submit" class="btn-submit" value="가입하기">
-                    <button type="button" class="btn-cancel" onclick="history.back()">취소</button>
                 </div>
             </form>
         </div>

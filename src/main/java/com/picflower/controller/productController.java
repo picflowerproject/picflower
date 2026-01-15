@@ -216,47 +216,7 @@ public class productController {
 	@Autowired
 	ImemberDAO memberDao;
 	
-	//바로구매 컨트롤러 추가
-	@PostMapping("/member/directOrderForm")
-	public String directOrderForm(@RequestParam("p_no") int p_no, 
-	                              @RequestParam("o_count") int o_count, 
-	                              Principal principal, // 로그인 정보 확인을 위해 추가
-	                              Model model) {
-	    
-	    // 1. 배송 정보 자동 입력을 위한 회원 정보 조회 (핵심!)
-	    if (principal != null) {
-	        String loginId = principal.getName();
-	        // memberDao.findByM_id 혹은 기존에 사용하시는 회원 조회 메서드 호출
-	        memberDTO member = memberDao.findByM_id(loginId); 
-	        model.addAttribute("mDto", member); // JSP의 ${mDto.m_name} 등과 매칭
-	    }
-	    
-	    // 2. 상품 정보 조회
-	    productDTO product = dao.productViewDao(p_no);
-	    
-	    // 3. 주문 객체(orderRequestDTO) 구성
-	    orderDetailDTO detail = new orderDetailDTO();
-	    detail.setP_no(p_no);
-	    detail.setOd_count(o_count);
-	    detail.setOd_price(product.getP_price());
-	    
-	    List<orderDetailDTO> items = new ArrayList<>();
-	    items.add(detail);
-	    
-	    orderRequestDTO orderReq = new orderRequestDTO();
-	    orderReq.setOrderItems(items);
-	    orderReq.setO_total_price(product.getP_price() * o_count);
-	    
-	    // 4. JSP에서 사용할 데이터 모델에 담기
-	    model.addAttribute("orderReq", orderReq);
-	    model.addAttribute("product", product);
-	    model.addAttribute("isDirectOrder", true);
-	    
-	    // JSP 상단의 c:set이 동작하도록 totalMoney도 함께 보내주면 좋습니다.
-	    model.addAttribute("totalMoney", product.getP_price() * o_count);
-	    
-	    return "member/orderForm";
-	}
+	
 	
 	@RequestMapping("/member/addCart")
 	public String addCart(cartDTO dto, Principal principal) {

@@ -1,30 +1,31 @@
-@charset "UTF-8";
-/* 기본 레이아웃 및 폰트 */
 body {
     font-family: 'Pretendard', sans-serif;
-    background-color: #fcfaff;
+    background-color: #f8f9fa; /* 연보라 대신 화이트 그레이로 피로도 감소 */
     margin: 0;
-    color: #444;
+    color: #333;
 }
 
 main {
     max-width: 750px;
-    margin: 40px auto;
+    margin: 50px auto;
 }
 
 h2 {
-    color: #A36CD9;
-    text-align: center;
+    color: #1a1a1a;
+    text-align: left; /* 왼쪽 정렬로 트렌디하게 변경 */
     font-size: 1.8rem;
+    font-weight: 700;
     margin-bottom: 30px;
+    border-left: 5px solid #A36CD9; /* 포인트 컬러 바 */
+    padding-left: 15px;
 }
 
 /* 폼 스타일 */
 form[name="flower"] {
     background: #ffffff;
-    padding: 35px;
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(163, 108, 217, 0.1);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* 그림자를 더 부드럽게 */
 }
 
 /* 테이블 디자인 */
@@ -35,86 +36,93 @@ table {
 }
 
 td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #f0e6f7;
+    padding: 15px 12px;
+    border-bottom: 1px solid #f1f1f1;
 }
 
 /* 항목 이름(좌측) */
 td:first-child {
     width: 140px;
-    font-weight: bold;
-    color: #8E44AD;
-    background-color: #fdf8ff;
+    font-weight: 600;
+    color: #6741d9; /* 텍스트 보라색 강조 */
+    background-color: #f3f0ff; /* 아주 연한 보라색 배경 */
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* 꽃 번호(수정불가 영역) 강조 */
+.f-no-text {
+    font-weight: 700;
+    color: #888; /* 수정 불가 항목은 차분하게 */
+    padding-left: 15px;
 }
 
 /* 입력창 공통 */
 input[type="text"], 
 textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #DCBBF2;
-    border-radius: 6px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     box-sizing: border-box;
     font-size: 14px;
     outline: none;
     background-color: #fff;
+    transition: all 0.2s ease;
 }
 
 /* 포커스 효과 */
 input[type="text"]:focus, 
 textarea:focus {
-    border-color: #B06DF2;
-    background-color: #fdfaff;
+    border-color: #A36CD9;
+    box-shadow: 0 0 0 3px rgba(163, 108, 217, 0.1);
 }
 
-/* 이미지 등록 칸만 살짝 다르게 */
+/* 이미지 등록 칸 */
 input[type="file"] {
     font-size: 13px;
     color: #666;
+    padding: 8px 0;
 }
 
 /* 버튼 영역 */
 .btn-area {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
 }
 
 input[type="submit"], 
 input[type="reset"] {
-    padding: 12px 40px;
+    padding: 14px 40px;
     border: none;
-    border-radius: 30px;
-    font-weight: bold;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin: 0 8px;
 }
 
-/* 수정 버튼 - 강조색 */
+/* 수정 버튼 - 메인 강조색 */
 input[type="submit"] {
-    background-color: #B06DF2;
+    background-color: #A36CD9;
     color: white;
 }
 
 input[type="submit"]:hover {
-    background-color: #A36CD9;
+    background-color: #845ef7;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(176, 109, 242, 0.3);
+    box-shadow: 0 4px 12px rgba(163, 108, 217, 0.3);
 }
 
-/* 취소 버튼 */
+/* 취소 버튼 - 서브 색상 */
 input[type="reset"] {
-    background-color: #E9C9F2;
-    color: #A36CD9;
+    background-color: #e9ecef;
+    color: #495057;
 }
 
 input[type="reset"]:hover {
-    background-color: #DCBBF2;
-}
-
-/* 꽃 번호(수정불가 영역) 강조 */
-.f-no-text {
-    font-weight: bold;
-    color: #A36CD9;
-    padding-left: 10px;
+    background-color: #dee2e6;
 }

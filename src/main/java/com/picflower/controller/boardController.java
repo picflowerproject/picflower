@@ -50,18 +50,13 @@ public class boardController {
 	@RequestMapping("/member/b_write_view")
 	public String b_write_view(HttpSession session, Model model) {
 	    Integer m_no = (Integer) session.getAttribute("m_no");
-	    if (m_no == null) return "redirect:/login";
-	    
-	    // 최근 구매 상품 최대 3개 가져오기
-	    List<boardDTO> productList = dao.getRecentProduct(m_no);
-	    model.addAttribute("productList", productList);
-	    
-	    // 로그 출력: 리스트 크기와 첫 번째 상품명 확인
-	    System.out.println("가져온 상품 개수: " + productList.size());
-	    if(!productList.isEmpty()) {
-	        System.out.println("첫번째 상품명: " + productList.get(0).getP_title());
-	    }
-	    
+	    // 로그 찍기
+	    System.out.println("세션 m_no 확인: " + m_no);
+
+	    List<boardDTO> productList = dao.getUnreviewedProducts(m_no);
+	    System.out.println("JSP로 보낼 리스트 크기: " + (productList != null ? productList.size() : "null"));
+
+	    model.addAttribute("productList", productList); // 이 이름이 JSP와 같아야 함
 	    return "boardForm";
 	}
 	
@@ -96,13 +91,10 @@ public class boardController {
 	    }
 	    
 	 // ★ 2. 추가: 후기 작성 폼을 위한 상품 목록 가져오기
-	    // 로그인한 상태일 때만 최근 상품 목록을 모델에 담습니다.
+	    // ★ 수정: 후기 목록 하단 작성 폼용 상품 목록도 미작성 건만 필터링
 	    if (current_m_no != null) {
-	        List<boardDTO> productList = dao.getRecentProduct(current_m_no);
+	        List<boardDTO> productList = dao.getUnreviewedProducts(current_m_no);
 	        model.addAttribute("productList", productList);
-	        
-	        // 데이터 확인용 로그
-	        System.out.println("작성폼용 상품 개수: " + productList.size());
 	    }
 
 	    model.addAttribute("list", boardList);
@@ -189,7 +181,7 @@ public class boardController {
 	        
 	        // 파일이 전송되었는지 확인 (리스트가 존재하고 첫 번째 파일이 비어있지 않은지)
 	        if (files != null && !files.isEmpty() && !files.get(0).isEmpty()) {
-	            String uploadPath = "C:/Springboot/Picflower/src/main/resources/static/img/";
+	            String uploadPath = "C:/Springboot/Picflower/src/main/resources/static/product_img/";
 	            List<String> savedFileNames = new ArrayList<>();
 
 	            for (MultipartFile file : files) {

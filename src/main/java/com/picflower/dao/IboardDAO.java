@@ -45,4 +45,6 @@ public interface IboardDAO {
     
     public List<boardDTO> getRecentProduct(@Param("m_no") int m_no);
     
+    public List<boardDTO> getUnreviewedProducts(@Param("m_no") int m_no);
+    
 }

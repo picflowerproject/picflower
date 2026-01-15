@@ -106,6 +106,21 @@ public class noticeController {
 	public String terms() {
 	    return "guest/termsOfUse"; // WEB-INF/views/guest/terms.jsp로 연결
 	}
-
 	
+	   @RequestMapping("/guest/termsOfUse")
+	   public String termsOfUse() {
+	      return "guest/termsOfUse";
+	   }
+	   
+	   
+	   @RequestMapping("/guest/servicePolicy")
+	   public String servicePolicy() {
+	      return "guest/servicePolicy";
+	   }
+	   
+	   @RequestMapping("/guest/index")
+	   public String index() {
+	      return "guest/index";
+	   }
+
 }

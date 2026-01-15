@@ -1,4 +1,4 @@
-/* 기본 레이아웃 - 배경을 완전히 흰색으로 */
+/* 기본 레이아웃 */
 body {
     font-family: 'Pretendard', -apple-system, sans-serif;
     background-color: #ffffff;
@@ -8,12 +8,11 @@ body {
 
 h2 {
     text-align: center;
-    color: #333; /* 제목도 검정색으로 변경하여 차분하게 */
-    font-weight: 600;
+    color: #333;
     margin-bottom: 20px;
 }
 
-/* 테이블 - 선을 아주 연하게 */
+/* 테이블 구조 */
 table {
     width: 100%;
     max-width: 1000px;
@@ -21,50 +20,53 @@ table {
     border-collapse: collapse;
 }
 
-/* 헤더 - 보라색 배경을 없애고 텍스트 색상과 하단 선으로만 포인트 */
+/* 헤더: 보라색 포인트만 살리고 링크 효과는 완전 배제 */
 tr:first-child {
-    border-bottom: 2px solid #DCBBF2; /* 지정색 중 연한 보라색 사용 */
+    border-bottom: 2px solid #DCBBF2; /* 지정하신 연한 보라 */
 }
 
+tr:first-child td {
+    padding: 15px 10px;
+    font-weight: 600;
+    color: #A36CD9; /* 헤더 글자색만 포인트 */
+    border-bottom: none; /* 헤더 td 자체에는 선 없음 */
+}
+
+/* 데이터 열 */
 td {
-    padding: 18px 12px;
+    padding: 15px 10px;
     text-align: center;
-    border-bottom: 1px solid #f0f0f0; /* 일반 행은 아주 연한 회색 */
+    border-bottom: 1px solid #f2f2f2;
     font-size: 14px;
 }
 
-/* 헤더 글자색 */
-tr:first-child td {
-    font-weight: 600;
-    color: #A36CD9; /* 헤더 글자만 포인트 */
-}
-
-/* 아이디 링크 - 밑줄 없이 깔끔하게 */
-a {
-    color: #333;
+/* [중요] 링크 스타일 수정: 헤더에는 영향을 주지 않도록 설정 */
+td a {
+    color: #444; /* 평상시엔 일반 글자색과 비슷하게 */
     text-decoration: none;
     font-weight: 500;
-    border-bottom: 1px solid #E9C9F2; /* 링크에만 살짝 포인트 */
+    /* 텍스트 하단에만 얇게 보라색 선 표시 */
+    border-bottom: 1px solid #E9C9F2; 
+    padding-bottom: 2px;
 }
 
-a:hover {
+td a:hover {
     color: #B06DF2;
-    border-bottom-color: #B06DF2;
+    border-bottom: 1px solid #B06DF2; /* 호버 시에만 선명하게 */
 }
 
-/* 버튼 컨테이너 */
+/* 버튼 컨테이너 및 버튼 */
 .button-container {
     max-width: 1000px;
     margin: 25px auto;
     text-align: right;
 }
 
-/* 선택 삭제 버튼 - 회색 위주에 호버 시에만 보라색 */
 button {
     background-color: #fff;
-    color: #888; /* 기본은 차분한 회색 */
-    border: 1px solid #ddd;
-    padding: 8px 20px;
+    color: #888;
+    border: 1px solid #eee;
+    padding: 8px 18px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 13px;
@@ -77,7 +79,8 @@ button:hover {
     background-color: #fdfbff;
 }
 
-/* 체크박스 - 포인트 컬러 */
+/* 체크박스 */
 input[type="checkbox"] {
     accent-color: #A36CD9;
+    vertical-align: middle;
 }

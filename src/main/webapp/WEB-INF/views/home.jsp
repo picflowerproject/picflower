@@ -63,7 +63,7 @@
 
             <div class="story-footer">
                 <p>"꽃이 가장 아름다운 지금, 당신의 진심을 <strong>Pick</strong>하세요."</p>
-                <span>7일 이내 생생한 후기 작성 시, 다음 감동을 위한 할인 쿠폰을 드립니다. 🌷🌷🌷🌷</span>
+                <span>7일 이내 생생한 후기 작성 시, 다음 감동을 위한 할인 쿠폰을 드립니다. 🌷🌷🌷</span>
             </div>
         </div>
     </section>

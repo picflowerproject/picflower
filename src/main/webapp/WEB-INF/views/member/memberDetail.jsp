@@ -13,6 +13,7 @@
 
 </style>    
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/MemberDetail.css">
+<script src="${pageContext.request.contextPath}/js/simple_board.js"></script>
 <script>
 /* 탭 전환 스크립트 */
 function changeTab(tabId, element) {
@@ -21,25 +22,6 @@ function changeTab(tabId, element) {
     
     document.getElementById(tabId).classList.add('active');
     element.classList.add('active');
-}
-
-/* 비밀번호 체크 로직 */
-function openPwCheck() { document.getElementById('pwModal').style.display = 'flex'; document.getElementById('confirmPw').focus(); }
-function closePwCheck() { document.getElementById('pwModal').style.display = 'none'; document.getElementById('confirmPw').value = ''; }
-
-function validatePw() {
-    const pw = document.getElementById('confirmPw').value;
-    if(!pw) { alert("비밀번호를 입력하세요."); return; }
-    fetch('/member/checkPassword', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'm_pwd=' + encodeURIComponent(pw)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) location.href = '/member/memberUpdateForm?m_no=${detail.m_no}';
-        else alert("비밀번호가 일치하지 않습니다.");
-    });
 }
 
 /* 주문 취소(환불) 로직 */
@@ -55,6 +37,49 @@ function cancelOrder(btn) {
         success: function(response) {
             if (response === 'success') { alert('주문 취소 완료'); location.reload(); }
             else alert('취소 실패');
+        }
+    });
+}
+
+
+/* 비밀번호 체크 로직 */
+function openPwCheck() { document.getElementById('pwModal').style.display = 'flex'; document.getElementById('confirmPw').focus(); }
+function closePwCheck() { document.getElementById('pwModal').style.display = 'none'; document.getElementById('confirmPw').value = ''; }
+
+function handleEditClick(isSocial) {
+    if (isSocial) {
+        // 카카오 유저는 비번 입력 없이 바로 검증 함수 호출 (빈 값 전송)
+        validatePw(""); 
+    } else {
+        // 일반 유저는 비밀번호 입력 모달 열기
+        openPwCheck();
+    }
+}
+
+/* 비밀번호 체크 및 페이지 이동 로직 */
+function validatePw(inputPw) {
+    // 인자로 넘어온 값이 없으면(일반유저) 입력창에서 값을 가져옴
+    const pw = (inputPw !== undefined) ? inputPw : document.getElementById("confirmPw").value;
+    
+    if (inputPw === undefined && !pw) { 
+        alert("비밀번호를 입력하세요."); 
+        return; 
+    }
+
+    $.ajax({
+        url: "/member/checkPassword",
+        type: "POST",
+        data: { m_pwd: pw },
+        success: function(res) {
+            if (res.success) {
+                // 수정 폼으로 이동 (m_no 파라미터 포함)
+                location.href = '/member/memberUpdateForm?m_no=${detail.m_no}';
+            } else {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+        },
+        error: function() {
+            alert("인증 중 오류가 발생했습니다.");
         }
     });
 }
@@ -117,22 +142,26 @@ function cancelOrder(btn) {
 				
               	
             </table>
-			
 			<div class="button-container">
-			    <!-- 1. 관리자(ADMIN) 권한일 때만 표시되는 버튼 (왼쪽으로 배치됨) -->
+			    <!-- 관리자 버튼 -->
 			    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
 			        <button type="button" class="btn-admin-list" onclick="location.href='/admin/memberList'">회원목록</button>
 			    </sec:authorize>
 			
-			    <!-- 2. 본인 정보수정 버튼 (오른쪽 배치됨) -->
+			    <!-- 정보수정 버튼 -->
 			    <sec:authorize access="isAuthenticated()">
-			        <sec:authentication property="principal.username" var="currentId" />  
+			        <sec:authentication property="name" var="currentId" /> 
 			        <c:if test="${currentId == detail.m_id}">
-			            <button type="button" class="btn-lavender" onclick="openPwCheck()">정보수정</button>
+			            <%-- 현재 로그인한 객체가 OAuth2 유저인지 판별 (카카오 등) --%>
+			            <sec:authentication property="principal" var="principal" />
+			            <c:set var="isSocial" value="${fn:contains(principal.getClass().name, 'OAuth2')}" />
+			            
+			            <%-- 판단된 결과를 handleEditClick에 전달 (true 또는 false) --%>
+			            <button type="button" class="btn-lavender" onclick="handleEditClick(${isSocial})">정보수정</button>
 			        </c:if>
 			    </sec:authorize>
 			</div>
-						</div>
+			</div>
 	
             <!-- 탭 2: 나의 주문 내역 -->
             <div id="order" class="tab-content">

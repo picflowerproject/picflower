@@ -5,7 +5,7 @@
     flex: 1;                /* 남은 공간 차지 */
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: 70px;
     overflow: visible;      /* 드롭다운 탈출용 */
 }
 /* 메뉴 컨테이너 */
@@ -111,7 +111,6 @@
 .reply-main {
     display: flex;
     flex-direction: column; 
-    gap: 4px;              /* 아이디 줄과 내용 줄 사이의 간격 */
     flex: 1;
     min-width: 0;
 }
@@ -120,7 +119,7 @@
 .reply-meta {
     display: flex;
     align-items: center; 
-    gap: 6px;
+    gap: 3px;
     width: 100%; /* 너비를 꽉 채워야 auto 마진이 작동 */
 }
 
@@ -199,23 +198,22 @@
 .reply-input-wrapper {
     flex-shrink: 0;        
     display: flex;         
-    gap: 8px;              
-    margin-top: auto;      
+    gap: 8px;                    
     padding-top: 15px;
     z-index: 5;            
 }
 
 .reply-input-wrapper input {
     flex: 1;
-    border: 1px solid var(--border-color);
+    border: 1px solid #606060;
     border-radius: 4px;
     padding: 8px;
     font-size: 0.9rem;
-    outline-color: var(--point-purple);
+    outline-color: #606060;
 }
 
 .reply-input-wrapper button {
-    background-color: var(--point-purple);
+    background-color: #606060;
     color: white;
     padding: 5px 12px;
     border-radius: 4px;
@@ -226,7 +224,7 @@
 }
 
 .reply-input-wrapper button:hover {
-    background-color: var(--dark-purple);
+    background-color: #313131;
 }
 
 
@@ -241,5 +239,39 @@
 }
 
 .reply-header span {
-    color: var(--point-purple); 
+    color: #181818; 
+}
+
+/* 토스트가 표시될 전체 컨테이너 */
+#toast-container {
+    position: fixed;
+    bottom: 30px;         /* 하단에서 30px 띄움 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;       /* 다른 요소보다 무조건 위에 표시 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;            /* 메시지 사이 간격 */
+}
+
+/* 개별 토스트 기본 스타일 (투명한 상태) */
+.toast {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 50px;  /* 둥근 디자인 */
+    font-size: 14px;
+    min-width: 200px;
+    text-align: center;
+    opacity: 0;           /* 기본값: 안보임 */
+    transform: translateY(20px); /* 아래에서 위로 올라오는 효과를 위해 이동 */
+    transition: all 0.4s ease; /* 부드러운 애니메이션 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* show 클래스가 붙었을 때 (나타남) */
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
 }

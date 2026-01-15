@@ -15,10 +15,13 @@ public class productDTO {
 	private int p_price;
 	private int p_stock;
 	private String p_category;
-	private List<MultipartFile> p_upload;
+	
+	@com.fasterxml.jackson.annotation.JsonIgnore 
+    private List<MultipartFile> p_upload;
+	
 	private String p_image;
 	private String p_detail;
 	private Date p_date;
-	private int m_no;
-	private int h_no;
+	private Integer m_no;
+	private Integer h_no;
 }

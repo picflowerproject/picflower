@@ -200,14 +200,14 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 }
 /* [3] 텍스트 영역 (부모) */
 .text-area {
-    min-height: 350px;
+    height: 330px;
     overflow-y: auto; /* 최대 높이를 넘으면 스크롤바가 생깁니다 */
 	overflow: visible !important; 
-    flex: 0 0 300px;
-    margin-left: -50px;
+    flex: 0 0 260px;
+    margin-left: -40px;
     margin-bottom: 80px;
     border-radius: 20px;
-    padding: 25px 20px;
+    padding: 15px 15px;
     background: transparent url('/assets/paper.png') no-repeat center / cover;
     z-index: 20 !important;
     box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
@@ -261,11 +261,72 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 .menu-container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    width: 100%;
     margin-bottom: 10px;
 }
 
-.author-id { font-weight: bold; color: #000; }
+.title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* 아이디와 상품명 사이 간격 */
+    flex: 1;
+    width: 100%; /* 부모 너비 확보 */
+}
+
+.author-id {   font-size: 0.85rem; color: #888; }
+
+/* 상품명과 좋아요를 한 줄에 배치 */
+.product-info-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 8px; /* 상품명과 하트 사이 간격 */
+}
+
+.product-name-badge {
+    color: #333;
+    font-weight: bold;
+    font-size: 1rem;
+    
+    /* 핵심 수정 사항 */
+    white-space: nowrap;      /* 글자가 길어져도 줄바꿈 방지 */
+    overflow: hidden;         /* 영역을 넘어가면 숨김 */
+    text-overflow: ellipsis;  /* 너무 길면 ... 으로 표시 (선택 사항) */
+    flex-shrink: 1;           /* 공간이 부족하면 줄어들 수 있게 설정 */
+}
+
+/* 좋아요 버튼 스타일 최적화 (상품명 옆에 어울리게 크기 소폭 조정) */
+.like-btn {
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 8px 0px 2px 10px; /* 오른쪽 끝에 붙도록 오른쪽 패딩은 0 */
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 65px; 
+}
+
+.like-btn.active {
+    border-color: #ff4d4f;
+}
+
+.like-btn .flower-icon {
+    font-size: 1rem;
+    margin-right: 4px;
+}
+
+.like-btn .like-count {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #8e8e8e;
+}
+
+.like-btn.active .like-count {
+    color: #ff4d4f;
+}
+
 .menu-btn { font-size: 20px; color: #888; padding: 5px;  position: relative;
     z-index: 40;
     cursor: pointer !important;}
@@ -273,22 +334,8 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 .rating-like-container { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .stars { color: #FFD700; }
 
-.like-btn {
-    background: none;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 5px 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #666;
-}
 
-.like-btn.active {
-    border-color: var(--point-purple);
-    background-color: var(--light-purple);
-    color: var(--point-purple);
-    font-weight: bold;
-}
+
 
 /* [핵심] 모든 드롭다운 메뉴 공통: 오른쪽으로 출력 */
 .dropdown-menu {
@@ -307,7 +354,82 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     white-space: nowrap;
 }
 
+/* [4] 댓글 영역 상세 설정 */
+.reply-header {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #f5f5f5;
+}
+.reply-item {
+    margin-bottom: 8px;    /* 댓글 사이 간격 축소 */
+    padding: 5px 0;        /* 상하 여백 최소화 */
+    position: relative;
+}
 
+.reply-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.reply-content {
+    font-size: 0.8rem !important; /* 글자 크기 축소 */
+    line-height: 1.3;            /* 줄간격 축소 */
+    display: block;
+    color: #555;
+    word-break: break-all;       /* 좁은 영역에서 강제 줄바꿈 */
+}
+
+/* 댓글 작성자 아이디 크기 */
+.reply-item .author-id {
+    font-size: 0.85rem;  /* 기존보다 약간 작게 */
+    font-weight: 600;
+    color: #333;
+}
+
+/* 댓글 작성 날짜 (small 태그) 크기 */
+.reply-item .reply-meta small {
+    font-size: 0.75rem;  /* 아주 작게 */
+    color: #999;
+    margin-left: 5px;
+}
+
+/* 댓글 본문 텍스트 크기 (핵심 부분) */
+.reply-item .reply-content {
+    font-size: 0.85rem;  /* 본문보다 작은 0.8~0.85rem 추천 */
+    line-height: 1.4;
+    color: #444;
+    display: block;      /* 줄바꿈을 위해 block 설정 */
+    margin-top: 4px;
+}
+
+/* 댓글 입력창 내부 글자 크기 */
+.reply-input-wrapper input {
+    font-size: 0.8rem;
+}
+
+/* 댓글 등록 버튼 글자 크기 */
+.reply-input-wrapper button {
+    font-size: 0.8rem;
+}
+
+.scroll-content {
+    flex-grow: 1;       /* 남은 공간을 댓글창이 차지 */
+    overflow-y: auto;   /* 댓글이 많으면 내부 스크롤 */
+    margin-top: 10px;
+    padding-right: 5px; /* 스크롤바와 텍스트 간격 */
+}
+
+/* 개별 댓글 간의 간격 */
+.reply-item {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px dotted #f0f0f0; /* 댓글 간 가느다란 구분선 */
+}
 /* [핵심] 가로 스크롤 방지를 위한 부모 요소 설정 */
 .text-area,
 .scroll-content,

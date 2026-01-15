@@ -98,4 +98,20 @@
 	      AND b.p_no = #{p_no} 
 	    ORDER BY b.b_no DESC
 	</select>
+	
+	<select id="getUnreviewedProducts" resultType="com.picflower.dto.productDTO">
+    SELECT p.p_no, p.p_title, p.p_image
+    FROM product p
+    JOIN order_detail od ON p.p_no = od.p_no
+    JOIN orders o ON od.o_no = o.o_no
+    WHERE o.m_no = #{m_no}
+      AND NOT EXISTS (
+          SELECT 1 
+          FROM board b 
+          WHERE b.p_no = p.p_no 
+            AND b.m_no = #{m_no}
+            AND b.b_status = 1
+      )
+    GROUP BY p.p_no, p.p_title, p.p_image
+</select>
 </mapper>

@@ -1,15 +1,14 @@
 package com.picflower.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,9 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.picflower.dao.IcartDAO;
 import com.picflower.dao.ImemberDAO;
 import com.picflower.dao.IorderDAO;
+import com.picflower.dao.IproductDAO;
 import com.picflower.dto.cartDTO;
 import com.picflower.dto.memberDTO;
+import com.picflower.dto.orderDetailDTO;
 import com.picflower.dto.orderRequestDTO;
+import com.picflower.dto.productDTO;
 import com.picflower.service.orderService;
 
 @Controller
@@ -27,6 +29,7 @@ public class orderController {
 	@Autowired IorderDAO orderDao; 
     @Autowired IcartDAO cartDao;
     @Autowired ImemberDAO memberDao;
+    @Autowired IproductDAO dao;
     @Autowired orderService orderService; // DB 저장 전담 서비스
 
     // 1. 주문서 작성 폼 (그대로 유지)
@@ -54,8 +57,10 @@ public class orderController {
     // 2. 주문 완료 처리 (로직만 서비스로 넘김)
     @RequestMapping("/member/orderProcess")
     public String orderProcess(
-        @ModelAttribute("oDto") orderRequestDTO oDto, // 객체 바인딩 이름 명시
-        @RequestParam("imp_uid") String imp_uid,       // 파라미터 이름 명시
+        @ModelAttribute("oDto") orderRequestDTO oDto,
+        @RequestParam("imp_uid") String imp_uid,
+        // 바로구매인지 확인하기 위한 파라미터 추가
+        @RequestParam(value="isDirectOrder", required=false, defaultValue="false") boolean isDirectOrder,
         Principal principal, 
         Model model) {
         
@@ -66,15 +71,57 @@ public class orderController {
         
         if (mDto != null) {
             oDto.setM_no(mDto.getM_no());
-            List<cartDTO> cartList = cartDao.listCartDao(mDto.getM_no());
             
-            // 서비스 호출
+            // [중요] 바로구매일 경우 장바구니 리스트를 비우지 않도록 처리
+            List<cartDTO> cartList = null;
+            if (!isDirectOrder) {
+                cartList = cartDao.listCartDao(mDto.getM_no());
+            }
+            
+            // 서비스 호출 (서비스 내부에서 cartList가 null이면 장바구니 삭제 로직 건너뜀)
             orderService.executeOrder(oDto, cartList, mDto.getM_no());
 
             model.addAttribute("order", oDto);
             model.addAttribute("imp_uid", imp_uid);
         }
         return "member/orderSuccess"; 
+    }
+    
+  //바로구매 컨트롤러 추가
+    @PostMapping("/member/directOrderForm")
+    public String directOrderForm(@RequestParam("p_no") int p_no, 
+                                  @RequestParam("o_count") int o_count, 
+                                  Principal principal, 
+                                  Model model) {
+        
+        if (principal == null) return "redirect:/guest/loginForm";
+        
+        memberDTO member = memberDao.findByM_id(principal.getName()); 
+        model.addAttribute("mDto", member);
+        
+        productDTO product = dao.productViewDao(p_no);
+        
+        List<cartDTO> items = new ArrayList<>();
+        cartDTO item = new cartDTO();
+        item.setP_no(p_no);
+        item.setP_title(product.getP_title());
+        item.setP_price(product.getP_price());
+        item.setC_count(o_count);
+        item.setMoney(product.getP_price() * o_count);
+        items.add(item);
+        
+        int totalMoney = item.getMoney();
+
+        model.addAttribute("list", items); 
+        model.addAttribute("totalMoney", totalMoney); // 이 값이 중요함
+        model.addAttribute("isDirectOrder", true);
+        
+        // [추가] JSP 상단 c:if문에서 에러가 나지 않도록 빈 객체라도 생성해서 보냅니다.
+        orderRequestDTO orderReq = new orderRequestDTO();
+        orderReq.setO_total_price(totalMoney);
+        model.addAttribute("orderReq", orderReq); 
+        
+        return "member/orderForm";
     }
     
     @RequestMapping("/member/myOrderList")

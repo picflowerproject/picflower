@@ -1,3 +1,4 @@
+/* 1. 기본 레이아웃 */
 html, body {
     height: 100%;
     margin: 0;
@@ -5,12 +6,13 @@ html, body {
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    background-color: #ffffff;
-    font-family: 'Malgun Gothic', sans-serif;
-    font-size: 15px; 
-    color: #333;
+    -webkit-font-smoothing: antialiased; /* 폰트를 더 매끄럽게 표현 */
+    letter-spacing: -0.5px; /* 텍스트 자간 조정으로 세련된 느낌 부여 */
+}
+
+h2 {
+    font-size: 26px;  
+    color: #444; /* 너무 진한 검정보다 짙은 회색이 더 고급스러움 */
 }
 
 .content-wrapper {
@@ -22,18 +24,14 @@ body {
 }
 
 .content-container {
-    width: 500px; 
+    width: 100%;
+    max-width: 500px; /* PC에서는 500px 유지 */
     padding: 20px;
+    box-sizing: border-box;
 }
 
-h2 {
-    font-size: 24px;
-    margin-bottom: 25px;
-    border-bottom: 3px solid #B06DF2;
-    padding-bottom: 12px;
-}
 
-/* 2. 테이블 디자인 (간격 밀착) */
+/* 2. 테이블 레이아웃 */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -56,111 +54,210 @@ table td:first-child {
 }
 
 /* 3. 입력창 공통 스타일 */
+/* [3. 입력창 공통 스타일 수정] */
 input[type="text"], 
 input[type="password"], 
 select {
     height: 36px;
-    padding: 0 10px;
+    padding: 0 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 15px;
     box-sizing: border-box;
     outline: none;
-    margin: 0;
+    margin: 0; 
 }
 
-input:focus {
-    border-color: #B06DF2;
+/* 1. 일반 단독 입력창: 너비를 320px로 통일하여 정렬감 부여 */
+input[name="m_id"], 
+input[name="m_pwd"], 
+input[name="m_pwd2"], 
+input[name="m_name"],
+input[name="m_birth"],
+input[name="m_flower"] {
+    width: 350px !important; /* 기존 250px에서 확장 */
 }
 
-/* [입력란 너비 고정] */
-input[name="m_name"], input[name="m_birth"], input[name="m_flower"] {
-    width: 250px !important;
+/* 2. 연락처 입력란: 전체 합이 약 320px가 되도록 조정 */
+select[name="m_tel1"] { 
+    width: 110px !important; 
+    display: inline-block; 
+}
+input[name="m_tel2"], 
+input[name="m_tel3"] { 
+    width: 110px !important; /* (320 - 80 - 기호여백)/2 계산 */
+    display: inline-block; 
 }
 
-/* 연락처 */
-select[name="m_tel1"] { width: 75px !important; display: inline-block; }
-input[name="m_tel2"], input[name="m_tel3"] { width: 65px !important; display: inline-block; }
+/* 3. 이메일 입력란: 전체 합이 약 320px가 되도록 조정 */
+input[name="m_email1"] { 
+    width: 165px !important; 
+    display: inline-block; 
+}
+select[name="m_email2"] { 
+    width: 165px !important; 
+    display: inline-block; 
+}
 
-/* 이메일 */
-input[name="m_email1"] { width: 120px !important; display: inline-block; }
-select[name="m_email2"] { width: 130px !important; display: inline-block; }
+/* 4. 주소 입력란: 우측 끝 라인(320px)에 맞춤 */
+.addr-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 350px; /* 전체 너비 제한 */
+    margin-bottom: 8px;
+}
 
-/* 주소 밀착 정렬 */
-#m_zipcode { width: 85px !important; background-color: #f9f9f9; display: inline-block; margin-bottom: 4px; }
-#m_addr_base { width: 320px !important; display: block; margin-bottom: 2px !important; }
-#m_addr_detail { width: 320px !important; display: block; margin-top: 0 !important; }
+#m_zipcode { 
+    flex: 1; /* 가용한 공간 차지 */
+    background-color: #f9f9f9; 
+}
 
+.btn-addr {
+    width: 120px; /* 버튼 너비 고정 */
+    height: 36px;
+    background-color: #A36CD9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#m_addr_base, #m_addr_detail {
+    width: 350px !important; /* 상단 입력창들과 동일하게 맞춤 */
+    display: block; 
+}
+
+#m_addr_base { 
+    margin-bottom: 5px !important; 
+}
+
+/* [추가] 모바일 대응: 화면이 좁아질 경우 너비 자동 조절 */
+@media (max-width: 480px) {
+    input[name="m_id"], 
+    input[name="m_pwd"], 
+    input[name="m_pwd2"], 
+    input[name="m_name"],
+    input[name="m_birth"],
+    input[name="m_flower"],
+    #m_addr_base, 
+    #m_addr_detail,
+.zip-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 350px; /* 기존 CSS의 350px 유지 */
+    margin-bottom: 8px;
+}
+
+/* 주소 입력창 하단 여백 추가 */
+#m_addr_base { 
+    margin-bottom: 8px !important; 
+}
+}
+td br {
+    display: none;
+}
 /* 4. 버튼 디자인 */
 .button-group {
     margin-top: 30px;
     display: flex;
-    justify-content: flex-end; /* center에서 flex-end로 변경 */
+    justify-content: center;
     gap: 10px;
-    /* 만약 컨테이너가 500px보다 작아질 경우를 대비해 오른쪽 여백을 맞춤 */
-    padding-right: 5px; 
 }
 
 .btn-submit {
-    width: 140px; 
+    width: 455px;
     height: 45px;
-    background-color: #B06DF2; 
+    background-color: #B06DF2;
     color: white;
-    border: none; 
+    border: none;
     border-radius: 6px;
-    font-size: 16px; 
-    font-weight: bold; 
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
-    order: 2; /* 순서를 명시적으로 지정 (생략 가능) */
 }
 
-.btn-cancel {
-    width: 100px; 
-    height: 45px;
-    background-color: #E9C9F2; 
-    color: #554466;
-    border: none; 
-    border-radius: 6px;
-    font-size: 16px; 
-    cursor: pointer;
-    order: 1; /* 순서를 명시적으로 지정 (생략 가능) */
-}
-
-.btn-addr { /* 비밀번호 변경/주소검색 버튼 */
-    height: 32px;
+.btn-addr {
+    height: 36px;
     background-color: #A36CD9;
-    color: white; border: none;
-    padding: 0 12px; border-radius: 4px;
-    font-size: 13px; cursor: pointer;
+    color: white;
+    border: none;
+    padding: 0 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.btn-submit:hover {
+    background-color: #9A59E0; /* 기존 #B06DF2보다 살짝 어두운 톤 */
+    transition: background-color 0.3s ease;
 }
 
-/* 5. 비밀번호 변경 모달 스타일 */
+.btn-addr:hover {
+    background-color: #8E57C2;
+}
+
+/* 5. 푸터 */
+footer {
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
 .modal-overlay {
-    position: fixed; top: 0; left: 0;
+    position: fixed;
+    top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex; justify-content: center; align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
 .modal-content {
-    background: white; padding: 30px;
-    border-radius: 10px; width: 300px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     text-align: center;
 }
 
-.modal-content h3 { margin-bottom: 20px; color: #A36CD9; }
-.modal-content input { width: 100%; margin-bottom: 10px; height: 38px; }
-
-.modal-buttons { display: flex; gap: 5px; margin-top: 15px; }
-.modal-buttons button {
-    flex: 1; height: 38px; border: none; border-radius: 4px; cursor: pointer;
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #444;
 }
-.modal-buttons button:first-child { background: #B06DF2; color: white; }
-.modal-buttons button:last-child { background: #eee; }
 
+.modal-content input {
+    width: 100%;
+    margin-bottom: 10px;
+}
 
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
 
-/* 6. 기타 */
-footer { margin-top: auto; padding: 20px; border-top: 1px solid #eee; text-align: center; }
-input[type="radio"] { accent-color: #B06DF2; margin-right: 5px; }
+.modal-buttons button {
+    flex: 1;
+    height: 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-buttons button:first-child {
+    background-color: #B06DF2;
+    color: white;
+}
+
+.modal-buttons button:last-child {
+    background-color: #ddd;
+    color: #333;
+}

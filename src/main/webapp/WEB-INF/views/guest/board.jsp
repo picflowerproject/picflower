@@ -9,13 +9,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Flower Garden</title>
-<script src="${pageContext.request.contextPath}/js/jquery-3.7.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/simple_board.js"></script>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/board_style.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/boardUpdateForm.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reply.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
-
 <script>
     const contextPath = "${pageContext.request.contextPath}";
 	const isLogin = ${pageContext.request.userPrincipal != null};
@@ -74,6 +73,7 @@ function showProductInfo(p_no, p_title) {
 													    <span class="plus-btn">+</span>
 													    
 													    <div class="info-tooltip">
+													       <a href="${pageContext.request.contextPath}/guest/productDetail?p_no=${board.p_no}" class="tooltip-link">
 													        <!-- ✅ 상품 이미지 미리보기 추가 -->
 													        <c:if test="${not empty board.p_image}">
 													            <c:set var="p_img_list" value="${fn:split(board.p_image, ',')}" />
@@ -83,7 +83,7 @@ function showProductInfo(p_no, p_title) {
 													        </c:if>
 													        
 													        <p class="tooltip-p-title">${board.p_title}</p>
-													        <a href="${pageContext.request.contextPath}/guest/productDetail?p_no=${board.p_no}" class="tooltip-link">상품 상세보기 ❯</a>
+													        상품 상세보기 ❯</a>
 													    </div>
 													</div>
 												</c:if>
@@ -101,17 +101,37 @@ function showProductInfo(p_no, p_title) {
 	                    </c:if>
 	                </div>
 
-	                <div class="text-area">
-	                    <div class="menu-container">
-	                        <div class="author-id">${board.m_id}</div>
-	                        	<div>
-	                         	<c:if test="${not empty board.p_title}">
-								        <span class="product-name-badge" style="color: #a36cd9; font-weight: bold; margin-left: 8px;">
-								            [${board.p_title}]
-								        </span>
-								</c:if>
-								</div>
-	                        <div class="dropdown-wrapper">
+	           <div class="text-area">
+				    <div class="menu-container">
+				        <!-- 상단 왼쪽: 작성 정보 및 좋아요 -->
+				        <div class="title-group">
+				            <!-- 1. 아이디 (상단) -->
+				            <div class="author-id">${board.m_id}</div>
+				            
+				            <!-- 2. 상품명과 좋아요 (하단 수평 배치) -->
+				            <div class="product-info-row">
+				                <c:if test="${not empty board.p_title}">
+				                    <div class="product-name-badge">
+				                        [${board.p_title}]
+				                    </div>
+				                </c:if>
+				
+				                <!-- 좋아요 버튼 위치 이동 -->
+				                <div class="rating-like-container">
+				                    <button class="like-btn ${board.userLiked ? 'active' : ''}" onclick="likeUp(${board.b_no})">
+				                        <span class="flower-icon">
+				                            ${board.userLiked ? '❤️' : '🤍'} 
+				                        </span>
+				                        <span id="like-count-${board.b_no}" class="like-count">
+				                            ${board.b_like}
+				                        </span>
+				                    </button>
+				                </div>
+				            </div>
+				        </div>
+											
+							
+							  <div class="dropdown-wrapper">
 								<sec:authorize access="isAuthenticated()">
 								           <!-- ✅ 본인 글이거나 관리자일 때만 버튼(⋮) 자체를 생성 -->
 								           <c:if test="${pageContext.request.userPrincipal.name == board.m_id || pageContext.request.isUserInRole('ROLE_ADMIN')}">
@@ -128,24 +148,6 @@ function showProductInfo(p_no, p_title) {
 									</sec:authorize>
 	                        </div>
 	                    </div>
-	                    <div class="rating-like-container" style="display: flex; align-items: center; margin-bottom: 10px;">
-						    <button class="like-btn ${board.userLiked ? 'active' : ''}" 
-						            onclick="likeUp(${board.b_no})" 
-						            style="display: flex; align-items: center; background: white; border: 1.5px solid ${board.userLiked ? '#ff4d4f' : '#dbdbdb'}; padding: 5px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s ease;">
-						        
-						        <span class="flower-icon" style="font-size: 1.2rem; margin-right: 6px; display: flex; align-items: center;">
-						            ${board.userLiked ? '❤️' : '🤍'} 
-						        </span>
-						        
-						        <span style="font-weight: 600; color: ${board.userLiked ? '#ff4d4f' : '#8e8e8e'}; font-size: 0.95rem;">
-						            좋아요
-						        </span>
-						        
-						        <span id="like-count-${board.b_no}" style="margin-left: 8px; font-weight: bold; color: ${board.userLiked ? '#ff4d4f' : '#8e8e8e'};">
-						            ${board.b_like}
-						        </span>
-						    </button>
-						</div>
 	                    <!-- 텍스트 및 댓글 섹션 -->
 	                        <p class="review-text" id="text-p-${board.b_no}">${board.b_text}</p>
 								<!-- 댓글 개수  -->
@@ -194,7 +196,7 @@ function showProductInfo(p_no, p_title) {
 											    <div class="reply-main">
 											        <!-- 메타 정보 (아이디 + 시간)를 한 줄로 묶음 -->
 											        <div class="reply-meta">
-											            🌸 <span class="author-id">${reply.m_id}</span>
+											            ◽ <span class="author-id">${reply.m_id}</span>
 											            <small><fmt:formatDate value="${reply.r_date}" pattern="MM.dd HH:mm" /></small>
 											        </div>
 											        

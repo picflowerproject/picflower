@@ -1,27 +1,29 @@
-@charset "UTF-8";
 body {
     font-family: 'Pretendard', sans-serif;
-    background-color: #fcfaff;
+    background-color: #f8f9fa; /* 연보라 대신 깔끔한 그레이 화이트 */
     margin: 0;
-    color: #444;
+    color: #333;
 }
 
 h2 {
-    color: #A36CD9;
-    text-align: center;
+    color: #1a1a1a;
+    text-align: left; /* 왼쪽 정렬로 모던하게 변경 */
+    max-width: 700px;
+    margin: 50px auto 20px;
     font-size: 1.8rem;
-    margin-top: 40px;
-    margin-bottom: 30px;
+    font-weight: 700;
+    border-left: 5px solid #A36CD9; /* 리스트 페이지와 동일한 포인트 */
+    padding-left: 15px;
 }
 
 /* 폼 컨테이너 */
 form[name="flower"] {
     max-width: 700px;
-    margin: 0 auto 50px;
+    margin: 0 auto 80px;
     background: #ffffff;
     padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(176, 109, 242, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* 그림자를 더 부드럽게 */
 }
 
 /* 테이블 스타일 */
@@ -32,17 +34,18 @@ table {
 }
 
 td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #f0e6f7;
+    padding: 15px 12px;
+    border-bottom: 1px solid #f1f1f1; /* 보더를 연하게 */
 }
 
 /* 항목 이름 (왼쪽 열) */
 td:first-child {
-    width: 130px;
-    font-weight: bold;
-    color: #8E44AD;
-    background-color: #fdf8ff;
-    border-radius: 8px 0 0 8px;
+    width: 140px;
+    font-weight: 600;
+    color: #6741d9; /* 텍스트만 보라색 포인트 */
+    background-color: #f3f0ff; /* 아주 연한 배경색 */
+    border-radius: 8px;
+    text-align: center;
 }
 
 /* 입력창 공통 스타일 */
@@ -50,66 +53,71 @@ input[type="text"],
 textarea, 
 input[type="file"] {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #DCBBF2;
-    border-radius: 6px;
-    box-sizing: border-box; /* 패딩 포함 너비 계산 */
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
     outline: none;
     font-size: 14px;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
+/* 포커스 되었을 때만 보라색 강조 */
 input[type="text"]:focus, 
 textarea:focus {
-    border-color: #B06DF2;
-    box-shadow: 0 0 5px rgba(176, 109, 242, 0.3);
+    border-color: #A36CD9;
+    box-shadow: 0 0 0 3px rgba(163, 108, 217, 0.1);
 }
 
 textarea {
-    resize: none; /* 크기 조절 금지 */
+    resize: vertical; /* 사용자 편의를 위해 세로 조절 허용 */
+    min-height: 120px;
 }
 
 /* 파일 업로드 스타일 */
 input[type="file"] {
-    background-color: #fcfaff;
-    padding: 8px;
-    font-size: 13px;
+    background-color: #fafafa;
+    border: 1px dashed #DCBBF2; /* 파일 영역은 대시선으로 구분 */
+    cursor: pointer;
 }
 
 /* 버튼 영역 */
 .btn-area {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 12px; /* 버튼 사이 간격 */
 }
 
 input[type="submit"], 
 input[type="reset"] {
-    padding: 12px 35px;
+    padding: 14px 40px;
     border: none;
-    border-radius: 30px;
-    font-weight: bold;
+    border-radius: 10px; /* 너무 둥근 것보다 각진 모서리가 더 세련됨 */
+    font-weight: 600;
+    font-size: 15px;
     cursor: pointer;
     transition: all 0.3s;
-    margin: 0 5px;
 }
 
-/* 등록 버튼 */
+/* 등록 버튼 (Primary) */
 input[type="submit"] {
-    background-color: #B06DF2;
+    background-color: #A36CD9;
     color: white;
 }
 
 input[type="submit"]:hover {
-    background-color: #A36CD9;
+    background-color: #845ef7;
     transform: translateY(-2px);
 }
 
-/* 취소 버튼 */
+/* 취소 버튼 (Secondary) */
 input[type="reset"] {
-    background-color: #E9C9F2;
-    color: #A36CD9;
+    background-color: #e9ecef; /* 취소는 무채색으로 배치하여 피로도 감소 */
+    color: #495057;
 }
 
 input[type="reset"]:hover {
-    background-color: #DCBBF2;
+    background-color: #dee2e6;
 }

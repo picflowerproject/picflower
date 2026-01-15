@@ -7,8 +7,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +44,66 @@ public class memberController {
 	}
 	
 	@RequestMapping("/home")
-	public String home() {
-		return "home";
+	public String home(@AuthenticationPrincipal Object principal, Model model, HttpSession session) {
+	    if (principal instanceof OAuth2User) {
+	        OAuth2User oauth2User = (OAuth2User) principal;
+	        
+	        String kakaoId = oauth2User.getAttribute("id").toString(); 
+	        Map<String, Object> properties = (Map<String, Object>) oauth2User.getAttributes().get("properties");
+	        String nickname = (String) properties.get("nickname");
+
+	        memberDTO dto = dao.findByM_id(kakaoId);
+
+	        if (dto == null) {
+	            dto = new memberDTO();
+	            dto.setM_id(kakaoId);
+	            dto.setM_name(nickname);
+	            dto.setM_pwd(passwordEncoder.encode("kakao_user_" + kakaoId));
+	            
+	            // 필수값(NOT NULL) 에러 방지를 위해 기본값 세팅
+	            dto.setM_gender("N");        // 미선택
+	            dto.setM_tel("010-0000-0000"); // 임시 번호
+	            dto.setM_birth("1900-01-01");
+	            dto.setM_addr(" ");
+	            dto.setM_flower("없음");
+	            dto.setM_email("kakao@user.com");
+	            dto.setM_auth("MEMBER");  // 시큐리티 권한 (WebSecurityConfig와 맞출 것)
+	            
+	            dao.memberWriteDao(dto);
+	            // 가입 후 다시 조회하여 m_no 등 자동 생성된 값을 포함한 완전한 객체 확보
+	            dto = dao.findByM_id(kakaoId);
+	         // 가입 즉시 수정 페이지로 보내려면 여기서 리다이렉트
+	        }
+	        
+	     // 2. 권한 강제 갱신 (리다이렉트보다 먼저 실행되어야 함!)
+	        String role = dto.getM_auth().startsWith("ROLE_") ? dto.getM_auth() : "ROLE_" + dto.getM_auth();
+	        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(role);
+	        
+	        // OAuth2User 타입을 유지해야 403 에러가 발생하지 않음
+	        Authentication newAuth = new OAuth2AuthenticationToken(oauth2User, authorities, "kakao");
+	        SecurityContextHolder.getContext().setAuthentication(newAuth);
+	        
+	        // 세션에 정보 저장
+	        session.setAttribute("m_id", dto.getM_id());
+	        session.setAttribute("m_name", dto.getM_name());
+	        session.setAttribute("m_auth", dto.getM_auth());
+	        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+	        // 3. 추가 정보 입력 여부 체크 (이제 권한이 갱신되었으므로 403이 나지 않음)
+	        if (" ".equals(dto.getM_addr()) || "010-0000-0000".equals(dto.getM_tel())) {
+	            return "redirect:/member/memberUpdateForm?m_no=" + dto.getM_no();
+	        }
+
+	        model.addAttribute("userName", nickname);
+
+	    } else if (principal instanceof UserDetails) {
+	        // 일반 로그인 처리
+	        UserDetails userDetails = (UserDetails) principal;
+	        model.addAttribute("userName", userDetails.getUsername());
+	        session.setAttribute("m_id", userDetails.getUsername());
+	    }
+	    
+	    return "home";
 	}
 	
 	@RequestMapping("/guest/loginForm")
@@ -140,33 +204,28 @@ public class memberController {
 	}
 	
 	@GetMapping("/member/memberDetailId")
-	public String memberDetail(@RequestParam(value="m_id", required=false) String m_id, Principal principal, Model model) {
-	    System.out.println("=== 요청된 m_id 파라미터: " + m_id + " ===");
-	    System.out.println("=== 접속한 사용자(Principal): " + (principal != null ? principal.getName() : "비로그인") + " ===");
-	    // 1. 세션에서 로그인한 사용자의 아이디를 가져옵니다.
+	public String memberDetail(Principal principal, Model model) {
+	    if (principal == null) return "redirect:/guest/loginForm";
+
+	    // 1. principal.getName()은 일반 로그인은 아이디, 카카오는 고유번호를 반환함
 	    String loginId = principal.getName(); 
+	    System.out.println("로그인 아이디: " + loginId);
 	    
-	    // 2. 위에서 정의한 loginId 변수를 사용하여 DB에서 정보를 조회합니다.
-	    // (기존 m_id에서 loginId로 변경)
+	    // 2. DB에서 회원 정보 조회 (카카오 ID도 m_id 컬럼에 저장되어 있음)
 	    memberDTO detail = dao.findByM_id(loginId);
 	    
-	    // 3. 모델에 회원 정보 담기
-	    model.addAttribute("detail", detail);
-	    
-	    // 4. 찾아낸 회원 정보에서 m_no를 꺼내 주문 내역을 조회함
 	    if (detail != null) {
+	        model.addAttribute("detail", detail);
+	        
+	        // 3. m_no를 사용하여 주문 내역 조회
 	        int m_no = detail.getM_no();
 	        List<orderRequestDTO> orderList = orderDao.selectMyOrderList(m_no);
 	        model.addAttribute("orderList", orderList);
+	    } else {
+	        // 혹시라도 DB에 정보가 없으면 가입 유도
+	        return "redirect:/guest/loginForm";
 	    }
-	    
-	    
-	    if (detail != null) {
-	        int m_no = detail.getM_no();
-	        List<orderRequestDTO> orderList = orderDao.selectMyOrderList(m_no);
-	        System.out.println("주문 내역 개수: " + (orderList != null ? orderList.size() : "null")); // 로그 확인
-	        model.addAttribute("orderList", orderList);
-	    }
+
 	    return "member/memberDetail"; 
 	}
 	
@@ -180,6 +239,15 @@ public class memberController {
 	    
 	    if (auth == null || !auth.isAuthenticated()) {
 	        response.put("success", false);
+	        return response;
+	    }
+	    
+	 // 1. 카카오 로그인 유저인지 확인
+	    if (auth.getPrincipal() instanceof OAuth2User) {
+	        // 카카오 유저는 비밀번호 확인 절차 없이 즉시 성공 처리
+	        response.put("success", true);
+	        response.put("isSocial", true); // 프론트에서 알림창 띄울 때 활용 가능
+	        session.setAttribute("pwVerified", true);
 	        return response;
 	    }
 	    
@@ -219,44 +287,51 @@ public class memberController {
 	}
 	
 	@RequestMapping("/member/memberUpdateForm")
-	public String memberUpdateForm(HttpSession session, HttpServletRequest request, Model model) {
-	    // 2. 매개변수 순서를 HttpSession, HttpServletRequest, Model 순으로 배치 (권장)
-	    
+	public String memberUpdateForm(HttpSession session, HttpServletRequest request, Model model, Authentication auth) {
+	    // 1. 접근 권한 확인 (소셜 로그인 유저거나 비밀번호 검증을 마친 일반 유저여야 함)
 	    Boolean isVerified = (Boolean) session.getAttribute("pwVerified");
-	    if (isVerified == null || !isVerified) {
-	        String m_no = request.getParameter("m_no");
-	        return "redirect:/member/memberDetail?m_no=" + m_no;
-	    }
-	    session.removeAttribute("pwVerified");
+	    boolean isSocialUser = auth.getPrincipal() instanceof OAuth2User;
 
+	    // 소셜 유저도 아니고 비밀번호 확인도 안 됐다면 차단
+	    if (!isSocialUser && (isVerified == null || !isVerified)) {
+	        String m_no = request.getParameter("m_no");
+	        return "redirect:/member/memberDetailId"; // ID 기반 상세페이지로 유도
+	    }
+	    
+	    // 일반 유저인 경우에만 1회성 세션 제거
+	    if (!isSocialUser) {
+	        session.removeAttribute("pwVerified");
+	    }
+
+	    // 2. 데이터 조회 및 파싱 (기존 로직 유지)
 	    int m_no = Integer.parseInt(request.getParameter("m_no"));
 	    memberDTO dto = dao.memberViewDao(m_no);
 	    
 	    if (dto != null && dto.getM_addr() != null && dto.getM_addr().contains("]")) {
-	        String fullAddr = dto.getM_addr();
-	        String zipcode = fullAddr.substring(1, fullAddr.indexOf("]"));
-	        String addrPart = fullAddr.substring(fullAddr.indexOf("]") + 2);
-	        
-	        if (addrPart.contains(",")) {
-	            // 콤마를 기준으로 최대 2개까지만 나눕니다. (상세주소 안에 또 콤마가 있을 수 있으므로)
-	            String[] addrSplit = addrPart.split(",", 2); 
+	        try {
+	            String fullAddr = dto.getM_addr();
+	            String zipcode = fullAddr.substring(1, fullAddr.indexOf("]"));
+	            String addrPart = fullAddr.substring(fullAddr.indexOf("]") + 2);
 	            
-	            model.addAttribute("zipcode", zipcode);
-	            model.addAttribute("address", addrSplit[0].trim()); // 기본주소
-	            
-	            if (addrSplit.length > 1) {
-	                // JSP에서 ${addrDetail}로 쓰기로 했다면 이 이름을 유지하고, 
-	                // 만약 JSP input의 value가 ${detail}이라면 아래 이름을 detail로 바꾸세요.
-	                model.addAttribute("addrDetail", addrSplit[1].trim()); 
+	            if (addrPart.contains(",")) {
+	                String[] addrSplit = addrPart.split(",", 2); 
+	                model.addAttribute("zipcode", zipcode);
+	                model.addAttribute("address", addrSplit[0].trim());
+	                if (addrSplit.length > 1) {
+	                    model.addAttribute("addrDetail", addrSplit[1].trim()); 
+	                }
+	            } else {
+	                model.addAttribute("zipcode", zipcode);
+	                model.addAttribute("address", addrPart.trim());
 	            }
-	        } else {
-	            model.addAttribute("zipcode", zipcode);
-	            model.addAttribute("address", addrPart.trim());
+	        } catch (Exception e) {
+	            // 주소 형식이 [우편번호] 주소 형태가 아닐 경우의 예외 처리
+	            model.addAttribute("address", dto.getM_addr());
 	        }
 	    }
 
 	    model.addAttribute("edit", dto);
-	    return "member/memberUpdateForm";
+	    return "member/memberUpdateForm"; 
 	}
 	
 	@RequestMapping("/member/memberUpdate")
@@ -279,11 +354,16 @@ public class memberController {
 	        String fullAddr = "[" + m_zipcode + "] " + m_addr_base + "," + (m_addr_detail != null ? m_addr_detail : "");
 	        dto.setM_addr(fullAddr.trim());
 	    }
-		
-		
+	    
 		dao.memberUpdateDao(dto); 
 		
-		 return "redirect:/member/memberDetail?m_no=" + dto.getM_no();
+	    // [중요] 수정 후에도 세션에 바뀐 정보를 갱신해줘야 합니다.
+	    HttpSession session = request.getSession();
+	    session.setAttribute("m_name", dto.getM_name());
+	    
+		
+		
+		 return "redirect:/home";
 	}
 	
 	@RequestMapping("/member/memberDelete")
@@ -292,19 +372,20 @@ public class memberController {
 		dao.memberDeleteDao(m_no);
 		return "redirect:/home";
 	}
+	
 	@RequestMapping("/member/deleteMembers") // JSP의 form action과 맞춤
-	public String deleteMembers(HttpServletRequest request) {
-	    // name="m_nos"로 전송된 모든 체크박스 값을 배열로 받음
-	    String[] m_nos = request.getParameterValues("m_nos");
-	    
-	    if (m_nos != null) {
-	        for (String m_no_str : m_nos) {
-	            int m_no = Integer.parseInt(m_no_str);
-	            // 기존에 만드신 단일 삭제 DAO를 반복문으로 호출
-	            dao.memberDeleteDao(m_no);
-	        }
-	    }
-	    
-	    return "redirect:/admin/memberList"; // 삭제 후 목록으로 이동
+	   public String deleteMembers(HttpServletRequest request) {
+	       // name="m_nos"로 전송된 모든 체크박스 값을 배열로 받음
+	       String[] m_nos = request.getParameterValues("m_nos");
+	       
+	       if (m_nos != null) {
+	           for (String m_no_str : m_nos) {
+	               int m_no = Integer.parseInt(m_no_str);
+	               // 기존에 만드신 단일 삭제 DAO를 반복문으로 호출
+	               dao.memberDeleteDao(m_no);
+	           }
+	       }
+	       
+	       return "redirect:/admin/memberList"; // 삭제 후 목록으로 이동
 	}
 }
