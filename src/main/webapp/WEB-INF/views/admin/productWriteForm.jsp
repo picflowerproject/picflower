@@ -76,7 +76,7 @@ function handlePriceInput(obj, hiddenId) {
                 <td>재고</td>
                 <td>
                 	<input type="text" id="p_stock_display" onkeyup="handlePriceInput(this, 'p_stock_hidden')" placeholder="재고수량을 입력하세요" value="1000" required>
-					<input type="hidden" name="p_stock" id="p_stock_hidden">               	
+					<input type="hidden" name="p_stock" id="p_stock_hidden" value="1000">               	
                 </td>
             </tr>
             <tr>

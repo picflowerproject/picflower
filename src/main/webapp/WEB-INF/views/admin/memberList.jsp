@@ -38,20 +38,22 @@ function deleteSelected() {
             <td width="10%">선택 <input type="checkbox" id="selectAll" onclick="for(c of document.getElementsByName('m_nos')) c.checked=this.checked"></td>
         </tr>
         <c:forEach var="list" items="${list}">
-        <tr>
-            <td>${list.m_no}</td>
-            <td><a href="${pageContext.request.contextPath}/member/memberDetail?m_no=${list.m_no}">${list.m_id}</a></td>
-            <td>${list.m_name}</td>
-            <td>${list.m_gender}</td>
-            <td>
-                <%-- String을 Date로 변환 후 출력 (시분초 제외) --%>
-                <fmt:parseDate value="${list.m_birth}" var="birthDate" pattern="yyyy-MM-dd HH:mm:ss" />
-                <fmt:formatDate value="${birthDate}" pattern="yyyy-MM-dd" />
-            </td>
-            <td>${list.m_tel}</td>
-            <td>${list.m_flower}</td>
-            <td><input type="checkbox" name="m_nos" value="${list.m_no}"></td>
-        </tr>
+        <tr onclick="location.href='${pageContext.request.contextPath}/member/memberDetail?m_no=${list.m_no}'" style="cursor:pointer;">
+		    <td>${list.m_no}</td>
+		    <td>${list.m_id}</td>
+		    <td>${list.m_name}</td>
+		    <td>${list.m_gender}</td>
+		    <td>
+		        <%-- String을 Date로 변환 후 출력 (시분초 제외) --%>
+		        <fmt:parseDate value="${list.m_birth}" var="birthDate" pattern="yyyy-MM-dd HH:mm:ss" />
+		        <fmt:formatDate value="${birthDate}" pattern="yyyy-MM-dd" />
+		    </td>
+		    <td>${list.m_tel}</td>
+		    <td>${list.m_flower}</td>
+		    <td onclick="event.stopPropagation();">
+		        <input type="checkbox" name="m_nos" value="${list.m_no}">
+		    </td>
+		</tr>
         </c:forEach>
     </table>
     

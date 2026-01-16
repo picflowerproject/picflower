@@ -24,19 +24,46 @@ function changeTab(tabId, element) {
     element.classList.add('active');
 }
 
-/* 주문 취소(환불) 로직 */
+/*주문취소 환불로직  */
 function cancelOrder(btn) {
-    const imp_uid = btn.dataset.impUid;
+    // 1. 쉼표 제거 로직 추가
+    let imp_uid = btn.dataset.impUid;
+    if (imp_uid && imp_uid.startsWith(',')) {
+        imp_uid = imp_uid.replace(/^,+/, ''); // 앞부분의 모든 쉼표 제거
+    }
+    
     const o_no = btn.dataset.oNo;
+
+    console.log("수정된 imp_uid =", imp_uid); // 쉼표가 제거되었는지 확인
+
+    if (!imp_uid || !o_no) {
+        alert("결제 정보가 올바르지 않습니다.");
+        return;
+    }
+
     if (!confirm("정말로 환불하시겠습니까?")) return;
 
     $.ajax({
         url: '/member/orderCancel',
         method: 'POST',
-        data: { imp_uid: imp_uid, o_no: o_no },
+        data: {
+            imp_uid: imp_uid, // 정제된 데이터 전송
+            o_no: o_no
+        },
         success: function(response) {
-            if (response === 'success') { alert('주문 취소 완료'); location.reload(); }
-            else alert('취소 실패');
+            console.log("서버 응답 원문:", response); // F12 콘솔에서 확인용
+            
+            if (response.trim() === 'success') {
+                alert('주문 취소 완료');
+                location.reload();
+            } else {
+                // 서버에서 "fail"이나 "error occurred..." 메시지를 보낼 경우 출력
+                alert('취소 실패 사유: ' + response);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("에러 발생:", error);
+            alert("서버 연결에 실패했습니다. 관리자에게 문의하세요.");
         }
     });
 }
@@ -156,21 +183,25 @@ function withdrawMember(m_no) {
 			    </sec:authorize>
 			
 			    <!-- 정보수정 및 회원탈퇴 버튼 -->
-			    <sec:authorize access="isAuthenticated()">
-			        <sec:authentication property="name" var="currentId" /> 
-			        <c:if test="${currentId == detail.m_id}">
-			            <sec:authentication property="principal" var="principal" />
-			            <c:set var="isSocial" value="${fn:contains(principal.getClass().name, 'OAuth2')}" />
-			            
-			            <!-- 정보수정 버튼 -->
-			            <button type="button" class="btn-lavender" onclick="handleEditClick(${isSocial})">정보수정</button>
-			            
-			            <!-- 회원탈퇴 버튼 추가 -->
-			            <button type="button" class="btn-delete" onclick="withdrawMember(${detail.m_no})">
-			                회원탈퇴
-			            </button>
-			        </c:if>
-			    </sec:authorize>
+			    <!-- 정보수정 및 회원탈퇴 버튼 -->
+<sec:authorize access="isAuthenticated()">
+    <sec:authentication property="name" var="currentId" />
+    <sec:authentication property="principal" var="principal" />
+    <c:set var="isSocial" value="${fn:contains(principal.getClass().name, 'OAuth2')}" />
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')" var="isAdmin" />
+
+    <c:if test="${currentId == detail.m_id || isAdmin}">
+        <!-- 관리자면 '회원 삭제', 본인이면 '회원 탈퇴'로 표시 -->
+        <button type="button" class="btn-admin-list" onclick="withdrawMember(${detail.m_no})">
+            <c:choose>
+                <c:when test="${isAdmin}">회원 삭제</c:when>
+                <c:otherwise>회원 탈퇴</c:otherwise>
+            </c:choose>
+        </button>
+
+        <button type="button" class="btn-lavender" onclick="handleEditClick(${isSocial})">정보수정</button>
+    </c:if>
+</sec:authorize>
 			</div>
 			</div>
 	
@@ -185,7 +216,6 @@ function withdrawMember(m_no) {
 				            <th width="10%">결제금액</th>
 				            <th width="20%">주문일자</th>
 				            <th width="10%">주문상태</th>
-				            <th width="10%">환불</th>
 				        </tr>
 				    </thead>
 				    <tbody>
@@ -212,29 +242,31 @@ function withdrawMember(m_no) {
 				                <td>
 				                    <fmt:formatDate value="${order.o_date}" pattern="yyyy.MM.dd HH:mm"/>
 				                </td>
-				                <td>
-				                    <span class="status-badge">${order.o_status}</span>
-				                </td>
-				                <td>
-				                    <c:choose>
-				                        <c:when test="${order.o_status == '결제완료'}">
-				                           <button class="btn-cancel"
-				                                    data-imp-uid="<c:out value='${order.imp_uid}'/>"
-				                                    data-o-no="<c:out value='${order.o_no}'/>"
-				                                    onclick="cancelOrder(this)">
-				                                환불하기
-				                            </button>
-				                        </c:when>
-				                        <c:otherwise>
-				                            <span class="status-badge">${order.o_status}</span>
-				                        </c:otherwise>
-				                    </c:choose>
-				                </td>
+				               <td>
+							    <c:choose>
+							        <%-- 상태가 '결제완료'일 때: 상태 텍스트와 버튼을 모두 표시 --%>
+							        <c:when test="${order.o_status == '결제완료'}">
+							            <span class="status-badge">${order.o_status}</span>
+							            <button class="btn-cancel"
+							                    data-imp-uid="<c:out value='${order.imp_uid}'/>"
+							                    data-o-no="<c:out value='${order.o_no}'/>"
+							                    onclick="cancelOrder(this)"
+							                    style="margin-left: 5px;"> <!-- 간격 조절 -->
+							                환불하기
+							            </button>
+							        </c:when>
+							        
+							        <%-- 그 외 상태(환불완료 등): 상태 텍스트만 표시 --%>
+							        <c:otherwise>
+							            <span class="status-badge">${order.o_status}</span>
+							        </c:otherwise>
+							    </c:choose>
+							</td>
 				            </tr>
 				        </c:forEach>            
 				        <c:if test="${empty orderList}">
 				            <tr>
-				                <td colspan="7" class="no-data"> <!-- colspan을 7로 변경 -->
+				                <td colspan="6" class="no-data">
 				                    <div style="font-size: 40px; margin-bottom: 10px;">📦</div>
 				                    최근 주문하신 내역이 없습니다.
 				                </td>

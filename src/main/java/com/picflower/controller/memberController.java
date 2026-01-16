@@ -325,6 +325,13 @@ public class memberController {
 	            model.addAttribute("address", dto.getM_addr());
 	        }
 	    }
+	 // memberUpdateForm 메서드 내부에 추가
+	    if (dto.getM_tel() != null && dto.getM_tel().contains("-")) {
+	        String[] parts = dto.getM_tel().split("-");
+	        model.addAttribute("phone1", parts[0]);
+	        model.addAttribute("phone2", parts[1]);
+	        model.addAttribute("phone3", parts[2]);
+	    }
 
 	    model.addAttribute("edit", dto);
 	    return "member/memberUpdateForm"; 
@@ -364,18 +371,27 @@ public class memberController {
 	
 	@RequestMapping("/member/memberDelete")
 	@Transactional
-	public String memberDelete(HttpServletRequest request, HttpSession session) {
-		int m_no = Integer.parseInt(request.getParameter("m_no"));
-		
-		// 1. 자식 테이블들 데이터 이관 (m_no를 0으로 변경)
+	public String memberDelete(HttpServletRequest request, HttpSession session, Principal principal) {
+	    // 1. 파라미터로 삭제할 번호 가져오기
+	    int m_no = Integer.parseInt(request.getParameter("m_no"));
+	    
+	    // 2. Principal을 통해 현재 로그인한 사용자 아이디 가져오기
+	    String loginId = (principal != null) ? principal.getName() : "";
+	    
+	    // 3. 자식 테이블 데이터 이관 및 회원 삭제 로직
 	    dao.updateChildRecords(m_no);
-		dao.memberDeleteDao(m_no);
-		
-		session.invalidate(); 
-		
-		return "redirect:/home";
+	    dao.memberDeleteDao(m_no);
+	    
+	    // 4. 권한에 따른 분기 처리
+	    if ("admin".equalsIgnoreCase(loginId)) {
+	        // 관리자가 삭제한 경우: 세션을 유지하고 회원 리스트로 이동
+	        return "redirect:/member/memberList";
+	    } else {
+	        // 일반 사용자가 본인 탈퇴한 경우: 세션 무효화 후 홈으로 이동
+	        session.invalidate(); 
+	        return "redirect:/home";
+	    }
 	}
-	
 	
 	@RequestMapping("/member/deleteMembers") // JSP의 form action과 맞춤
 	@Transactional

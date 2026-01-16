@@ -34,28 +34,32 @@ public class orderService {
     // 1. 주문 실행 로직 (기존 유지)
     @Transactional
     public void executeOrder(orderRequestDTO oDto, List<cartDTO> cartList, int m_no) {
-        // 1. 주문 메인 저장
+        // 1. 주문 메인 저장 (o_no가 생성됨)
         orderDao.insertOrder(oDto);
 
-        for(cartDTO cart : cartList) {
-            // 2. 재고 차감 시도 및 결과 확인
-            int affectedRows = orderDao.reduceStock(cart.getP_no(), cart.getC_count());
-            
-            if (affectedRows == 0) {
-                throw new RuntimeException("상품 번호 " + cart.getP_no() + "의 재고가 부족합니다.");
+        // [수정] cartList 대신 oDto에 담겨온 orderItems를 사용합니다.
+        // JSP에서 <input name="orderItems[0].p_no">로 보낸 데이터가 여기 들어있습니다.
+        List<orderDetailDTO> items = oDto.getOrderItems();
+
+        if (items != null && !items.isEmpty()) {
+            for (orderDetailDTO item : items) {
+                // 2. 재고 차감 (item에 담긴 p_no와 od_count 사용)
+                int affectedRows = orderDao.reduceStock(item.getP_no(), item.getOd_count());
+                
+                if (affectedRows == 0) {
+                    throw new RuntimeException("상품 번호 " + item.getP_no() + "의 재고가 부족합니다.");
+                }
+
+                // 3. 주문 상세 저장
+                item.setO_no(oDto.getO_no()); 
+                // item.getOd_price()에는 JSP에서 보낸 가격이 이미 들어있음
+                orderDao.insertOrderDetail(item);
             }
-
-            // 3. 주문 상세 저장
-            orderDetailDTO detail = new orderDetailDTO();
-            detail.setO_no(oDto.getO_no());
-            detail.setP_no(cart.getP_no());
-            detail.setOd_count(cart.getC_count());
-            detail.setOd_price(cart.getP_price());
-            orderDao.insertOrderDetail(detail);
         }
-
-        // 4. 장바구니 비우기
-        cartDao.deleteCartAllDao(m_no);
+        // 4. 장바구니 비우기 (cartList가 null이 아닐 때만 실행 - 즉, 장바구니 구매일 때만)
+        if (cartList != null && !cartList.isEmpty()) {
+            cartDao.deleteCartAllDao(m_no);
+        }
     }
 
     // 2. 실제 결제 취소(환불) 로직 (통합 수정본)

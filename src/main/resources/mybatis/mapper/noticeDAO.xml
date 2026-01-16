@@ -22,7 +22,7 @@
 	<insert id="n_insertDao">
     <!-- DB컬럼: n_no, n_title, n_text, n_image, n_date -->
     INSERT INTO notice (n_no, n_title, n_text, n_image, n_date)
-    VALUES (notice_seq.nextval, #{n_title}, #{n_text}, #{n_image_name}, SYSDATE)
+    VALUES (notice_seq.nextval, #{n_title}, #{n_text}, #{n_image_name, jdbcType=VARCHAR}, SYSDATE)
 	</insert>
 
 	<update id="n_updateDao">

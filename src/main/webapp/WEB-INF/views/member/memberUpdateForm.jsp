@@ -10,7 +10,39 @@
     <title>회원정보 수정</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/memberWrite.css">
 <style>
+/* 모달 배경: 화면 전체를 반투명하게 덮음 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+    display: flex;                  /* 유연한 박스 모델 사용 */
+    justify-content: center;        /* 가로 중앙 정렬 */
+    align-items: center;            /* 세로 중앙 정렬 */
+    z-index: 9999;                  /* 다른 요소보다 항상 위에 표시 */
+}
 
+/* 모달 박스 스타일 */
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    width: 350px;                   /* 모달 너비 설정 */
+    text-align: center;
+}
+
+/* 입력창 및 버튼 간격 조절 */
+.modal-content h3 { margin-bottom: 20px; }
+.modal-content input { 
+    width: 100%; 
+    padding: 10px; 
+    margin-bottom: 10px; 
+    box-sizing: border-box; 
+}
+.modal-buttons { margin-top: 15px; }
 </style>
 </head>
 <body>
@@ -62,16 +94,17 @@
                     <td><input type="text" name="m_birth" value="${onlyDate}" maxlength="8" placeholder="예: 19950101"></td>
                 </tr>
                 <tr>
-                    <td>연락처</td>
-                    <td>
-                        <select name="m_tel1">
-                            <option value="010" ${fn:startsWith(edit.m_tel,'010')?'selected':''}>010</option>
-                            <option value="011" ${fn:startsWith(edit.m_tel,'011')?'selected':''}>011</option>
-                        </select>-
-                        <input type="text" name="m_tel2" size="4" value="">- 
-						<input type="text" name="m_tel3" size="4" value="">
-                    </td>
-                </tr>
+				    <td>연락처</td>
+				    <td>
+				        <select name="m_tel1">
+				            <option value="010" ${phone1 == '010' ? 'selected' : ''}>010</option>
+				            <option value="011" ${phone1 == '011' ? 'selected' : ''}>011</option>
+				        </select>-
+				        <!-- 컨트롤러에서 보낸 phone2, phone3 값을 value에 넣습니다 -->
+				        <input type="text" name="m_tel2" size="4" value="${phone2}" maxlength="4">- 
+				        <input type="text" name="m_tel3" size="4" value="${phone3}" maxlength="4">
+				    </td>
+				</tr>
                 <tr>
                     <td>주소</td>
                     <td>
@@ -127,8 +160,8 @@
 					        <input type="password" id="new_m_pwd" placeholder="새 비밀번호 입력">
 					        <input type="password" id="new_m_pwd_check" placeholder="새 비밀번호 확인">
 					        <div class="modal-buttons">
-					            <button type="button" onclick="updatePassword()">변경</button>
-					            <button type="button" onclick="closePwUpdateModal()">취소</button>
+					            <button type="button"  onclick="updatePassword()">변경</button>
+					            <button type="button"  onclick="closePwUpdateModal()">취소</button>
 					        </div>
 					    </div>
 					</div>
@@ -153,26 +186,32 @@
 	}
 		
 	function updatePassword() {
-		 const pw = document.getElementById('new_m_pwd').value;
-		 const pwCheck = document.getElementById('new_m_pwd_check').value;
-		
-		 if(!pw) { alert("새 비밀번호를 입력하세요."); return; }
-		 if(pw !== pwCheck) { alert("비밀번호가 일치하지 않습니다."); return; }
-		
-		 // AJAX로 비밀번호만 즉시 수정
-		 fetch('/member/updatePwOnly', {
-		     method: 'POST',
-		     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-		     body: 'm_pwd=' + encodeURIComponent(pw) + '&m_no=${edit.m_no}'
-		 })
-		   .then(response => response.json())
-		   .then(data => {
-		if(data.success) {
-		    alert("비밀번호가 변경되었습니다.");
-		    document.getElementById('pwStatus').innerText = "✔ 변경완료";
-		    closePwUpdateModal();
-			  }
-		});
+	    const pw = document.getElementById('new_m_pwd').value;
+	    const pwCheck = document.getElementById('new_m_pwd_check').value;
+	    const m_no = document.getElementsByName('m_no')[0].value; // hidden 필드에서 m_no 가져오기
+
+	    if(!pw) { alert("새 비밀번호를 입력하세요."); return; }
+	    if(pw !== pwCheck) { alert("비밀번호가 일치하지 않습니다."); return; }
+
+	    // AJAX 요청
+	    fetch('/member/updatePwOnly', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/x-www-form-urlencoded',
+	        },
+	        body: "m_no=" + m_no + "&m_pwd=" + encodeURIComponent(pw)
+	    })
+	    .then(response => response.text())
+	    .then(data => {
+	        if(data === "success") {
+	            alert("비밀번호가 성공적으로 변경되었습니다.");
+	            document.getElementById('pwStatus').innerText = "비밀번호 변경됨";
+	            closePwUpdateModal();
+	        } else {
+	            alert("변경에 실패했습니다.");
+	        }
+	    })
+	    .catch(error => console.error('Error:', error));
 	}
     </script>
 

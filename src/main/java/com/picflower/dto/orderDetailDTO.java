@@ -9,4 +9,7 @@ public class orderDetailDTO {
     private int p_no;
     private int od_count;
     private int od_price;
+    private String p_title; // 
+    public String getP_title() { return p_title; }
+    public void setP_title(String p_title) { this.p_title = p_title; }
 }

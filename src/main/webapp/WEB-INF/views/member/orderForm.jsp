@@ -141,12 +141,10 @@ function jusoCallBack(roadFullAddr, roadAddrPart1, addrDetail, roadAddrPart2, en
   <main class="order-container"> 
     <form action="/member/orderProcess" method="post" class="order-form">
 	  	<!-- 금액 정보를 담는 유일한 input 필드 -->
-		<input type="hidden" name="o_total_price"  id="o_total_price" value="50000"> 
+		<input type="hidden" name="o_total_price"  id="o_total_price" value="${totalMoney}"> 
 		
         <input type="hidden" name="isDirectOrder" value="${isDirectOrder}">
         
-        <!-- [추가됨] 결제 완료 후 JavaScript에서 imp_uid를 채워 넣을 필드 -->
-        <input type="hidden" name="imp_uid" id="imp_uid_input" value="">
 	
 		<div class="section-header" style="display: flex; align-items: center; justify-content: space-between; margin-top: 30px;">
 	    <h3 style="margin: 0;">배송 정보</h3>

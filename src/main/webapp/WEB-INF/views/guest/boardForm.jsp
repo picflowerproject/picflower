@@ -112,7 +112,7 @@
 			 <div class="submit-btn-wrapper">
 			    <input type="button" value="등록" class="btn-submit" onclick="submitReview()">
 			    <!-- 취소 버튼 추가 -->
-   				<input type="button" value="취소" class="btn-cancel" onclick="resetReviewForm()">
+   				<input type="button" value="취소" class="btn-submit" onclick="resetReviewForm()">
 			 </div>
 			 
 		</form>

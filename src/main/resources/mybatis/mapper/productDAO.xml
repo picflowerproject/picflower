@@ -11,7 +11,7 @@
                 AND p_category = #{p_category}
             </if>
         </where>
-        ORDER BY p_no DESC
+        ORDER BY p_no
     </select>
     
     <!-- 2. 상품 등록: p_status는 기본값이 있으므로 기존 유지 (또는 명시적 추가) -->
@@ -43,7 +43,7 @@
                 <if test="p_category != null and p_category != ''">
                     AND p_category = #{p_category}
                 </if>
-                ORDER BY p_no DESC
+                ORDER BY p_no
             ) p
         ) WHERE rnum BETWEEN #{start} AND #{end}
     </select>

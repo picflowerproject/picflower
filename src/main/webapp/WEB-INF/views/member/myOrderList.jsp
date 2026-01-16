@@ -11,11 +11,15 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 function cancelOrder(btn) {
-    console.log("dataset =", btn.dataset);
-    console.log("imp_uid =", btn.dataset.impUid);
-
-    const imp_uid = btn.dataset.impUid;
+    // 1. 쉼표 제거 로직 추가
+    let imp_uid = btn.dataset.impUid;
+    if (imp_uid && imp_uid.startsWith(',')) {
+        imp_uid = imp_uid.replace(/^,+/, ''); // 앞부분의 모든 쉼표 제거
+    }
+    
     const o_no = btn.dataset.oNo;
+
+    console.log("수정된 imp_uid =", imp_uid); // 쉼표가 제거되었는지 확인
 
     if (!imp_uid || !o_no) {
         alert("결제 정보가 올바르지 않습니다.");
@@ -28,10 +32,11 @@ function cancelOrder(btn) {
         url: '/member/orderCancel',
         method: 'POST',
         data: {
-            imp_uid: imp_uid,
+            imp_uid: imp_uid, // 정제된 데이터 전송
             o_no: o_no
         },
         success: function(response) {
+        	console.log("Server Response:", response);
             if (response === 'success') {
                 alert('주문 취소 완료');
                 location.reload(); // 화면 새로고침

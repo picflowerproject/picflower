@@ -6,6 +6,12 @@
     <title>회원가입</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/memberwrite.css">
     <!-- 외부 CDN을 사용하여 MIME 타입 에러 및 로드 실패 방지 -->
+    
+<script src="${pageContext.request.contextPath}/js/memberValidation.js"></script>
+    
+ <script>
+ 
+ </script>
 </head>
 <body>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>

@@ -27,7 +27,7 @@ public class ChatService {
     }
 
     // 1. 엔드포인트 URL 전체 경로 입력 (v1beta 또는 v1)
-    private final String URL = "generativelanguage.googleapis.com";
+    private final String URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";;
 
     // 2. 리소스 로더를 이용한 안전한 파일 읽기
     private String loadProductJson() {

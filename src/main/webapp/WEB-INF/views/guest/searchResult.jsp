@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,6 +23,8 @@
   <section class="sr-section">
     <div class="sr-section-head">
       <h3>상품 (<c:out value="${pTotal}"/>)</h3>
+      
+     
     </div>
 
     <c:choose>
@@ -38,7 +41,13 @@
                     <div class="sr-noimg">NO IMAGE</div>
                   </c:when>
                   <c:otherwise>
-                    <img src="<c:out value='${p.p_image}'/>" alt="img">
+                    <%-- p_image를 콤마(,) 기준으로 나누어 배열(imgArray)로 만듦 --%>
+					<c:set var="imgArray" value="${fn:split(p.p_image, ',')}" />
+					
+					<%-- 배열의 첫 번째 요소(0번)만 출력 --%>
+					<c:if test="${not empty imgArray[0]}">
+					    <img src="/product_img/${imgArray[0]}" alt="img" style="width:100px; height:100px;">
+					</c:if>
                   </c:otherwise>
                 </c:choose>
               </div>

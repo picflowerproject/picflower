@@ -59,8 +59,9 @@ public class orderController {
     public String orderProcess(
         @ModelAttribute("oDto") orderRequestDTO oDto,
         @RequestParam("imp_uid") String imp_uid,
-        // 바로구매인지 확인하기 위한 파라미터 추가
         @RequestParam(value="isDirectOrder", required=false, defaultValue="false") boolean isDirectOrder,
+        @RequestParam(value="p_no", required=false, defaultValue="0") int p_no, // 바로구매용 상품번호
+        @RequestParam(value="o_count", required=false, defaultValue="0") int o_count, // 바로구매용 수량
         Principal principal, 
         Model model) {
         
@@ -72,13 +73,22 @@ public class orderController {
         if (mDto != null) {
             oDto.setM_no(mDto.getM_no());
             
-            // [중요] 바로구매일 경우 장바구니 리스트를 비우지 않도록 처리
-            List<cartDTO> cartList = null;
-            if (!isDirectOrder) {
+            List<cartDTO> cartList = new ArrayList<>(); // null 대신 빈 리스트로 초기화
+
+            if (isDirectOrder) {
+                // [방법 A] 바로구매 시: 전달받은 정보를 리스트에 1개 추가
+                cartDTO directItem = new cartDTO();
+                directItem.setP_no(p_no);
+                directItem.setC_count(o_count);
+                
+                // 만약 서비스에서 가격 정보 등이 더 필요하다면 추가 세팅
+                cartList.add(directItem);
+            } else {
+                // [방법 B] 장바구니 구매 시: 기존처럼 DB에서 가져옴
                 cartList = cartDao.listCartDao(mDto.getM_no());
             }
             
-            // 서비스 호출 (서비스 내부에서 cartList가 null이면 장바구니 삭제 로직 건너뜀)
+            // 이제 cartList는 절대 null이 아니므로 서비스에서 에러가 나지 않습니다.
             orderService.executeOrder(oDto, cartList, mDto.getM_no());
 
             model.addAttribute("order", oDto);

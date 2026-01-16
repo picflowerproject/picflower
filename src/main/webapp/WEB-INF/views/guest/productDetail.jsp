@@ -61,28 +61,31 @@ function addToCart() {
 	
 	function directOrder() {
 	    const form = document.getElementById('orderForm');
-	    const countInput = document.getElementById('o_count'); // <input id="o_count" ...> 찾기
+	    const countInput = document.getElementById('o_count');
 	    
-	    // 1. 입력값이 있는지 확인 (에러 방지)
 	    if(!countInput || !countInput.value) {
 	        alert("수량을 확인해주세요.");
 	        return;
 	    }
 
-	    // 2. 비로그인 처리 (Spring Security 인증 확인)
-	    <sec:authorize access="isAnonymous()">
-	        if(confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
-	            location.href = "/guest/loginForm";
-	        }
-	        return; // 로그인 안 되어 있으면 여기서 중단
-	    </sec:authorize>
-	 // 1. 가격 정보 가져오기 (문자열에서 콤마 제거 후 숫자로 변환)
-	    const priceText = "${detail.p_price}"; // 2026년 기준 JSP 변수값
-	    const price = parseInt(priceText.replace(/[^0-9]/g, ''));
-	    const count = parseInt(countInput.value);
+	    // 1. 가격 정보 가져오기 (가장 안전한 방법: HTML 태그의 텍스트에서 추출)
+	    // ${detail.p_price}가 null이거나 포맷팅되어 깨질 경우를 대비해 화면에 표시된 숫자를 읽습니다.
+	    const priceElement = document.querySelector('.price-text');
+	    let priceText = priceElement ? priceElement.innerText : "${detail.p_price}";
+	    
+	    // 숫자 외의 모든 문자(콤마, 원 등) 제거 후 정수 변환
+	    const price = parseInt(priceText.replace(/[^0-9]/g, '')) || 0;
+	    const count = parseInt(countInput.value) || 1;
 	    const totalPrice = price * count;
 
-	    // 2. 총 결제 금액을 담을 hidden input 생성 (이미 있다면 값만 변경)
+	    console.log("읽어온 가격:", price, "수량:", count, "최종 금액:", totalPrice);
+
+	    if(totalPrice <= 0) {
+	        alert("결제 금액 계산에 실패했습니다. 다시 시도해주세요.");
+	        return;
+	    }
+
+	    // 2. 총 결제 금액 hidden 필드 생성/수정
 	    let totalInput = form.querySelector('input[name="o_total_price"]');
 	    if(!totalInput) {
 	        totalInput = document.createElement('input');
@@ -92,11 +95,10 @@ function addToCart() {
 	    }
 	    totalInput.value = totalPrice;
 
-	    // 3. 목적지 및 필드명 변경
+	    // 3. 목적지 변경 및 전송
 	    form.action = "/member/directOrderForm"; 
+	    // 장바구니와 충돌을 피하기 위해 name 속성을 o_count로 변경
 	    countInput.setAttribute("name", "o_count"); 
-	    
-	    console.log("전송 데이터 - 상품번호:", form.p_no.value, "총액:", totalPrice);
 	    
 	    form.submit();
 	}
