@@ -328,7 +328,7 @@ async function sendMsg() {
             location.href = "/guest/loginForm";
         }
     } catch (e) {
-        alert("서버 통신 중 오류가 발생했습니다.");
+        alert("로그인이 필요한 서비스입니다.");
     }
 }
 

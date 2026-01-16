@@ -24,4 +24,6 @@ public class productDTO {
 	private Date p_date;
 	private Integer m_no;
 	private Integer h_no;
+	
+	private String p_status;
 }

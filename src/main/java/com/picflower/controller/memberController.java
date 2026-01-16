@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -104,11 +105,6 @@ public class memberController {
 	    }
 	    
 	    return "home";
-	}
-	
-	@RequestMapping("/guest/loginForm")
-	public String loginForm() {
-		return "guest/loginForm";
 	}
 	
 	@RequestMapping("/guest/findPassword")
@@ -205,7 +201,7 @@ public class memberController {
 	
 	@GetMapping("/member/memberDetailId")
 	public String memberDetail(Principal principal, Model model) {
-	    if (principal == null) return "redirect:/guest/loginForm";
+	    if (principal == null) return "redirect:/home";
 
 	    // 1. principal.getName()은 일반 로그인은 아이디, 카카오는 고유번호를 반환함
 	    String loginId = principal.getName(); 
@@ -223,7 +219,7 @@ public class memberController {
 	        model.addAttribute("orderList", orderList);
 	    } else {
 	        // 혹시라도 DB에 정보가 없으면 가입 유도
-	        return "redirect:/guest/loginForm";
+	        return "redirect:/home";
 	    }
 
 	    return "member/memberDetail"; 
@@ -367,13 +363,22 @@ public class memberController {
 	}
 	
 	@RequestMapping("/member/memberDelete")
-	public String memberDelete(HttpServletRequest request) {
+	@Transactional
+	public String memberDelete(HttpServletRequest request, HttpSession session) {
 		int m_no = Integer.parseInt(request.getParameter("m_no"));
+		
+		// 1. 자식 테이블들 데이터 이관 (m_no를 0으로 변경)
+	    dao.updateChildRecords(m_no);
 		dao.memberDeleteDao(m_no);
+		
+		session.invalidate(); 
+		
 		return "redirect:/home";
 	}
 	
+	
 	@RequestMapping("/member/deleteMembers") // JSP의 form action과 맞춤
+	@Transactional
 	   public String deleteMembers(HttpServletRequest request) {
 	       // name="m_nos"로 전송된 모든 체크박스 값을 배열로 받음
 	       String[] m_nos = request.getParameterValues("m_nos");
@@ -381,6 +386,9 @@ public class memberController {
 	       if (m_nos != null) {
 	           for (String m_no_str : m_nos) {
 	               int m_no = Integer.parseInt(m_no_str);
+	               
+	               // 1. 해당 유저의 자식 데이터들 처리
+	               dao.updateChildRecords(m_no);
 	               // 기존에 만드신 단일 삭제 DAO를 반복문으로 호출
 	               dao.memberDeleteDao(m_no);
 	           }

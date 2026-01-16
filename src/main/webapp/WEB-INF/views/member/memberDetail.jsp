@@ -83,6 +83,13 @@ function validatePw(inputPw) {
         }
     });
 }
+
+function withdrawMember(m_no) {
+    if (confirm("정말로 탈퇴하시겠습니까?\n탈퇴 시 작성하신 게시글과 주문 내역은 '탈퇴사용자'로 전환됩니다.")) {
+        // 탈퇴 처리 컨트롤러로 이동 (m_no 파라미터 전송)
+        location.href = "/member/memberDelete?m_no=" + m_no;
+    }
+}
 </script>
 
 </head>
@@ -148,16 +155,20 @@ function validatePw(inputPw) {
 			        <button type="button" class="btn-admin-list" onclick="location.href='/admin/memberList'">회원목록</button>
 			    </sec:authorize>
 			
-			    <!-- 정보수정 버튼 -->
+			    <!-- 정보수정 및 회원탈퇴 버튼 -->
 			    <sec:authorize access="isAuthenticated()">
 			        <sec:authentication property="name" var="currentId" /> 
 			        <c:if test="${currentId == detail.m_id}">
-			            <%-- 현재 로그인한 객체가 OAuth2 유저인지 판별 (카카오 등) --%>
 			            <sec:authentication property="principal" var="principal" />
 			            <c:set var="isSocial" value="${fn:contains(principal.getClass().name, 'OAuth2')}" />
 			            
-			            <%-- 판단된 결과를 handleEditClick에 전달 (true 또는 false) --%>
+			            <!-- 정보수정 버튼 -->
 			            <button type="button" class="btn-lavender" onclick="handleEditClick(${isSocial})">정보수정</button>
+			            
+			            <!-- 회원탈퇴 버튼 추가 -->
+			            <button type="button" class="btn-delete" onclick="withdrawMember(${detail.m_no})">
+			                회원탈퇴
+			            </button>
 			        </c:if>
 			    </sec:authorize>
 			</div>

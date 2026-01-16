@@ -68,8 +68,8 @@
                             <option value="010" ${fn:startsWith(edit.m_tel,'010')?'selected':''}>010</option>
                             <option value="011" ${fn:startsWith(edit.m_tel,'011')?'selected':''}>011</option>
                         </select>-
-                        <input type="text" name="m_tel2" size="2" maxlength="4" value="${edit.m_tel.substring(4,8)}">-
-                        <input type="text" name="m_tel3" size="2" maxlength="4" value="${edit.m_tel.substring(9,13)}">
+                        <input type="text" name="m_tel2" size="4" value="">- 
+						<input type="text" name="m_tel3" size="4" value="">
                     </td>
                 </tr>
                 <tr>
@@ -86,7 +86,7 @@
                 <tr>
                     <td>이메일</td>
                     <td>
-                        <input type="text" name="m_email1" value="${edit.m_email.substring(0, edit.m_email.indexOf('@'))}">@
+                        <input type="text" name="m_email1" value="${fn:split(edit.m_email, '@')[0]}">@
                         <select name="m_email2">
                             <option value="gmail.com" ${fn:contains(edit.m_email,'gmail.com')?'selected':''}>gmail.com</option>
                             <option value="naver.com" ${fn:contains(edit.m_email,'naver.com')?'selected':''}>naver.com</option>

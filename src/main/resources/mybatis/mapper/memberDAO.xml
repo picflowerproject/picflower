@@ -38,6 +38,7 @@
 	<select id="memberViewDao" resultType="com.picflower.dto.memberDTO">
 		select * from member where m_no=#{param1}
 	</select>
+	
 	<!-- 비밀번호만 단독 변경 -->
 	<update id="updatePassword">
 	    UPDATE member 
@@ -60,9 +61,26 @@
         m_no = #{m_no}
 	</update>
 	
+	<!-- 자식 테이블들의 m_no를 0(임의값)으로 변경 -->
+	<update id="updateChildRecords">
+	   BEGIN
+ 		DELETE FROM board_like WHERE m_no = #{m_no};
+        DELETE FROM cart WHERE m_no = #{m_no};	   
+	    
+	    UPDATE flower SET m_no = 0 WHERE m_no = #{m_no};
+	    UPDATE product SET m_no = 0 WHERE m_no = #{m_no};
+	    UPDATE cart SET m_no = 0 WHERE m_no = #{m_no};
+	    UPDATE orders SET m_no = 0 WHERE m_no = #{m_no};
+	    UPDATE board SET m_no = 0 WHERE m_no = #{m_no};
+	    UPDATE reply SET m_no = 0 WHERE m_no = #{m_no};
+	    UPDATE board_like SET m_no = 0 WHERE m_no = #{m_no};
+	   END;
+	</update>
+	
 	<delete id="memberDeleteDao">
 		delete from member where m_no=#{param1}
 	</delete>
+	
 	<select id="findByM_id" resultType="com.picflower.dto.memberDTO">
 	  	SELECT * FROM member WHERE m_id = #{param1} 
 	</select>

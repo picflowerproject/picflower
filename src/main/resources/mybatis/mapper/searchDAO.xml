@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.picflower.dao.ISearchDAO">
+
+  <!-- =========================
+       PRODUCT 검색 (title/subtitle/detail)
+       ========================= -->
+
+  <select id="countProducts" parameterType="string" resultType="int">
+    SELECT COUNT(*)
+    FROM product
+    WHERE (
+      p_title LIKE '%' || #{keyword} || '%'
+      OR p_subtitle LIKE '%' || #{keyword} || '%'
+      OR p_detail LIKE '%' || #{keyword} || '%'
+    )
+  </select>
+
+  <select id="searchProducts" resultType="com.picflower.dto.productDTO">
+    SELECT *
+    FROM (
+      SELECT ROWNUM rn, a.*
+      FROM (
+        SELECT
+          p_no, p_title, p_subtitle, p_price, p_stock, p_category,
+          p_image, p_detail, p_date, m_no, h_no
+        FROM product
+        WHERE (
+          p_title LIKE '%' || #{keyword} || '%'
+          OR p_subtitle LIKE '%' || #{keyword} || '%'
+          OR p_detail LIKE '%' || #{keyword} || '%'
+        )
+        ORDER BY p_no DESC
+      ) a
+      WHERE ROWNUM &lt;= #{end}
+    )
+    WHERE rn &gt;= #{start}
+  </select>
+
+  <!-- =========================
+       BOARD(후기) 검색 (b_text + 상품명)
+       - B_STATUS = 1 만 노출
+       ========================= -->
+
+  <select id="countBoards" parameterType="string" resultType="int">
+    SELECT COUNT(*)
+    FROM board b
+    LEFT JOIN product p ON b.p_no = p.p_no
+    LEFT JOIN member  m ON b.m_no = m.m_no
+    WHERE NVL(b.b_status, 1) = 1
+      AND (
+        b.b_text  LIKE '%' || #{keyword} || '%'
+        OR p.p_title LIKE '%' || #{keyword} || '%'
+      )
+  </select>
+
+  <select id="searchBoards" resultType="com.picflower.dto.boardSearchDTO">
+    SELECT *
+    FROM (
+      SELECT ROWNUM rn, a.*
+      FROM (
+        SELECT
+          b.b_no,
+          b.b_date,
+          b.b_image,
+          b.b_text,
+          b.b_rating,
+          b.b_like,
+          b.p_no,
+          p.p_title,
+          m.m_id
+        FROM board b
+        LEFT JOIN product p ON b.p_no = p.p_no
+        LEFT JOIN member  m ON b.m_no = m.m_no
+        WHERE NVL(b.b_status, 1) = 1
+          AND (
+            b.b_text  LIKE '%' || #{keyword} || '%'
+            OR p.p_title LIKE '%' || #{keyword} || '%'
+          )
+        ORDER BY b.b_no DESC
+      ) a
+      WHERE ROWNUM &lt;= #{end}
+    )
+    WHERE rn &gt;= #{start}
+  </select>
+
+</mapper>

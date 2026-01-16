@@ -49,19 +49,10 @@ function readURL(input) {
     }
 }
 
-function inputNumberFormat(obj) {
-    let value = obj.value.replace(/[^0-9]/g, "");
-    obj.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function handlePriceInput(obj) {
-    // 1. 숫자만 추출
+function handlePriceInput(obj, hiddenId) {
     let rawValue = obj.value.replace(/[^0-9]/g, "");
-    
-    // 2. 숨겨진 필드에 순수 숫자 저장 (서버로 전송될 값)
-    document.getElementById("p_price_hidden").value = rawValue;
-    
-    // 3. 화면 노출용 필드에 콤마 포맷팅
+    // 인자로 받은 hiddenId에 값을 저장
+    document.getElementById(hiddenId).value = rawValue;
     obj.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
@@ -103,12 +94,15 @@ window.onload = function() {
            		 <!-- 서버 전송용 hidden 필드 -->
        			 <input type="hidden" name="p_price" id="p_price_hidden" value="${edit.p_price}">
         		 <!-- 사용자 노출용 필드 (name 제거) -->
-       			 <input type="text" onkeyup="handlePriceInput(this)" value="${edit.p_price}" required>
+       			 <input type="text" onkeyup="handlePriceInput(this, 'p_price_hidden')" value="${edit.p_price}" required>
             </td>
         </tr>
         <tr>
             <td>재고</td>
-            <td><input type="text" name="p_stock" onkeyup="inputNumberFormat(this)" placeholder="재고수량을 입력하세요" value="${edit.p_stock}" required></td>
+            <td>
+				<input type="hidden" name="p_stock" id="p_stock_hidden" value="${edit.p_stock}">   
+            	<input type="text" onkeyup="handlePriceInput(this, 'p_stock_hidden')" placeholder="재고수량을 입력하세요" value="${edit.p_stock}" required>
+            </td>
         </tr>
         <tr>
             <td>분류</td>

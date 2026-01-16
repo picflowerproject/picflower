@@ -103,8 +103,6 @@
         <h2 style="color: #a36cd9; margin-bottom: 30px;">로그인</h2>
         
         <form action="/login" method="post">
-            <%-- CSRF 토큰 (Security 설정에 따라 필요) --%>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             
             <div class="login-input">
                 <input type="text" name="username" placeholder="아이디" required>

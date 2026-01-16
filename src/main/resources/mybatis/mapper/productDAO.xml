@@ -2,47 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.picflower.dao.IproductDAO">
-	<select id="productListDao" resultType="com.picflower.dto.productDTO">
-		select * from product     
-		<where>
-	        <if test="p_category != null">
-	            p_category = #{p_category}
-	        </if>
-	    </where>
-	    ORDER BY p_no DESC
-	</select>
-	<insert id="productWriteDao">
-		insert into product values(product_seq.nextval, #{p_title}, #{p_subtitle}, #{p_price}, #{p_stock}, #{p_category}, #{p_image}, #{p_detail}, sysdate, #{m_no}, null )
-	</insert>
-	<select id="productViewDao" resultType="com.picflower.dto.productDTO">
-		select * from product where p_no=#{param1}
-	</select>
-	<update id="productUpdateDao">
-		update product set p_title = #{p_title}, p_subtitle = #{p_subtitle}, p_price = #{p_price}, p_stock = #{p_stock}, p_category= #{p_category}, p_image = #{p_image}, p_detail = #{p_detail} where p_no = ${p_no}
-	</update>
-	<delete id="productDeleteDao">
-		delete from product where p_no=#{param1}
-	</delete>
-	
-	
-	<!-- 1. 페이지 범위만큼 상품 가져오기 -->
-		<select id="productListPagedDao" resultType="com.picflower.dto.productDTO">
-		    SELECT * FROM (
-		        SELECT rownum rnum, p.* FROM (
-		            SELECT * FROM product
-		            <if test="p_category != null and p_category != ''">
-		                WHERE p_category = #{p_category}
-		            </if>
-		            ORDER BY p_no
-		        ) p
-		    ) WHERE rnum BETWEEN #{start} AND #{end}
-		</select>
-		
-		<!-- 2. 전체 상품 개수 (페이지 번호 생성용) -->
-		<select id="getTotalCountDao" resultType="int">
-		    SELECT COUNT(*) FROM product
-		    <if test="p_category != null and p_category != ''">
-		        WHERE p_category = #{p_category}
-		    </if>
-		</select>
+    <!-- 1. 목록 조회: '판매중'인 상품만 가져오도록 수정 -->
+    <select id="productListDao" resultType="com.picflower.dto.productDTO">
+        SELECT * FROM product     
+        <where>
+            p_status = '판매중'
+            <if test="p_category != null">
+                AND p_category = #{p_category}
+            </if>
+        </where>
+        ORDER BY p_no DESC
+    </select>
+    
+    <!-- 2. 상품 등록: p_status는 기본값이 있으므로 기존 유지 (또는 명시적 추가) -->
+    <insert id="productWriteDao">
+        INSERT INTO product (p_no, p_title, p_subtitle, p_price, p_stock, p_category, p_image, p_detail, p_date, m_no, h_no, p_status)
+        VALUES (product_seq.nextval, #{p_title}, #{p_subtitle}, #{p_price}, #{p_stock}, #{p_category}, #{p_image}, #{p_detail}, sysdate, #{m_no}, null, '판매중' )
+    </insert>
+
+    <!-- 3. 상세 보기: 삭제된 상품은 조회되지 않도록 조건 추가 -->
+    <select id="productViewDao" resultType="com.picflower.dto.productDTO">
+        SELECT * FROM product WHERE p_no=#{param1} AND p_status = '판매중'
+    </select>
+    
+    <update id="productUpdateDao">
+        UPDATE product SET p_title = #{p_title}, p_subtitle = #{p_subtitle}, p_price = #{p_price}, p_stock = #{p_stock}, p_category= #{p_category}, p_image = #{p_image}, p_detail = #{p_detail} WHERE p_no = #{p_no}
+    </update>
+
+    <!-- 4. [핵심 수정] 실제 DELETE 대신 UPDATE 실행 -->
+    <update id="productDeleteDao">
+        UPDATE product SET p_status = '삭제됨' WHERE p_no = #{param1}
+    </update>
+    
+    <!-- 5. 페이징 목록: '판매중' 조건 추가 -->
+    <select id="productListPagedDao" resultType="com.picflower.dto.productDTO">
+        SELECT * FROM (
+            SELECT rownum rnum, p.* FROM (
+                SELECT * FROM product
+                WHERE p_status = '판매중'
+                <if test="p_category != null and p_category != ''">
+                    AND p_category = #{p_category}
+                </if>
+                ORDER BY p_no DESC
+            ) p
+        ) WHERE rnum BETWEEN #{start} AND #{end}
+    </select>
+    
+    <!-- 6. 전체 개수: '판매중'인 상품만 카운트 -->
+    <select id="getTotalCountDao" resultType="int">
+        SELECT COUNT(*) FROM product
+        WHERE p_status = '판매중'
+        <if test="p_category != null and p_category != ''">
+            AND p_category = #{p_category}
+        </if>
+    </select>
 </mapper>

@@ -167,16 +167,15 @@ function jusoCallBack(roadFullAddr, roadAddrPart1, addrDetail, roadAddrPart2, en
 		        <input type="text" name="o_tel" id="o_tel" required>
 		    </div>
 		    <div class="input-row">
-				    <label>주소</label>
-				    <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-				        <!-- o_addr은 API가 주는 도로명주소를 담습니다 -->
-				        <input type="text" name="o_addr" id="o_addr" class="full-width" readonly required placeholder="주소 검색을 눌러주세요">
-				        <button type="button" onclick="goAddrPopup()" class="btn-sub" style="white-space: nowrap;">주소 검색</button>
-				    </div>
-				    <!-- 상세주소를 따로 입력받는 필드 -->
-				    <input type="text" id="o_addr_detail" class="full-width" placeholder="상세 주소를 입력해주세요">
-				</div>
-		</div>
+			    <label>주소</label>
+			    <div class="address-group">
+			        <!-- o_addr은 API가 주는 도로명주소를 담습니다 -->
+			        <input type="text" name="o_addr" id="o_addr" readonly required placeholder="주소 검색을 눌러주세요">
+			        <button type="button" onclick="goAddrPopup()" class="btn-sub">주소 검색</button>
+			    </div>
+			    <!-- 상세주소 필드 -->
+			    <input type="text" id="o_addr_detail" class="full-width" placeholder="상세 주소를 입력해주세요">
+			</div>
 	
 		<h3>주문 상품 확인</h3>
 		

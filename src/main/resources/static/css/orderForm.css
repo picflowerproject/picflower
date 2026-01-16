@@ -130,6 +130,50 @@ body {
     color: #333;
 }
 
+.address-group {
+    display: flex;
+    gap: 8px; /* 버튼과 입력창 사이 간격 */
+    margin-bottom: 10px;
+    align-items: stretch; /* 버튼과 입력창 높이 통일 */
+}
+
+#o_addr {
+    flex: 1; /* 주소창이 남은 공간을 모두 차지 */
+    background-color: #f1f3f5; /* 읽기 전용 느낌을 주는 배경색 */
+    cursor: not-allowed;
+}
+
+/* 주소 검색 버튼 디자인 */
+.btn-sub {
+    width: 100px;
+    padding: 0 15px;
+    background-color: #673ab7; /* 테마 보라색 적용 */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-sub:hover {
+    background-color: #512da8; /* 호버 시 조금 더 어두운 보라색 */
+}
+
+.btn-sub:active {
+    transform: translateY(1px); /* 클릭 시 눌리는 효과 */
+}
+
+/* 상세 주소 입력창 (두 번째 줄) */
+#o_addr_detail {
+    background-color: #fff; /* 상세주소는 입력 가능하므로 흰색 */
+}
+
 .payment-buttons {
     display: flex;
     gap: 10px;

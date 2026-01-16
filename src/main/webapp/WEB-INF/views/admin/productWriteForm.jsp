@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <title>상품 등록</title>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/productWriteForm.css">
-<link rel="stylesheet" href="cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com">
 <script src="${pageContext.request.contextPath}/js/productWriteForm.js"></script>
 <script>
 function readURL(input) {
@@ -38,6 +38,13 @@ function readURL(input) {
     }
 }
 
+
+function handlePriceInput(obj, hiddenId) {
+    let rawValue = obj.value.replace(/[^0-9]/g, "");
+    // 인자로 받은 hiddenId에 값을 저장
+    document.getElementById(hiddenId).value = rawValue;
+    obj.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 </script>
 </head>
 <body>
@@ -58,11 +65,19 @@ function readURL(input) {
             </tr>
             <tr>
                 <td>가격</td>
-                <td><input type="text" name="p_price" onkeyup="inputNumberFormat(this)" placeholder="숫자만 입력하세요" required></td>
+				<td>
+				    <!-- 화면 노출용: name을 제거하거나 p_price_display로 변경하여 서버 전송 방지 -->
+				    <input type="text" id="p_price_display" onkeyup="handlePriceInput(this, 'p_price_hidden')" placeholder="숫자만 입력하세요" required>
+				    <!-- 서버 전송용: 실제 DB에 들어갈 숫자만 담기는 필드 -->
+				    <input type="hidden" name="p_price" id="p_price_hidden">
+				</td>
             </tr>
              <tr>
                 <td>재고</td>
-                <td><input type="text" name="p_stock" onkeyup="inputNumberFormat(this)" placeholder="재고수량을 입력하세요" value="1000" required></td>
+                <td>
+                	<input type="text" id="p_stock_display" onkeyup="handlePriceInput(this, 'p_stock_hidden')" placeholder="재고수량을 입력하세요" value="1000" required>
+					<input type="hidden" name="p_stock" id="p_stock_hidden">               	
+                </td>
             </tr>
             <tr>
                 <td>분류</td>

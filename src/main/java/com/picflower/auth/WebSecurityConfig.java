@@ -34,13 +34,18 @@ public class WebSecurityConfig {
             );
 
         // 폼 로그인
+        // 폼 로그인 설정 수정
         http.formLogin((formLogin) -> formLogin
                 .loginPage("/guest/loginForm")
-                .loginProcessingUrl("/j_spring_security_check")
-                .usernameParameter("j_username")
-                .passwordParameter("j_password")
+                // [수정] JSP의 <form action="/login"> 과 일치시킴
+                .loginProcessingUrl("/login") 
+                // [수정] JSP의 <input name="username"> 과 일치시킴
+                .usernameParameter("username")
+                // [수정] JSP의 <input name="password"> 과 일치시킴
+                .passwordParameter("password")
                 .defaultSuccessUrl("/", true)
-                .failureUrl("/home") // 경로 수정
+                // [팁] 실패 시 로그인 폼으로 다시 가도록 수정
+                .failureUrl("/guest/loginForm?error=true")
                 .permitAll()
         );
 
