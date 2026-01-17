@@ -1,54 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper 
-	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.picflower.dao.InoticeDAO">
 
-	<resultMap id="NoticeResultMap" type="com.picflower.dto.noticeDTO">
-        <id property="n_no" column="n_no" />
-        <result property="n_title" column="n_title" />
-        <result property="n_text" column="n_text" />
-        <result property="n_date" column="n_date" />
-        <!-- DB의 n_image 컬럼을 DTO의 n_image_name 필드에 매핑 -->
-        <result property="n_image_name" column="n_image" />
-    </resultMap>
-    
-	<!-- resultType="com.picflower.dto.NoticeDTO" 부분을 resultMap="NoticeResultMap" 으로 변경 -->
-	<select id="n_listDao" resultMap="NoticeResultMap"> 
-    SELECT n_no, n_title, n_text, n_date, n_image 
-    FROM notice 
-    ORDER BY n_no DESC
-	</select>
-	<insert id="n_insertDao">
-    <!-- DB컬럼: n_no, n_title, n_text, n_image, n_date -->
-    INSERT INTO notice (n_no, n_title, n_text, n_image, n_date)
-    VALUES (notice_seq.nextval, #{n_title}, #{n_text}, #{n_image_name, jdbcType=VARCHAR}, SYSDATE)
-	</insert>
+    <!-- [수정] 목록 조회 시 n_text 제외 (데이터 용량 과부하 방지) -->
+    <select id="n_listDao" resultType="com.picflower.dto.noticeDTO"> 
+        SELECT n_no, n_title, n_date 
+        FROM notice 
+        ORDER BY n_no DESC
+    </select>
 
-	<update id="n_updateDao">
-	    UPDATE notice 
-	    SET n_title = #{n_title}, 
-	        n_text = #{n_text}, 
-	        n_image = #{n_image_name},
-	        n_date = SYSDATE
-	    WHERE n_no = #{n_no}
-	</update>
-	<delete id="n_deleteDao">
-		delete notice where n_no=#{n_no}
-	</delete>
-	
-	<!--페이지-->
-	<!-- 1. 전체 게시글 개수 조회 (페이지 번호 계산용) -->
-	<select id="getTotalCount" resultType="int">
-	    SELECT COUNT(*) FROM notice
-	</select>
-	
-	<!-- 2. 페이징된 리스트 조회 -->
-	<!-- resultMap="NoticeResultMap"을 적용해야 n_image 컬럼이 n_image_name 필드에 올바르게 들어갑니다. -->
-	<select id="n_listPagedDao" resultMap="NoticeResultMap">
-	    SELECT n_no, n_title, n_text, n_date, n_image 
-	    FROM notice 
-	    ORDER BY n_no DESC 
-	    OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
-	</select>
+    <!-- 페이징 리스트 조회 시 n_text 제외 -->
+    <select id="n_listPagedDao" resultType="com.picflower.dto.noticeDTO">
+        SELECT n_no, n_title, n_text, n_date 
+        FROM notice 
+        ORDER BY n_no DESC 
+        OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+    </select>
+
+    <!-- [유지] 공지 입력 -->
+    <insert id="n_insertDao">
+        INSERT INTO notice (n_no, n_title, n_text, n_date)
+        VALUES (
+            notice_seq.nextval, 
+            #{n_title, jdbcType=VARCHAR}, 
+            #{n_text, jdbcType=CLOB}, 
+            SYSDATE
+        )
+    </insert>
+
+    <!-- [유지] 공지 수정 -->
+    <update id="n_updateDao">
+        UPDATE notice 
+        SET n_title = #{n_title, jdbcType=VARCHAR}, 
+            n_text = #{n_text, jdbcType=CLOB}, 
+            n_date = SYSDATE
+        WHERE n_no = #{n_no}
+    </update>
+
+    <delete id="n_deleteDao">
+        DELETE FROM notice WHERE n_no = #{n_no}
+    </delete>
+    
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) FROM notice
+    </select>
 </mapper>

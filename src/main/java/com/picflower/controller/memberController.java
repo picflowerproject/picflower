@@ -173,6 +173,14 @@ public class memberController {
 		return "redirect:/home";
 	}
 	
+	// 아이디 중복 체크 
+	@RequestMapping("/guest/idCheck")
+	@ResponseBody // 데이터를 그대로 반환하기 위해 필요
+	public int idCheck(@RequestParam("m_id") String m_id) {
+	    // 0이면 사용 가능, 1이면 중복
+	    return dao.checkIdDao(m_id); 
+	}
+	
 	@RequestMapping("/admin/memberList") 
 	public String memberList(Model model) {
 		model.addAttribute("list", dao.memberListDao());

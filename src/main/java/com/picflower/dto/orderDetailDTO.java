@@ -12,4 +12,6 @@ public class orderDetailDTO {
     private String p_title; // 
     public String getP_title() { return p_title; }
     public void setP_title(String p_title) { this.p_title = p_title; }
+    
+    
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,7 +47,7 @@
 					
 					<%-- 배열의 첫 번째 요소(0번)만 출력 --%>
 					<c:if test="${not empty imgArray[0]}">
-					    <img src="/product_img/${imgArray[0]}" alt="img" style="width:100px; height:100px;">
+					    <img src="/product_img/${imgArray[0]}" alt="img">
 					</c:if>
                   </c:otherwise>
                 </c:choose>
@@ -55,7 +56,9 @@
                 <div class="sr-card-title"><c:out value="${p.p_title}"/></div>
                 <div class="sr-card-sub"><c:out value="${p.p_subtitle}"/></div>
                 <div class="sr-card-foot">
-                  <span class="sr-price"><c:out value="${p.p_price}"/></span>
+                  <span class="sr-price">
+					    <fmt:formatNumber value="${p.p_price}" type="number" />
+					</span>
                   <span class="sr-chip"><c:out value="${p.p_category}"/></span>
                 </div>
               </div>
@@ -113,21 +116,26 @@
               <div class="rv-top">
                 <div class="rv-product">상품: <b><c:out value="${b.p_title}"/></b></div>
                 <div class="rv-meta">
-                  <span class="rv-user"><c:out value="${b.m_id}"/></span>
-                  <span class="rv-date"><c:out value="${b.b_date}"/></span>
+                  
+					<span class="rv-date">
+					    <fmt:formatDate value="${b.b_date}" pattern="yyyy-MM-dd" />
+					</span>
                   <span class="rv-star">★ <c:out value="${b.b_rating}"/></span>
                 </div>
               </div>
 
               <div class="rv-body">
+			    <%-- 이미지 영역 --%>
 			    <c:if test="${not empty b.b_image}">
-			        <%-- 1. 콤마로 구분된 이미지 문자열을 배열로 나눔 --%>
 			        <c:set var="rvImgArray" value="${fn:split(b.b_image, ',')}" />
-			        
-			        <%-- 2. 첫 번째 이미지에 올바른 경로(/product_img/)를 붙여서 출력 --%>
 			        <img class="rv-img" src="${pageContext.request.contextPath}/img/${rvImgArray[0]}" alt="review">
 			    </c:if>
-			    <div class="rv-text"><c:out value="${b.b_text}"/></div>
+			
+			    <%-- 글자 영역 (아이디 + 본문 묶음) --%>
+			    <div class="rv-info">
+			        <span class="rv-user-id"><c:out value="${b.m_id}"/></span>
+			        <div class="rv-text"><c:out value="${b.b_text}"/></div>
+			    </div>
 			</div>
             </div>
           </c:forEach>

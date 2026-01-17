@@ -84,4 +84,8 @@
 	<select id="findByM_id" resultType="com.picflower.dto.memberDTO">
 	  	SELECT * FROM member WHERE m_id = #{param1} 
 	</select>
+	<select id="checkIdDao" resultType="int">
+	    SELECT COUNT(*) FROM member WHERE TRIM(m_id) = TRIM(#{m_id})
+	</select>
+	
 </mapper>

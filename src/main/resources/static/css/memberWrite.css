@@ -26,7 +26,7 @@ h2 {
 
 .content-container {
     width: 100%;
-    max-width: 500px; /* PC에서는 500px 유지 */
+    max-width: 600px; /* PC에서는 500px 유지 */
     padding: 20px;
     box-sizing: border-box;
 }
@@ -61,7 +61,7 @@ table td:first-child {
 }
 
 /* 3. 입력창 공통 스타일 */
-/* [3. 입력창 공통 스타일 수정] */
+
 input[type="text"], 
 input[type="password"], 
 select {
@@ -76,7 +76,48 @@ select {
 }
 
 /* 1. 일반 단독 입력창: 너비를 320px로 통일하여 정렬감 부여 */
-input[name="m_id"], 
+.id-group {
+    display: flex;
+    flex-direction: column; /* 세로 배치 */
+    width: 350px;           /* 전체 너비 유지 */
+    gap: 4px;              /* 메시지와 입력창 사이 간격 */
+}
+
+ input[name="m_id"] {
+    flex: 1 !important; /* 남은 공간을 꽉 채움 */
+    width: auto !important; /* 기존 350px 고정 해제 */
+    margin: 0 !important;
+}
+
+/* 중복확인 버튼 크기 고정 */
+.check-btn {
+    width: 100px; /* 주소찾기 버튼(.btn-addr)과 동일한 너비로 통일감 부여 */
+    height: 36px;
+    background-color: #A36CD9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+/* 메시지 텍스트 정렬 */
+/* 2. 메시지 영역 스타일 */
+.id-msg {
+    font-size: 12px;
+    color: #888;
+    min-height: 14px;
+    padding-left: 2px;
+    line-height: 1.2;
+}
+
+.id-input-area {
+    display: flex;          /* 가로 배치 */
+    gap: 8px;
+    width: 100%;
+}
 input[name="m_pwd"], 
 input[name="m_pwd2"], 
 input[name="m_name"],
@@ -194,6 +235,21 @@ td br {
 
 .btn-addr:hover {
     background-color: #8E57C2;
+}
+
+/* 아이디 중복 체크 버튼 */
+.check-btn {
+    background-color: #A36CD9;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap; /* 글자 줄바꿈 방지 */
+}
+.check-btn:hover {
+    background-color: #8E54C1;
 }
 
 /* 5. 푸터 */

@@ -34,7 +34,9 @@ public class orderService {
     // 1. 주문 실행 로직 (기존 유지)
     @Transactional
     public void executeOrder(orderRequestDTO oDto, List<cartDTO> cartList, int m_no) {
-        // 1. 주문 메인 저장 (o_no가 생성됨)
+    	System.out.println(oDto.getOrderItems().size());
+    	
+    	// 1. 주문 메인 저장 (o_no가 생성됨)
         orderDao.insertOrder(oDto);
 
         // [수정] cartList 대신 oDto에 담겨온 orderItems를 사용합니다.

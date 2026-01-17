@@ -101,6 +101,8 @@ public class productController {
 	    model.addAttribute("totalPages", totalPages);
 	    model.addAttribute("selectedCategory", p_category);
 	    
+	    
+	    
 	    return "guest/productList"; 
 	}
 	

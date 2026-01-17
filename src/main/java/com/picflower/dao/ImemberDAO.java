@@ -3,6 +3,7 @@ package com.picflower.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.picflower.dto.memberDTO;
 
@@ -19,4 +20,6 @@ public interface ImemberDAO {
 	public memberDTO findByM_id(String m_id);
 	public int checkMemberFindPasswd(String m_id,String m_pwd);
 	public int updatePassword(int m_no, String m_pwd);
+	
+	public int checkIdDao(@Param("m_id") String m_id); //아이디 중복 체크 메서드
 }

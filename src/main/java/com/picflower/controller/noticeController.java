@@ -26,75 +26,35 @@ public class noticeController {
 		return "admin/n_insertForm";
 	}
 	
-	@RequestMapping(value ="/admin/n_insert", method=RequestMethod.POST)
-	public String n_insert(noticeDTO dto) { 
-	    MultipartFile file = dto.getN_image(); 
-	    if (file != null && !file.isEmpty()) {
-	        try {
-	            File folder = new File(COMMON_PATH);
-	            if (!folder.exists()) folder.mkdirs();
-
-	            String originalFileName = file.getOriginalFilename();
-	            
-	            // [해결 포인트] 공백은 '_'로, 괄호 등 특수문자는 제거합니다.
-	            String cleanFileName = originalFileName.replaceAll("\\s", "_") // 공백을 언더바로
-	                                                   .replaceAll("[() ]", ""); // 괄호 제거
-	            
-	            // 실제 파일 저장
-	            file.transferTo(new File(folder.getAbsolutePath() + File.separator + cleanFileName));
-	            
-	            // DB에도 정제된 이름을 저장
-	            dto.setN_image_name(cleanFileName); 
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    dao.n_insertDao(dto);
-	    return "redirect:/guest/notice";
-	}
+	   // 1. 공지 등록 (이미지 처리 로직 제거)
+    @RequestMapping(value ="/admin/n_insert", method=RequestMethod.POST)
+    public String n_insert(noticeDTO dto) { 
+        // 에디터 본문(n_text)에 이미지가 Base64로 포함되어 들어오므로
+        // MultipartFile 처리 없이 바로 DAO를 호출합니다.
+        dao.n_insertDao(dto);
+        return "redirect:/guest/notice";
+    }
 	
-	@RequestMapping("/guest/notice")
-	public String notice(Model model, @RequestParam(value="page", defaultValue="1") int page) {
-	    int size = 10; // 한 페이지에 보여줄 게시글 개수
-	    
-	    // 1. 전체 게시글 수 조회 (DAO에 getTotalCount() 추가 필요)
-	    int totalCount = dao.getTotalCount();
-	    
-	    // 2. 전체 페이지 수 계산
-	    int totalPages = (int) Math.ceil((double) totalCount / size);
-	    
-	    // 3. DB에서 가져올 시작 위치(offset) 계산
-	    int offset = (page - 1) * size;
-	    
-	    // 4. 데이터 조회 (기존 n_listDao 대신 페이징용 n_listPagedDao 사용)
-	    model.addAttribute("list", dao.n_listPagedDao(offset, size));
-	    
-	    // 5. 페이지네이션 UI에 필요한 정보 전달
-	    model.addAttribute("currentPage", page);
-	    model.addAttribute("totalPages", totalPages);
-	    
-	    return "guest/notice";
-	}
-	
-	@RequestMapping(value = "/admin/n_update", method = RequestMethod.POST)
-	public String n_update(noticeDTO dto) {
-	    MultipartFile file = dto.getN_image();
-	    if (file != null && !file.isEmpty()) {
-	        try {
-	            String originalFileName = file.getOriginalFilename();
-	            // [추가] 수정 시에도 공백과 특수문자 제거
-	            String cleanFileName = originalFileName.replaceAll("\\s", "_").replaceAll("[() ]", "");
-	            
-	            file.transferTo(new File(new File(COMMON_PATH).getAbsolutePath() + File.separator + cleanFileName));
-	            dto.setN_image_name(cleanFileName); 
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    dao.n_updateDao(dto);
-	    
-	    return "redirect:/guest/notice#notice_" + dto.getN_no();
-	}
+    @RequestMapping("/guest/notice")
+    public String notice(Model model, @RequestParam(value="page", defaultValue="1") int page) {
+        int size = 10;
+        int totalCount = dao.getTotalCount();
+        int totalPages = (int) Math.ceil((double) totalCount / size);
+        int offset = (page - 1) * size;
+        
+        model.addAttribute("list", dao.n_listPagedDao(offset, size));
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        
+        return "guest/notice";
+    }
+	 // 2. 공지 수정 (이미지 처리 로직 제거)
+    @RequestMapping(value = "/admin/n_update", method = RequestMethod.POST)
+    public String n_update(noticeDTO dto) {
+        // 기존의 MultipartFile 처리 코드를 모두 삭제했습니다.
+        dao.n_updateDao(dto);
+        return "redirect:/guest/notice#notice_" + dto.getN_no();
+    }
 	
 	@RequestMapping("/admin/n_delete")
 		public String n_delete(@RequestParam("n_no") int n_no) {

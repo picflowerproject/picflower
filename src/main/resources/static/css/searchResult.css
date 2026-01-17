@@ -26,15 +26,48 @@ body { margin: 0; background: var(--bg-light); color: var(--text-dark); font-fam
 
 /* 3. 섹션 스타일 */
 .sr-section { 
-    background: #fff; border: 1px solid var(--border-color); 
-    border-radius: 20px; padding: 30px; margin-bottom: 30px; 
+    box-sizing: border-box;    /* 패딩(30px)을 포함하여 전체 너비를 100%로 계산 */
+    background: #fff; 
+    border: 1px solid var(--border-color); 
+    border-radius: 20px; 
+    padding: 30px; 
+    margin-bottom: 30px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    
+    max-width: 1100px !important; /* sr-wrap의 max-width와 일치 */
+    box-sizing: border-box !important;
+    clear: both;
+    display: block !important;
+    width: 100% !important;
 }
 .sr-section-head { 
     display: flex; justify-content: space-between; align-items: center; 
     margin-bottom: 25px; border-left: 5px solid var(--purple-main); padding-left: 15px;
 }
 .sr-section-head h3 { margin: 0; font-size: 19px; font-weight: 800; }
+
+
+/* 검색 결과가 없을 때 (가로 전체 확장) */
+.sr-empty {
+    /* 가로 길이 핵심 설정 */
+    display: flex !important;   /* 중앙 정렬을 위해 flex 사용 */
+    width: 100% !important;     /* 부모의 가용 너비 100% 사용 */
+    min-width: 100%;            /* 너비 축소 방지 */
+    box-sizing: border-box;     /* 패딩이 너비에 포함되도록 함 */
+    
+    /* 세로 및 정렬 */
+    min-height: 300px;
+    align-items: center;        /* 세로 중앙 */
+    justify-content: center;    /* 가로 중앙 */
+    
+    /* 디자인 */
+    background: #fdfdfd;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--text-gray);
+    margin: 10px 0;
+    clear: both;                /* 주변 플로팅 요소 영향 제거 */
+}
 
 /* 4. 상품 그리드 및 이미지 크기 확대 */
 .sr-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
@@ -48,11 +81,25 @@ body { margin: 0; background: var(--bg-light); color: var(--text-dark); font-fam
 .sr-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(176, 109, 242, 0.12); }
 
 /* 이미지 크기 수정: 높이를 260px로 확대하여 시원하게 표시 */
+/* 부모 컨테이너 */
 .sr-thumb { 
-    width: 100%; height: 260px; background: #f9f9f9; 
-    display: flex; align-items: center; justify-content: center; overflow: hidden; 
+    width: 100%; 
+    height: 260px; 
+    background: #f9f9f9; 
+    overflow: hidden; 
+    position: relative; /* 자식 배치를 위해 추가 */
 }
-.sr-thumb img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+
+/* 이미지 태그 */
+.sr-thumb img { 
+    width: 100% !important;     /* 부모 너비의 100% */
+    height: 100% !important;    /* 부모 높이의 100% (260px) */
+    min-width: 100%;           /* 최소 너비 강제 */
+    min-height: 100%;          /* 최소 높이 강제 */
+    object-fit: cover !important; /* 비율을 유지하면서 꽉 채움 */
+    display: block;             /* 인라인 공백 제거 */
+    transition: transform 0.4s;
+}
 .sr-card:hover .sr-thumb img { transform: scale(1.08); }
 
 .sr-card-body { padding: 18px; }
@@ -78,10 +125,43 @@ body { margin: 0; background: var(--bg-light); color: var(--text-dark); font-fam
 .rv-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .rv-product { font-size: 15px; font-weight: 700; color: var(--purple-deep); }
 .rv-star { color: #f1c40f; font-weight: 700; background: #fff9e6; padding: 3px 10px; border-radius: 12px; }
+/* 기존 .rv-body는 이미지를 왼쪽에 두기 위해 유지 */
+/* 1. 원래 쓰시던 설정 유지 (이미지-글자 가로 배치) */
+.rv-body { 
+    display: flex; 
+    gap: 20px; 
+    align-items: flex-start; /* 위쪽 정렬 */
+}
 
-.rv-body { display: flex; gap: 20px; }
-.rv-img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; }
-.rv-text { flex: 1; color: #444; font-size: 15px; line-height: 1.7; }
+/* 2. 원래 이미지 크기 유지 */
+.rv-img { 
+    width: 120px; 
+    height: 120px; 
+    object-fit: cover; 
+    border-radius: 12px; 
+    flex-shrink: 0; /* 이미지 크기 보존 */
+}
+
+/* 3. 새로 추가: 아이디와 본문을 세로로 배치 */
+.rv-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* 아이디와 본문 사이 간격 */
+    flex: 1;
+}
+
+.rv-user-id {
+    font-size: 14px;
+    font-weight: 600;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.rv-text { 
+    color: #444; 
+    font-size: 15px; 
+    line-height: 1.7; 
+}
 
 /* 7. 페이징 */
 .sr-paging { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px; }

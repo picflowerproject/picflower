@@ -16,66 +16,62 @@ const IMP = window.IMP;
 IMP.init("imp76644727"); 
 
 function requestPay(payMethod) {
-    console.log("결제 함수 시작됨. 선택된 수단:", payMethod); // 1번 확인
-
     try {
-        // ID로 요소를 직접 찾음
-        const priceElement = document.getElementById('o_total_price');
-        
-        if (!priceElement) {
-            console.error("오류: id가 'o_total_price'인 요소를 찾을 수 없습니다.");
-            alert("결제 금액 요소를 찾을 수 없습니다.");
-            return false;
-        }
-
-        const totalAmount = priceElement.value;
-        console.log("읽어온 결제 금액 문자열:", totalAmount); // 2번 확인
-
-        if (!totalAmount || totalAmount == "0") {
-            alert("결제 금액이 0원이거나 없습니다.");
-            return false;
-        }
-
+        const totalAmount = document.getElementById('o_total_price').value;
         const buyerName = document.getElementById('o_name').value || "미입력";
         
-        // pgCode 설정
+        // 1. 대표 상품명 추출 (화면에 표시된 첫 번째 상품명)
+        const firstProductName = document.querySelector('.product-name')?.innerText || "상품 결제";
+        // 2. 전체 상품 종류 수 계산
+        const productItems = document.querySelectorAll('.product-item'); // 상품 행에 class="product-item" 추가 필요
+
         let pgCode = "";
         if(payMethod === 'kakao') pgCode = "kakaopay.TC0ONETIME";
         else if(payMethod === 'toss') pgCode = "tosspayments.iamporttest_3";
         else if(payMethod === 'payco') pgCode = "payco.PARTNERTEST";
 
-        console.log("최종 요청 정보:", { pg: pgCode, amount: totalAmount, buyer: buyerName });
-
         IMP.request_pay({
             pg: pgCode,
             pay_method: "card",
             merchant_uid: "mid_" + new Date().getTime(),
-            name: "테스트 상품 결제",
-            amount: parseInt(totalAmount), // 숫자로 변환
+            name: productItems.length > 1 ? `${firstProductName} 외 ${productItems.length - 1}건` : firstProductName,
+            amount: parseInt(totalAmount),
             buyer_name: buyerName,
-            buyer_tel: "010-1234-5678",
+            buyer_tel: document.getElementById('o_tel')?.value || "010-0000-0000",
         }, function (rsp) {
             if (rsp.success) {
-                // 성공 로직
                 const form = document.querySelector('.order-form');
-                const impInput = document.createElement('input');
-                impInput.type = 'hidden';
-                impInput.name = 'imp_uid';
-                impInput.value = rsp.imp_uid;
-                form.appendChild(impInput);
+                
+                // 결제 고유번호 추가
+                addHiddenInput(form, 'imp_uid', rsp.imp_uid);
+                
+                // [중요] 상세 상품 정보(orderItems)를 리스트 형태로 매핑
+                // 장바구니/바로구매 페이지의 hidden input들을 찾아 서브밋 데이터에 포함
+                // 상품 정보 input들에 class="p-info"를 주고 아래와 같이 반복 처리
+                document.querySelectorAll('.p-info').forEach((el, index) => {
+                    // 서버의 List<OrderDetailDTO> orderItems로 매핑되도록 이름 설정
+                    // ex) orderItems[0].p_no, orderItems[0].od_count
+                    const name = el.dataset.name; // HTML에 data-name="p_no" 식으로 저장
+                    addHiddenInput(form, `orderItems[${Math.floor(index/3)}].${name}`, el.value);
+                });
+
                 form.submit();
             } else {
                 alert("결제 실패: " + rsp.error_msg);
             }
         });
-
-    } catch (e) {
-        console.error("자바스크립트 실행 중 에러 발생:", e);
-    }
-    
+    } catch (e) { console.error(e); }
     return false;
 }
 
+// Hidden Input 생성을 위한 편의 함수
+function addHiddenInput(form, name, value) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+}
 function copyMemberInfo() {
     const isChecked = document.getElementById('sameAsMember').checked;
     
@@ -131,10 +127,6 @@ function jusoCallBack(roadFullAddr, roadAddrPart1, addrDetail, roadAddrPart2, en
 </script>
 </head>
 <body>
-	<c:if test="${isDirectOrder}">
-	    <c:set var="totalMoney" value="${orderReq.o_total_price}" />
-	    <c:set var="list" value="${orderReq.orderItems}" />
-	</c:if>
 <header>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 </header>
@@ -177,22 +169,17 @@ function jusoCallBack(roadFullAddr, roadAddrPart1, addrDetail, roadAddrPart2, en
 	
 		<h3>주문 상품 확인</h3>
 		
-<c:forEach var="row" items="${list}" varStatus="i">
-    <div class="order-item-list">
-        <span>
-            <strong>${row.p_title}</strong> 
-        </span>
-        <span>
-            ${row.c_count}개 / <fmt:formatNumber value="${row.p_price}" pattern="#,###"/>원
-        </span>
-    </div>
-
-    <!-- DB 저장을 위해 orderRequestDTO의 orderItems(List<orderDetailDTO>) 필드와 매핑 -->
-    <!-- name 속성 값이 orderRequestDTO의 구조와 일치해야 합니다 -->
-    <input type="hidden" name="orderItems[${i.index}].p_no" value="${row.p_no}">
-    <input type="hidden" name="orderItems[${i.index}].od_count" value="${row.c_count}">
-    <input type="hidden" name="orderItems[${i.index}].od_price" value="${row.p_price}">
-</c:forEach>
+			<c:forEach var="row" items="${list}" varStatus="i">
+			    <div class="order-item-list">
+			        <span><strong>${row.p_title}</strong></span>
+			        <span>${row.c_count}개 / <fmt:formatNumber value="${row.p_price}" pattern="#,###"/>원</span>
+			    </div>
+			
+			    <input type="hidden" name="orderItems[${i.index}].p_no" value="${row.p_no}">
+			    <!-- row.c_count가 null일 경우를 대비해 1 또는 원본값 할당 -->
+			    <input type="hidden" name="orderItems[${i.index}].od_count" value="${row.c_count > 0 ? row.c_count : 1}">
+			    <input type="hidden" name="orderItems[${i.index}].od_price" value="${row.p_price}">
+			</c:forEach>
 
 <!-- 총 결제 금액 표시 영역 -->
 <div class="total">

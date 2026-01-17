@@ -25,6 +25,12 @@ tr:first-child {
     border-bottom: 2px solid #DCBBF2; /* 지정하신 연한 보라 */
 }
 
+/* 데이터 행에만 호버 효과 적용 (헤더 제외) */
+tr:not(:first-child):hover {
+    background-color: #fcf9ff; /* 아주 연한 보라색 배경 */
+    transition: background-color 0.2s ease;
+}
+
 tr:first-child td {
     padding: 15px 10px;
     font-weight: 600;

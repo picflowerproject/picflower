@@ -8,10 +8,7 @@
     <!-- 외부 CDN을 사용하여 MIME 타입 에러 및 로드 실패 방지 -->
     
 <script src="${pageContext.request.contextPath}/js/memberValidation.js"></script>
-    
- <script>
- 
- </script>
+
 </head>
 <body>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -19,14 +16,24 @@
     <main class="content-wrapper">
         <div class="content-container">
             <h2>회원가입</h2>
-            <form name="member" method="post" action="memberWrite">
+           <form name="member" method="post" action="/guest/memberWrite" onsubmit="return validateForm()">
 				<input type="hidden" name="m_auth" value="MEMBER">
 
                 <table border="1">
                     <tr>
-                        <td>아이디</td> 
-                        <td><input type="text" name="m_id" required></td>
-                    </tr>
+					    <td>아이디</td> 
+					    <td>
+						    <div class="id-group">
+						        <!-- 1. 메시지가 위로 -->
+						        <div id="id_msg" class="id-msg"></div>
+						        <!-- 2. 입력창과 버튼이 아래로 (이 둘은 가로 배치) -->
+						        <div class="id-input-area">
+						            <input type="text" id="m_id" name="m_id" placeholder="아이디 입력(4자 이상)" required>
+						            <button type="button" onclick="checkDuplicateId()" class="check-btn">중복확인</button>
+						        </div>
+						    </div>
+						</td>
+					</tr>
                     <tr>
                         <td>비밀번호</td>
                         <td><input type="password" name="m_pwd" required></td>
@@ -100,6 +107,54 @@
 </main>
 
 <script type="text/javascript">
+let isIdChecked = false; // 중복 확인 여부 상태 변수
+
+function checkDuplicateId() {
+    const idField = document.getElementById('m_id');
+    const mid = idField.value.trim();
+    const msg = document.getElementById('id_msg');
+
+    console.log("검색 요청 아이디: [" + mid + "]");
+
+    // [핵심 수정] URL 뒤에 타임스탬프 추가하여 캐시 방지
+    fetch('/guest/idCheck?m_id=' + mid + '&t=' + new Date().getTime())
+    .then(res => res.json())
+    .then(count => {
+            console.log("브라우저가 받은 결과값:", count);
+            
+            if (count == 0) { 
+                msg.innerText = "사용 가능한 아이디입니다.";
+                msg.style.color = "#A36CD9";
+                idField.dataset.check = "ok";
+            } else {
+                msg.innerText = "이미 사용 중인 아이디입니다.";
+                msg.style.color = "red";
+                idField.dataset.check = "fail";
+            }
+        })
+        .catch(err => console.error("API 호출 실패:", err));
+}
+
+//✅ 핵심 수정: 사용자가 한 글자라도 타이핑하면 즉시 상태와 메시지 초기화
+document.getElementById('m_id').addEventListener('input', function() {
+ const msg = document.getElementById('id_msg');
+ 
+ // 이미 중복 확인을 통과했거나 에러 메시지가 떠 있는 상태에서 수정을 시작하면
+ if (isIdChecked || msg.innerText !== "") {
+     isIdChecked = false;
+     this.dataset.check = "fail";
+     msg.innerText = "아이디가 변경되었습니다. 중복 확인을 눌러주세요.";
+     msg.style.color = "orange"; // 경고 의미의 주황색
+ }
+});
+
+function validateForm() {
+    if (!isIdChecked) {
+        alert("아이디 중복 확인 버튼을 눌러주세요.");
+        return false;
+    }
+    return true;
+}
 function goPopup(){
     // 팝업 파일의 경로를 프로젝트 구조에 맞게 수정하세요 (예: /guest/jusoPopup)
     var pop = window.open("${pageContext.request.contextPath}/guest/jusoPopup", "pop", "width=570,height=420, scrollbars=yes, resizable=yes"); 

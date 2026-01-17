@@ -57,43 +57,36 @@ public class orderController {
     // 2. 주문 완료 처리 (로직만 서비스로 넘김)
     @RequestMapping("/member/orderProcess")
     public String orderProcess(
-        @ModelAttribute("oDto") orderRequestDTO oDto,
+        @ModelAttribute("oDto") orderRequestDTO oDto, // 스프링이 orderItems 리스트를 자동으로 채워줌
         @RequestParam("imp_uid") String imp_uid,
         @RequestParam(value="isDirectOrder", required=false, defaultValue="false") boolean isDirectOrder,
-        @RequestParam(value="p_no", required=false, defaultValue="0") int p_no, // 바로구매용 상품번호
-        @RequestParam(value="o_count", required=false, defaultValue="0") int o_count, // 바로구매용 수량
         Principal principal, 
         Model model) {
         
         if (principal == null) return "redirect:/guest/loginForm";
         
-        String m_id = principal.getName();
-        memberDTO mDto = memberDao.findByM_id(m_id);
+        memberDTO mDto = memberDao.findByM_id(principal.getName());
+        if (mDto == null) return "redirect:/guest/loginForm";
+
+        // 1. 기본 정보 설정
+        oDto.setM_no(mDto.getM_no());
+        oDto.setImp_uid(imp_uid);
         
-        if (mDto != null) {
-            oDto.setM_no(mDto.getM_no());
-            
-            List<cartDTO> cartList = new ArrayList<>(); // null 대신 빈 리스트로 초기화
-
-            if (isDirectOrder) {
-                // [방법 A] 바로구매 시: 전달받은 정보를 리스트에 1개 추가
-                cartDTO directItem = new cartDTO();
-                directItem.setP_no(p_no);
-                directItem.setC_count(o_count);
-                
-                // 만약 서비스에서 가격 정보 등이 더 필요하다면 추가 세팅
-                cartList.add(directItem);
-            } else {
-                // [방법 B] 장바구니 구매 시: 기존처럼 DB에서 가져옴
-                cartList = cartDao.listCartDao(mDto.getM_no());
-            }
-            
-            // 이제 cartList는 절대 null이 아니므로 서비스에서 에러가 나지 않습니다.
-            orderService.executeOrder(oDto, cartList, mDto.getM_no());
-
-            model.addAttribute("order", oDto);
-            model.addAttribute("imp_uid", imp_uid);
+        // 2. 장바구니 리스트 준비 (삭제용)
+        List<cartDTO> cartListForDelete = null;
+        if (!isDirectOrder) {
+            cartListForDelete = cartDao.listCartDao(mDto.getM_no());
         }
+
+        /* 
+           [핵심] oDto.getOrderItems()에는 이미 JSP에서 보낸 데이터가 들어있습니다.
+           바로구매든 장바구니든 상관없이 이 리스트를 사용하여 주문을 처리합니다.
+        */
+        orderService.executeOrder(oDto, cartListForDelete, mDto.getM_no());
+
+        model.addAttribute("order", oDto);
+        model.addAttribute("imp_uid", imp_uid);
+        
         return "member/orderSuccess"; 
     }
     

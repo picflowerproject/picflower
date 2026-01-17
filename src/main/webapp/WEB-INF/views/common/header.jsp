@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +22,7 @@
 
         <!-- 2. 검색창 (중앙 고정) -->
      <div class="search-bar">
-		    <form action="/productSearch" method="get" class="search-form">
+		   <form action="${pageContext.request.contextPath}/guest/productSearch" method="get" class="search-form">
 		        <input type="text" name="searchKeyword" placeholder="오늘은 어떤 꽃을 찾으시나요?">
 		        <!-- 텍스트 '검색' 대신 아이콘으로 변경 -->
 		        <button type="submit">
@@ -30,8 +32,7 @@
 		</div>
 
         <!-- 3. 우측 유저 메뉴 -->
-
-		<div class="user-menu">
+<div class="user-menu">
     <%-- 1. 비로그인 상태 --%>
     <sec:authorize access="isAnonymous()">
         <div class="auth-links">
@@ -42,32 +43,50 @@
     </sec:authorize>
 
     <%-- 2. 로그인 상태 --%>
-    <sec:authorize access="isAuthenticated()">
-        <div class="user-info-box">
-            <div class="welcome-msg">
-			    <strong><sec:authentication property="name"/></strong><span>님, 환영합니다!</span>
-			</div>
-            <div class="icon-group">
-                <!-- 마이페이지 -->
-                <a href="/member/memberDetailId?m_id=<sec:authentication property='name'/>" title="마이페이지">
-                    <i class="fa-regular fa-user"></i>
-                </a>
-                <!-- 장바구니 -->
-                <a href="/member/cartList" title="장바구니">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </a>
-                <!-- 로그아웃 -->
-                <a href="/logout" title="로그아웃">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </a>
-
-                <!-- 관리자 메뉴: 정확한 태그 닫기 필수 -->
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
-                		<a href="/admin/qnaList" class="admin-qna-icon" title="1:1 문의 답변">
-			        <i class="fa-solid fa-comments"></i>
-			    </a>
+<sec:authorize access="isAuthenticated()">
+<div class="user-info-box">
+    <sec:authentication property="principal" var="user" />
+    
+    <div class="welcome-msg">
+        <strong>
+            <c:choose>
+                <%-- 1. 카카오 유저인지 확인 (패키지 경로로 확인하는 것이 가장 확실함) --%>
+                <c:when test="${fn:contains(user.getClass().name, 'OAuth2User')}">
+                    <%-- 카카오 닉네임 출력 --%>
+                    <c:out value="${user.attributes.properties.nickname}" />
+                </c:when>
                 
-                    <div class="admin-menu-container">
+                <%-- 2. 일반 유저인 경우 --%>
+                <c:otherwise>
+                    <%-- 일반 유저는 attributes가 없으므로 이 블록에서만 username 호출 --%>
+                    <c:out value="${user.username}" />
+                </c:otherwise>
+            </c:choose>
+        </strong><span>님, 환영합니다!</span>
+    </div>
+
+    <div class="icon-group">
+        <%-- 마이페이지 링크 m_id 결정 --%>
+        <c:set var="mId">
+            <c:choose>
+                <c:when test="${fn:contains(user.getClass().name, 'OAuth2User')}">
+                    ${user.name}
+                </c:when>
+                <c:otherwise>
+                    ${user.username}
+                </c:otherwise>
+            </c:choose>
+        </c:set>
+        <a href="/member/memberDetailId?m_id=${mId}"><i class="fa-regular fa-user"></i></a>
+                
+                <a href="/member/cartList" title="장바구니"><i class="fa-solid fa-cart-shopping"></i></a>
+                 <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <%-- 관리자 메뉴 --%>
+                    <a href="/admin/qnaList" title="문의답변"><i class="fa-solid fa-comments"></i></a>
+                </sec:authorize>
+                <a href="/logout" title="로그아웃"><i class="fa-solid fa-right-from-bracket"></i></a>
+				<sec:authorize access="hasRole('ROLE_ADMIN')">
+                <div class="admin-menu-container">
                         <i class="fa-solid fa-gear admin-icon"></i>
                         <select class="admin-select" onchange="if(this.value) location.href=this.value;">
                             <option value="">관리자 메뉴</option>
@@ -77,11 +96,12 @@
                             <option value="/admin/productWriteForm">상품 등록</option>
                         </select>
                     </div>
-                </sec:authorize> 
-            </div> <!-- .icon-group 닫기 -->
-        </div> <!-- .user-info-box 닫기 -->
+                    </sec:authorize>
+            </div>
+        </div>
     </sec:authorize>
-</div> <!-- .user-menu 닫기 -->
+</div>  
+   </div> <!-- .user-info-box 닫기 -->
     </div>
 
     <!-- 4. 사라졌던 네비게이션 메뉴 바 -->

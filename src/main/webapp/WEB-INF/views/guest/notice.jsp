@@ -8,10 +8,53 @@
 <head>
 <meta charset="UTF-8">
 <title>공지사항</title>
+
+<!-- Summernote Lite CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script src="${pageContext.request.contextPath}/summernote/summernote-lite.js"></script>
+  <script src="${pageContext.request.contextPath}/summernote/lang/summernote-ko-KR.js"></script>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/summernote/summernote-lite.css">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/notice.css">
 <script>
 	const contextPath = "${pageContext.request.contextPath}";
+	
+	$(document).ready(function() {
+	    // 등록 폼 에디터 (기존 유지)
+	    $('#summernote').summernote({
+	        height: 400,
+	        lang: "ko-KR"
+	    });
+
+	    // 수정 폼 에디터 (class가 summernote-edit인 모든 요소를 에디터로 변환)
+	    $('.summernote-edit').summernote({
+	        height: 300,
+	        lang: "ko-KR",
+	        placeholder: '수정할 내용을 입력하세요.',
+	        toolbar: [
+	            ['style', ['style']],
+	            ['font', ['bold', 'underline', 'clear']],
+	            ['insert', ['link', 'picture', 'video']],
+	            ['view', ['fullscreen', 'codeview']]
+	        ]
+	    });
+	});
+
+	// 수정 창 열기/닫기 함수 (기존 로직 보완)
+	function toggleEdit(nNo, isShow) {
+	    if (isShow) {
+	        $(`#view_area_${nNo}`).hide();
+	        $(`#edit_area_${nNo}`).show();
+	        // 수정 창이 열릴 때 에디터 포커싱 (선택 사항)
+	        $(`#edit_summernote_${nNo}`).summernote('focus');
+	    } else {
+	        $(`#view_area_${nNo}`).show();
+	        $(`#edit_area_${nNo}`).hide();
+	    }
+	}
 </script>
 <script src="${pageContext.request.contextPath}/js/notice.js"></script>
 </head>
@@ -20,8 +63,6 @@
 <div class="content-container">
 	<h1>공지사항</h1>
 	
-		<!-- 1. 제목 바로 아래에 공지 입력 링크 추가 -->
-		<!-- 상단 새 공지사항 등록 버튼 -->
 		<sec:authorize access="hasAuthority('ROLE_ADMIN')">
 		    <div class="add-notice-container">
 		        <a href="/admin/n_insertForm">➕ 새 공지사항 등록하기</a>
@@ -38,13 +79,9 @@
 		        <div class="notice-body">
 		            <!-- [보기 모드] -->
 		            <div id="view_area_${dto.n_no}" class="view-area">
+		                <!-- n_text 안에 이미지가 포함되어 있으므로 n_image_name 체크 로직 삭제 -->
 		                <div class="notice-text">${dto.n_text}</div>
-		                <c:if test="${not empty dto.n_image_name}">
-		                    <div class="notice-image">
-		                        <img src="/img/${dto.n_image_name}">
-		                    </div>
-		                </c:if>
-		                
+	
 						<div class="action-buttons">
 						    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
 						        <a href="javascript:void(0);" onclick="toggleEdit('${dto.n_no}', true)" class="btn-update">수정</a>
@@ -53,63 +90,39 @@
 						</div>
 		            </div>
 
-		
 		            <!-- [수정 모드] -->
 					<sec:authorize access="hasAuthority('ROLE_ADMIN')">
 		            <div id="edit_area_${dto.n_no}" class="edit-area" style="display: none;">
-		                <form action="/admin/n_update" method="post" enctype="multipart/form-data">
-		                    <input type="hidden" name="n_no" value="${dto.n_no}">
-		                    <input type="hidden" name="n_image_name" value="${dto.n_image_name}">
-		                    
-		                    <div class="edit-row">
-		                        <label>제목:</label>
-		                        <input type="text" name="n_title" value="${dto.n_title}">
-		                    </div>
-		                    
-		                    <div class="edit-row">
-		                        <label>내용:</label>
-		                        <textarea name="n_text">${dto.n_text}</textarea>
-		                    </div>
-		                    
-		                    <div class="edit-row file-input">
-							    <label> </label>
-							    <div class="file-input-wrapper">
-							        <!-- 실제 파일 input (ID를 고유하게 설정) -->
-							        <input type="file" id="file_${dto.n_no}" 
-							               onchange="readURL(this, 'edit_preview_${dto.n_no}')" name="n_image">
-							        
-							        <!-- 디자인된 라벨 버튼 -->
-							        <label for="file_${dto.n_no}" class="file-input-label">
-							            📸 사진 변경하기
-							        </label>
-							    </div>
-		                        
-		                        <div class="preview-container">
-		                            <img id="edit_preview_${dto.n_no}" 
-		                                 src="${not empty dto.n_image_name ? '/img/' : '#'}${dto.n_image_name}" 
-		                                 class="edit-preview ${empty dto.n_image_name ? 'hidden' : ''}">
-		                        </div>
-		                    </div>
-		                                        
-		                    <div class="action-buttons">
-		                        <button type="submit" class="btn-save">저장</button>
-		                        <button type="button" class="btn-cancel" onclick="toggleEdit('${dto.n_no}', false)">취소</button>
-		                    </div>
-		                </form>
-		            </div>
+					    <form action="/admin/n_update" method="post">
+					        <input type="hidden" name="n_no" value="${dto.n_no}">
+					        
+					        <div class="edit-row">
+					            <label>제목:</label>
+					            <input type="text" name="n_title" value="${dto.n_title}">
+					        </div>
+					        
+					        <div class="edit-row">
+					            <label>내용:</label>
+					            <!-- ID 뒤에 n_no를 붙여 고유하게 만듭니다. class를 이용해 한꺼번에 에디터를 적용합니다. -->
+					            <textarea id="edit_summernote_${dto.n_no}" name="n_text" class="summernote-edit">${dto.n_text}</textarea>
+					        </div>
+					        
+					        <div class="action-buttons">
+					            <button type="submit" class="btn-save">저장</button>
+					            <button type="button" class="btn-cancel" onclick="toggleEdit('${dto.n_no}', false)">취소</button>
+					        </div>
+					    </form>
+					</div>
 					</sec:authorize>
 		        </div>
 		    </details>
 		</c:forEach>
 
-		<sec:authorize access="hasAuthority('ADMIN')">
-		    <div class="add">
-		         <a href="/admin/n_insertForm">공지 입력하기</a>
-		    </div>
-		</sec:authorize>
 <%@ include file="/WEB-INF/views/common/pagination.jsp"%>
 
 </div>
 <%@ include file="/WEB-INF/views/common/footer.jsp" %>
+
+
 </body>
 </html>
