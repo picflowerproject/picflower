@@ -1,196 +1,71 @@
-/* 기본 레이아웃 */
-body {
-    background-color: #ffffff; /* 배경 화이트 */
-    margin: 0;
-    padding: 0;
-    font-family: 'Pretendard', sans-serif;
-    color: #333;
-}
+/* 1. 기본 레이아웃 */
+body { background-color: #ffffff; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; color: #444; }
+.content-wrapper { width: 100%; display: flex; justify-content: center; padding: 50px 0; }
+.content-container { width: 1000px; }
+h2 { font-size: 28px; color: #333; text-align: center; margin-bottom: 30px; }
 
-.content-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 50px 0;
-}
+/* 2. 탭 메뉴 */
+.mypage-tabs { display: flex; list-style: none; padding: 0; margin-bottom: 30px; border-bottom: 1px solid #ddd; }
+.tab-item { padding: 15px 30px; cursor: pointer; font-weight: bold; color: #999; border-bottom: 3px solid transparent; transition: 0.3s; }
+.tab-item.active { color: #333; border-bottom: 3px solid #9b59b6; }
 
-.content-container {
-    width: 1000px; /* 테이블 가독성을 위해 소폭 확장 */
-}
+/* 탭 콘텐츠 제어 */
+.tab-content { display: none; }
+.tab-content.active { display: block !important; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* 타이틀: 검정색 */
-h2 {
-    font-size: 28px;
-    color: #000; 
-    text-align: center;
-    margin-bottom: 30px;
-}
+/* 3. 테이블 스타일 */
+table { width: 100%; border-collapse: collapse; border-top: 2px solid #666; margin-bottom: 20px; }
+table th { background-color: #f7eff9; padding: 15px 10px; font-weight: bold; border: 1px solid #eee; color: #444; text-align: center; }
+table td { padding: 15px; border: 1px solid #eee; color: #666; }
 
-/* 탭 메뉴 (기존 구조 유지) */
-.mypage-tabs {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-}
+/* 주문내역 커스텀 스타일 */
+.order-table { text-align: center; }
+.p-title-cell { text-align: left !important; padding-left: 20px !important; }
+.count-tag { color: #888; font-size: 0.9em; margin-left: 5px; }
+.price-cell { font-weight: bold; color: #333; }
+.no-data { padding: 80px 0 !important; color: #999; font-size: 1.1em; }
 
-.tab-item {
-    padding: 12px 25px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #888;
-    border-bottom: 3px solid transparent;
-}
-
-.tab-item.active {
-    color: #000;
-    border-bottom: 3px solid #9b59b6; /* 포인트 라벤더 */
-}
-
-/* 탭 콘텐츠 */
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-/* 회원정보 테이블 (기존 스타일) */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-table td {
-    padding: 15px;
-    border: 1px solid #eee;
-}
-
-table td:nth-child(odd) {
-    background-color: #fafafa;
-    font-weight: bold;
-    width: 150px;
-}
-
-/* 주문/배송 내역 테이블 - 가운데 정렬 추가 */
-.order-table {
-    text-align: center; /* 전체 텍스트 가운데 정렬 */
-}
-
-.order-table thead th {
-    background-color: #f8f8f8;
-    padding: 15px 10px;
-    border-bottom: 2px solid #333;
-    font-weight: bold;
-}
-
-.order-table tbody td {
-    padding: 18px 10px;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
-}
-
-/* 상태 배지 스타일 */
-.status-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    background-color: #f0edff;
-    color: #6a5acd;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-/* 버튼 컨테이너는 그대로 유지 */
+/* 4. 버튼 컨테이너 (좌우 분리 핵심) */
 .button-container {
-    margin-top: 20px;
+    margin-top: 30px;
     display: flex;
-    justify-content: flex-end; /* 왼쪽 정렬 */
-    gap: 10px; /* 버튼 사이의 간격 */
-}
-
-/* (참고) 기존에 추가했던 margin-right: auto가 있다면 제거해주세요 */
-.btn-admin-list {
-    background-color: #555;
-    color: #fff;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-.btn-lavender {
-    background-color: #9b59b6;
-    color: #fff;
-    padding: 10px 35px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.btn-lavender:hover {
-    background-color: #8e44ad;
-}
-
-/* 환불하기 버튼 */
-.btn-cancel {
-    background-color: #fff;
-    color: #ff4d4f;
-    border: 1px solid #ff4d4f;
-    padding: 6px 12px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: 0.2s;
-}
-
-.btn-cancel:hover {
-    background-color: #ff4d4f;
-    color: #fff;
-}
-
-/* 모달 스타일 */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
+    justify-content: space-between; /* 좌우 끝으로 정렬 */
     align-items: center;
-    z-index: 1000;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
 }
+.right-action { display: flex; gap: 10px; }
 
-.modal-content {
-    background: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    text-align: center;
-    width: 320px;
+/* 버튼 디자인 */
+.btn-lavender, .btn-admin-list, .btn-list-gray { 
+    padding: 12px 28px; border: none; border-radius: 6px; 
+    cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; 
 }
+.btn-lavender { background-color: #9b59b6; color: #fff; }
+.btn-lavender:hover { background-color: #8e44ad; }
+.btn-admin-list { background-color: #ff7875; color: #fff; } /* 삭제/탈퇴 */
+.btn-admin-list:hover { background-color: #ff4d4f; }
+.btn-list-gray { background-color: #fff; color: #666; border: 1px solid #ddd !important; }
+.btn-list-gray:hover { background-color: #f5f5f5; }
 
-.modal-content input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px;
-    margin: 15px 0;
-    border: 1px solid #ddd;
+/* 5. 상태 배지 및 환불 버튼 */
+.status-badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+.status-paid { background-color: #f0edff; color: #6a5acd; }
+.status-refunded { background-color: #f5f5f5; color: #8c8c8c; }
+.btn-cancel { 
+    padding: 4px 10px; background: #fff; border: 1px solid #ff7875; 
+    color: #ff7875; border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 5px;
 }
+.btn-cancel:hover { background: #ff7875; color: #fff; }
 
-.modal-buttons {
-    display: flex;
-    gap: 10px;
+/* 6. 모달 스타일 */
+.modal-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; 
 }
-
-.modal-buttons button {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
+.modal-overlay.active { display: flex; } /* 스크립트로 제어 시 활용 */
+.modal-content { background: #fff; padding: 30px; border-radius: 12px; text-align: center; width: 340px; }
+.modal-content input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+.modal-buttons { display: flex; gap: 10px; }
+.modal-buttons button { flex: 1; }

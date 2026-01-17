@@ -55,7 +55,7 @@
                 <div class="sr-card-title"><c:out value="${p.p_title}"/></div>
                 <div class="sr-card-sub"><c:out value="${p.p_subtitle}"/></div>
                 <div class="sr-card-foot">
-                  <span class="sr-price"><c:out value="${p.p_price}"/>원</span>
+                  <span class="sr-price"><c:out value="${p.p_price}"/></span>
                   <span class="sr-chip"><c:out value="${p.p_category}"/></span>
                 </div>
               </div>
@@ -120,11 +120,15 @@
               </div>
 
               <div class="rv-body">
-                <c:if test="${not empty b.b_image}">
-                  <img class="rv-img" src="<c:out value='${b.b_image}'/>" alt="review">
-                </c:if>
-                <div class="rv-text"><c:out value="${b.b_text}"/></div>
-              </div>
+			    <c:if test="${not empty b.b_image}">
+			        <%-- 1. 콤마로 구분된 이미지 문자열을 배열로 나눔 --%>
+			        <c:set var="rvImgArray" value="${fn:split(b.b_image, ',')}" />
+			        
+			        <%-- 2. 첫 번째 이미지에 올바른 경로(/product_img/)를 붙여서 출력 --%>
+			        <img class="rv-img" src="${pageContext.request.contextPath}/img/${rvImgArray[0]}" alt="review">
+			    </c:if>
+			    <div class="rv-text"><c:out value="${b.b_text}"/></div>
+			</div>
             </div>
           </c:forEach>
         </div>

@@ -26,4 +26,6 @@ public class productDTO {
 	private Integer h_no;
 	
 	private String p_status;
+	private int review_count;
+	private double avg_rating;
 }

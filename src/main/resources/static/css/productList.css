@@ -2,24 +2,24 @@ body {
     font-family: 'Pretendard', -apple-system, sans-serif !important;
 }
 
-/* 본문 영역 전용 컨테이너 (이 안의 요소만 변경됨) */
+/* 본문 영역 전용 컨테이너 */
 .shop-main-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px; /* 상단 여백을 60~80px에서 40px로 줄여 적절한 간격 확보 */
+    padding: 40px 20px;
     background-color: #ffffff;
 }
 
-/* 본문 제목만 특정 */
+/* 본문 제목 */
 .shop-main-content h2.main-title {
-    all: unset; /* 기존의 모든 상속 스타일 초기화 */
+    all: unset;
     display: block;
     text-align: center;
-    font-size: 2.2rem; /* 크기를 살짝 키움 */
-    font-weight: 800; /* 두껍게 설정하여 가독성 확보 */
+    font-size: 2.2rem;
+    font-weight: 800;
     color: #222;
-    letter-spacing: -0.05em; /* 자간을 좁혀 세련된 느낌 추가 */
-    margin-bottom: 10px; /* 아래 카테고리와의 간격 */
+    letter-spacing: -0.05em;
+    margin-bottom: 10px;
     position: relative;
     padding-bottom: 15px;
 }
@@ -28,11 +28,12 @@ body {
     display: block;
     width: 40px;
     height: 3px;
-    background-color: #ff6b6b; /* 포인트 컬러 */
+    background-color: #ff6b6b;
     margin: 10px auto 0;
     border-radius: 2px;
 }
-/* 카테고리 네비게이션 격리 */
+
+/* 카테고리 네비게이션 */
 .shop-main-content .category-nav {
     text-align: center;
     margin-bottom: 40px;
@@ -40,7 +41,7 @@ body {
 }
 
 .shop-main-content .category-nav a {
-    all: unset; /* 기존 헤더의 모든 스타일을 강제 초기화 */
+    all: unset;
     cursor: pointer;
     text-decoration: none;
     color: #666;
@@ -96,26 +97,63 @@ body {
     object-fit: cover;
 }
 
-/* 상품 정보 텍스트 - 헤더 텍스트와 분리 */
+/* 상품 정보 텍스트 - 평점 섹션 추가 */
 .shop-main-content .product-info {
     padding: 20px;
     text-align: center;
 }
 
+/* 평점 디자인 (추가됨) */
+.shop-main-content .product-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.shop-main-content .product-rating .stars {
+    color: #f1c40f; /* 노란색 별 유지 */
+    display: flex;
+    align-items: center;
+}
+
+.shop-main-content .product-rating .rating-num {
+    font-weight: 700;
+    color: #333;
+    margin-left: 2px;
+}
+
+.shop-main-content .product-rating .review-cnt {
+    color: #999;
+    font-size: 0.85rem;
+}
+
 .shop-main-content .product-title a {
-    all: unset; /* 헤더 링크 스타일 초기화 */
+    all: unset;
     display: block;
     cursor: pointer;
     font-size: 1.1rem;
     font-weight: 600;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    /* 긴 제목 처리 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .shop-main-content .product-price {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     color: #ff6b6b;
-    font-weight: 700;
+    font-weight: 800;
+}
+
+.shop-main-content .product-price span {
+    font-size: 1rem;
+    margin-left: 2px;
+    font-weight: 500;
 }
 
 /* 반응형 처리 */

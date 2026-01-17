@@ -48,7 +48,7 @@
     }
 
     /* 버튼 스타일 */
-    .btn-save { background: #333; color: white; border: none; padding: 0 30px; cursor: pointer; border-radius: 6px; font-weight: bold; }
+    .btn-save { background: #8b6fe8; color: white; border: none; padding: 0 30px; cursor: pointer; border-radius: 6px; font-weight: bold; }
 
     .btn-toggle {
         background: white; border: 1px solid #ccc; padding: 6px 12px; cursor: pointer;

@@ -60,15 +60,31 @@
 					    </c:choose>
 					</div>
                 
-                <!-- 정보 섹션 -->
                 <div class="product-info">
-                    <div class="product-title">
-                        <a href="productDetail?p_no=${list.p_no}">${list.p_title}</a>
-                    </div>
-                    <div class="product-price">
-                        <fmt:formatNumber value="${list.p_price}"/><span>원</span>
-                    </div>
-                </div>
+				    <!-- 평점 섹션 -->
+				    <div class="product-rating">
+				        <span class="stars">
+				            <c:set var="avg" value="${list.avg_rating != null ? list.avg_rating : 0}" />
+				            <c:forEach var="i" begin="1" end="5">
+				                <c:choose>
+				                    <c:when test="${i <= avg}"><i class="fa-solid fa-star"></i></c:when>
+				                    <c:when test="${i - 0.5 <= avg}"><i class="fa-solid fa-star-half-stroke"></i></c:when>
+				                    <c:otherwise><i class="fa-regular fa-star"></i></c:otherwise>
+				                </c:choose>
+				            </c:forEach>
+				        </span>
+				        <span class="rating-num">${avg}</span>
+				        <span class="review-cnt">(${list.review_count})</span>
+				    </div>
+				
+				    <!-- 기존 타이틀 및 가격 -->
+				    <div class="product-title">
+				        <a href="productDetail?p_no=${list.p_no}">${list.p_title}</a>
+				    </div>
+				    <div class="product-price">
+				        <fmt:formatNumber value="${list.p_price}"/><span>원</span>
+				    </div>
+				</div>
             </div>
         </c:forEach>
     </div>

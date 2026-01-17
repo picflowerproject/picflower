@@ -1,365 +1,178 @@
-@charset "UTF-8";
-main {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-    font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-    color: #333;
+/* 0. 변수 설정 */
+:root {
+    --purple-light: #E9C9F2;
+    --purple-mid: #DCBBF2;
+    --purple-main: #B06DF2;
+    --purple-deep: #A36CD9;
+    --heavy-red: #d63031; /* 삭제 강조색 */
+    --text-dark: #2d3436;
+    --text-gray: #636e72;
+    --border-light: #eee;
+    --bg-neutral: #f9f9f9;
 }
 
-h2 {
-    font-family: 'Nanum Myeongjo', serif; /* 추천 1번 예시 */
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 28px;
+/* 1. 기본 레이아웃 - 너비 950px로 최적화 */
+main { 
+    max-width: 950px; 
+    margin: 40px auto; 
+    padding: 20px; 
+    font-family: 'Pretendard', sans-serif; 
+}
+/* 제목: 꽃의 우아함을 담은 명조체 스타일 */
+h2 { 
+    text-align: center; 
+    font-family: 'Nanum Myeongjo', 'GyeonggiBatang', serif; /* 명조체 계열 우선 적용 */
+    font-size: 32px; 
     font-weight: 700;
-    color: #333; /* 꽃 색상을 돋보이게 하는 짙은 회색 권장 */
-}
-
-h3 {
-    font-family: 'Source Han Serif', serif;
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 18px;
-    font-weight: 400;
-    color: #666; /* 보조 설명은 조금 더 연하게 */
-    letter-spacing: -0.5px; /* 가독성을 위한 자간 조절 */
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 50px;
-}
-
-/* 이미지 영역 (좌측) */
-td[rowspan="7"] {
-    padding-right: 40px;
-    vertical-align: top;
-}
-
-.main-img {
-    width: 100%;
-    max-width: 400px;
-    height: 450px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #eee;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.thumb-container {
-    margin-top: 15px;
-    justify-content: center;
-}
-
-.thumb-img {
-    width: 70px;
-    height: 70px;
-    border-radius: 4px;
-    transition: transform 0.2s, border-color 0.2s;
-}
-
-.thumb-img:hover {
-    transform: translateY(-2px);
-    border-color: #B06DF2 !important; /* 보라색 강조 */
-}
-
-/* 텍스트 정보 영역 (우측) */
-td {
-    padding: 15px 10px;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-/* 항목 이름(라벨) 열 스타일 */
-td:nth-child(1):not([rowspan="7"]):not([colspan="3"]) {
-    width: 120px;
-    font-weight: 600;
-    color: #666;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-}
-
-/* 가격 및 장바구니 영역 */
-.price-row {
-    vertical-align: middle;
-}
-
-
-.price-text {
-    font-size: 26px;       /* 크기를 키워 강조 */
-    font-weight: 800;      /* 아주 두껍게 */
-    color: #ff6b6b;        /* 메인 보라색 테마 적용 */
     letter-spacing: -0.5px;
+    margin-bottom: 8px; 
+    color: var(--text-dark); 
+    line-height: 1.4;
 }
 
-/* '원' 단위 텍스트 스타일링 */
-.price-text::after {
-    content: " 원";
-    font-size: 16px;       /* '원'은 조금 작게 */
-    font-weight: 500;
-    color: #333;           /* 단위는 일반 텍스트 색상 */
-    margin-left: 2px;
-}
-
-/* 장바구니 폼 영역을 가격과 분리하는 느낌 주기 */
-.btn-cart-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #483d8b; /* 아이콘 색상 (원하는 색으로 변경 가능) */
-    vertical-align: middle;
-    margin-right: 10px;
-    padding: 0;
-    transition: transform 0.2s;
-}
-
-.btn-cart-icon:hover {
-    transform: scale(1.1); /* 마우스 올렸을 때 살짝 커지는 효과 */
-    color: #483d8b;
-}
-
-/* 수량 라벨 */
-form[action="addCart"] label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #666;
-}
-
-input[type="number"] {
-    width: 40px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin: 0 10px;
-}
-
-input[type="submit"] {
-    background-color: #A36CD9; /* 가장 진한 보라 */
-    color: white;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
-}
-
-input[type="submit"]:hover {
-    background-color: #B06DF2; /* 호버 시 약간 밝게 */
-}
-
-/* 상세 정보 텍스트 영역 */
-
-
-td[colspan="3"]:first-of-type {
-    border: none;
-    font-weight: bold;
-    font-size: 1.2em;
-    padding-top: 40px;
-    padding-bottom: 10px;
-}
-
-.link-container {
-    display: flex;
-    justify-content: space-between; /* 양 끝으로 배치 */
-    align-items: center;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #eee; /* 구분선 추가 */
-}
-
-/* 오른쪽 버튼들을 묶어주는 그룹 (JSP 수정 없이 CSS로 처리) */
-.link-container a:first-child {
-    margin-right: auto; /* 첫 번째 요소(목록)를 왼쪽으로 밀어냄 */
-}
-
-.link-container a:not(:first-child) {
-    margin-left: 10px; /* 수정, 삭제 버튼 사이의 간격 */
-}
-
-/* 버튼 공통 스타일 */
-.link-container a {
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-/* 목록으로 돌아가기 (좌측 - 차분한 스타일) */
-.link-container a:nth-child(1) {
-    background-color: #f8f9fa;
-    color: #495057;
-    border: 1px solid #ced4da;
-}
-
-/* 정보 수정 (우측 - 강조 스타일) */
-.link-container a:nth-child(2) {
-    background-color: #A36CD9;
-    color: white;
-    border: 1px solid #A36CD9;
-}
-
-/* 상품 삭제 (우측 - 경고 스타일) */
-.link-container a:nth-child(3) {
-    background-color: #fff;
-    color: #dc3545;
-    border: 1px solid #dc3545;
-}
-
-/* 호버 효과 */
-.link-container a:hover {
+/* 부제목: 세련되고 가독성 좋은 고딕 스타일 */
+h3 { 
+    text-align: center; 
+    font-family: 'Pretendard', sans-serif;
+    font-size: 16px; 
+    font-weight: 300; /* 얇은 폰트로 여백의 미 강조 */
+    color: var(--text-gray); 
+    letter-spacing: 2px; /* 자간을 넓혀 고급스러운 분위기 연출 */
+    margin-bottom: 50px; 
+    text-transform: uppercase;
     opacity: 0.8;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-/* 탭 메뉴 전체 스타일 */
-.tab-container { margin-top: 50px; width: 100%; }
-
-.tab-menu {
-        display: flex;
-        justify-content: center; /* 중앙 정렬 */
-        border-bottom: 1px solid #ddd;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-.tab-btn {
-        padding: 15px 40px;
-        cursor: pointer;
-        border: none;
-        background: none;
-        font-size: 16px;
-        color: #999; /* 기본은 흐리게 */
-        position: relative;
-        transition: 0.3s;
-    }
-
- /* 마우스를 올리거나 활성화되었을 때 */
-    .tab-btn:hover, .tab-btn.active {
-        color: #333; /* 글자색 진하게 */
-        font-weight: bold;
-    }
-
-/* 활성화된 탭 하단에 강조선 추가 */
-.tab-btn.active::after {
-	content: "";
-    position: absolute;
-    bottom: -1px; /* 탭 메뉴 하단 선과 겹치게 */
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: #333;
 }
 
- /* 탭 콘텐츠 영역: 이질적인 배경색 제거 */
-.tab-content {
-    display: none;
-    padding: 40px 10px;
-    line-height: 1.8;
-	color: #444;
-	min-height: 300px;
+/* 추가 포인트: 제목 하단에 아주 연한 보라색 선 (선택 사항) */
+h2::after {
+    content: "";
+    display: block;
+    width: 30px;
+    height: 2px;
+    background-color: var(--purple-light);
+    margin: 15px auto 0;
+    border-radius: 2px;
+}
+/* 2. 메인 정보 테이블 (레이아웃 고정 및 너비 축소) */
+.product-info-layout { 
+    width: 100%; 
+    table-layout: fixed; 
+    border-collapse: collapse; 
+    margin-bottom: 30px; 
+}
+.info-image-zone { 
+    width: 350px; /* 이미지 영역 너비 축소 */
+    vertical-align: top; 
+    padding-right: 40px; 
+}
+.main-img { 
+    width: 100%; 
+    height: 400px; /* 높이 조정 */
+    object-fit: cover; 
+    border: 1px solid var(--border-light); 
+    border-radius: 12px; 
 }
 
-.tab-content.active {
-	display: block;
+.thumb-container { display: flex; gap: 8px; margin-top: 12px; justify-content: center; }
+.thumb-img { width: 55px; height: 55px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; }
+.thumb-img:hover { border-color: var(--purple-main); }
+
+/* 오른쪽 정보 표 */
+.info-text-zone { vertical-align: top; }
+.inner-info-table { width: 100%; border-collapse: collapse; }
+.inner-info-table th { width: 80px; text-align: left; padding: 15px 0; color: var(--text-gray); font-size: 15px; border-bottom: 1px solid #f5f5f5; }
+.inner-info-table td { padding: 15px 0; font-size: 16px; border-bottom: 1px solid #f5f5f5; color: var(--text-dark); }
+
+.price-text { color: #ff6b6b; font-size: 26px; font-weight: 800;  }
+.price-text::after { color: var(--text-dark); content: "원"; font-size: 18px; margin-left: 4px; font-weight: 400; }
+
+/* 3. 주문 영역 (보라색 포인트 및 버튼 우측 정렬) */
+.order-box { margin-top: 20px; padding: 15px 20px; background-color: var(--bg-neutral); border-radius: 10px; border: 1px solid #f0f0f0; }
+.order-form-layout { display: flex; justify-content: space-between; align-items: center; }
+
+.order-left { display: flex; align-items: center; gap: 12px; }
+.order-left input[type="number"] { width: 50px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+
+.btn-cart-icon { background: none; border: none; cursor: pointer; color: var(--text-dark); transition: 0.2s; }
+.btn-cart-icon:hover { color: var(--purple-main); transform: scale(1.1); }
+
+.btn-direct-buy {
+    background-color: var(--purple-main);
+    color: white; border: none; padding: 10px 22px; 
+    border-radius: 6px; font-weight: bold; cursor: pointer;
 }
+.btn-direct-buy:hover { background-color: var(--purple-deep); }
 
-/* 후기 테이블 스타일 정돈 */
-.review-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+/* 4. 평점 및 후기 링크 (노란색 별 유지) */
+.rating-display { display: flex; align-items: center; gap: 8px; }
+.stars { color: #f1c40f; } 
+.avg-score { font-size: 18px; font-weight: bold; }
+.review-link { color: var(--text-gray); font-size: 14px; cursor: pointer; text-decoration: underline; margin-left: 5px; }
+.review-link:hover { color: var(--purple-main); }
 
-.review-table td { padding: 15px; border-bottom: 1px solid #eee; }
+/* 5. 하단 버튼 영역 (좌 목록 / 우 수정·삭제 배치) */
+.link-container { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-light); }
+.btn-list { text-decoration: none; padding: 10px 18px; background: #fff; color: #555; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
 
-.detail-box {
-    margin-bottom: 50px;
+.right-btns { display: flex; gap: 10px; }
+.btn-edit { text-decoration: none; padding: 10px 18px; background: #eee; color: #333; border-radius: 6px; font-size: 14px; }
+
+/* 최강조 삭제 버튼 (기존 유지) */
+.btn-delete {
+    text-decoration: none; padding: 10px 22px;
+    background-color: var(--heavy-red);
+    color: white; border-radius: 6px; font-weight: 800;
+    box-shadow: 0 4px 8px rgba(214, 48, 49, 0.2);
 }
+.btn-delete:hover { background-color: #b32626; transform: translateY(-1px); }
 
-/* 상단 타이틀 및 시간 안내 */
-.detail-box > div:first-child {
+/* 6. 탭 메뉴 */
+.tab-menu { display: flex; justify-content: center; border-bottom: 2px solid #eee; margin-top: 50px; }
+.tab-btn { padding: 15px 50px; cursor: pointer; border: none; background: none; font-size: 16px; color: #bbb; position: relative; }
+.tab-btn.active { color: var(--text-dark); font-weight: bold; }
+.tab-btn.active::after { content: ""; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background: var(--purple-main); }
+
+.tab-content { display: none; padding: 40px 0; }
+.tab-content.active { display: block; }
+
+/* 7. 상세정보 탭 배송 안내 디자인 */
+.delivery-header {
     text-align: center;
-    padding: 30px;
-    background-color: #fcfaff; /* 연한 보라 배경 */
-    border-radius: 12px;
+    padding: 30px 20px;
+    background-color: #fcfaff;
+    border-radius: 15px;
     margin-bottom: 30px;
-    border: 1px solid #f0e6ff;
 }
+.delivery-header h1 { font-size: 24px; color: var(--purple-deep); margin-bottom: 8px; font-weight: 800; }
+.delivery-time { font-size: 15px; color: #666; }
+.delivery-time span { color: var(--text-dark); font-weight: 600; text-decoration: underline; text-decoration-color: var(--purple-light); }
 
-.detail-box h1 {
-    font-family: 'Nanum Myeongjo', serif;
-    font-size: 24px;
-    color: #A36CD9;
-    margin-bottom: 10px;
+.delivery-cards { display: flex; gap: 15px; margin-bottom: 50px; }
+.delivery-cards .card {
+    flex: 1; background: #fff; border: 1px solid #f0f0f0; border-radius: 12px;
+    padding: 20px 10px; text-align: center; transition: 0.3s;
 }
+.delivery-cards .card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); border-color: var(--purple-light); }
+.card-icon { font-size: 22px; color: var(--purple-main); margin-bottom: 10px; }
+.card-text { font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--text-dark); }
 
-.detail-box p {
-    color: #666;
-    font-size: 15px;
-    margin: 0;
+.product-detail { border-top: 1px solid #eee; padding-top: 50px; text-align: center; }
+.detail-main-img { width: 100%; max-width: 750px; display: block; margin: 0 auto; border-radius: 8px; }
+
+/* 8. 장바구니 모달 스타일 (기존 유지) */
+.modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 9999;
+    align-items: center; justify-content: center;
 }
-
-/* 당일 주문/도착 체크박스 형태 영역 */
-.detail-box > div:nth-child(2) {
-    display: flex;
-    justify-content: space-around;
-    gap: 15px;
-    margin-bottom: 30px;
+.modal-content {
+    background: #fff; padding: 40px 30px; border-radius: 20px; text-align: center;
+    width: 350px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); animation: modalFadeUp 0.3s ease-out;
 }
-
-.detail-box > div:nth-child(2) > div {
-    flex: 1;
-    text-align: center;
-    padding: 20px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    font-weight: 600;
-    color: #444;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* 체크 아이콘 효과 (O 표시 부분 강조) */
-.detail-box > div:nth-child(2) > div::before {
-    content: "✓";
-    margin-right: 8px;
-    color: #A36CD9;
-    font-weight: bold;
-}
-
-.detail-box > div:nth-child(2) > div:hover {
-    border-color: #A36CD9;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(163, 108, 217, 0.1);
-}
-
-/* 배송비 주의사항 안내 */
-.detail-box > div:nth-child(3) {
-    padding: 15px 20px;
-    background-color: #fff9f9; /* 아주 연한 붉은색 (주의) */
-    border-left: 4px solid #ff6b6b; /* 포인트 라인 */
-    border-radius: 4px;
-    margin-bottom: 40px;
-}
-
-.detail-box > div:nth-child(3) p {
-    font-size: 14px;
-    color: #888;
-    margin: 0;
-}
-
-/* 하단 제품 상세 이미지 중앙 정렬 */
-.product-detail {
-    text-align: center;
-    padding-top: 20px;
-    border-top: 1px dashed #ddd;
-}
-
-.product-detail img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-}
-
+@keyframes modalFadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.modal-icon { font-size: 45px; color: var(--purple-main); margin-bottom: 15px; }
+.modal-content h3 { font-size: 20px; color: var(--text-dark); margin-bottom: 10px; font-weight: 800; }
+.modal-content p { color: var(--text-gray); margin-bottom: 25px; font-size: 15px; }
+.modal-buttons { display: flex; gap: 10px; }
+.btn-modal-sub { flex: 1; padding: 10px; border: 1px solid #ddd; background: #fff; color: #666; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.btn-modal-main { flex: 1; padding: 10px; border: none; background: var(--purple-main); color: #fff; border-radius: 8px; cursor: pointer; font-weight: 600; }

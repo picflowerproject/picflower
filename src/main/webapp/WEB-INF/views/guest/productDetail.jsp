@@ -11,29 +11,7 @@
 <title>상품상세정보</title>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/productDetail.css">
 <script src="${pageContext.request.contextPath}/js/productDetail.js"></script>
-<style>
-    /* 큰 이미지 스타일 */
-    .main-img { width: 350px; height: 400px; object-fit: cover; border: 1px solid #ddd; margin-bottom: 10px; }
-    /* 작은 썸네일 이미지들 정렬 */
-    .thumb-container { display: flex; gap: 5px; flex-wrap: wrap; }
-    .thumb-img { width: 60px; height: 60px; object-fit: cover; border: 1px solid #ccc; cursor: pointer; }
-    .thumb-img:hover { border-color: #333;}
-	
-	
-	
-	.modal-overlay {
-	    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-	    background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;
-	}
-	.modal-content {
-	    background: #fff; padding: 30px; border-radius: 15px; text-align: center;
-	    width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-	}
-	.modal-buttons { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
-	.btn-main { background: #6a5acd; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-	.btn-sub { background: #eee; color: #333; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-	
-</style>
+
 <script>
 function addToCart() {
     const form = document.getElementById('orderForm');
@@ -110,100 +88,135 @@ function addToCart() {
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 </header>
 <main>
-<h2>${detail.p_title}</h2>
-<h3>${detail.p_subtitle}</h3>
-<table border="0">
-	<tr>
-		 <td rowspan="5" width="400" align="center" valign="top">
-            <c:set var="imageArray" value="${fn:split(detail.p_image, ',')}" />
-            
-            <c:if test="${not empty imageArray[0]}">
-                <img src="/product_img/${imageArray[0]}" id="mainImage" class="main-img" />
-            </c:if>
+    <h2>${detail.p_title}</h2>
+    <h3>${detail.p_subtitle}</h3>
 
-            <div class="thumb-container">
-                <c:forEach var="imageName" items="${imageArray}" varStatus="status">
-                    <img src="/product_img/${imageName}" class="thumb-img" 
-                         onclick="document.getElementById('mainImage').src=this.src;" />
-                </c:forEach>
-            </div>
-        </td>
-	</tr>
-	<tr>
-		<td>상품명</td>
-		<td>${detail.p_title}</td>
-	</tr>
-	<tr>
-    <td>가격</td>
-	<td class="price-row">
-	    <span class="price-text"><fmt:formatNumber value="${detail.p_price}"/></span>
-	    <br>
-	    <form id="orderForm" action="/member/addCart" method="post" style="display: inline-block;">
-	        <input type="hidden" name="p_no" value="${detail.p_no}">
+    <!-- 메인 상품 정보 레이아웃 -->
+    <table class="product-info-layout">
+        <tr>
+            <!-- 왼쪽: 이미지 영역 -->
+            <td class="info-image-zone">
+                <c:set var="imageArray" value="${fn:split(detail.p_image, ',')}" />
+                <c:if test="${not empty imageArray}">
+                    <img src="/product_img/${imageArray[0]}" id="mainImage" class="main-img" />
+                </c:if>
+                <div class="thumb-container">
+                    <c:forEach var="imageName" items="${imageArray}">
+                        <img src="/product_img/${imageName}" class="thumb-img" 
+                             onclick="document.getElementById('mainImage').src=this.src;" />
+                    </c:forEach>
+                </div>
+            </td>
 
-	        <label>수량 : </label>
-	        <!-- name은 기존 장바구니용 c_count 유지, id는 바로구매용 o_count 추가 -->
-	        <input type="number" name="c_count" id="o_count" value="1" min="1" style="width: 60px;">
-	        
-	       <!-- 장바구니 버튼: 아이콘으로 대체 -->
-			<button type="button" onclick="addToCart()" class="btn-cart-icon" title="장바구니 담기">
-			    <i class="fa-solid fa-cart-plus fa-2xl"></i>
-			</button>
-			
-			<!-- 바로 구매 버튼 (기존 유지) -->
-			<input type="button" value="바로 구매" onclick="directOrder()" class="btn-main" style="background-color: #ff4757; color: white;">
-	    </form>
-	</td>
-	</tr>
-	<tr>
-		<td>분류</td>
-		<td>${detail.p_category}</td>
-	</tr> 
-	<tr>
-		<td>등록 일자</td>
-		<td><fmt:formatDate value="${detail.p_date}" pattern="yyyy-MM-dd"/></td>
-	</tr>
-</table>
-<div class="link-container">
-    <a href="productList">목록</a> 
-	<sec:authorize access="hasAuthority('ROLE_ADMIN')">
-	    <a href="/admin/productUpdateForm?p_no=${detail.p_no}">수정</a> 
-	    <a href="/admin/productDelete?p_no=${detail.p_no}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
-	</sec:authorize>
-</div>
-<div class="tab-menu">
-    <button class="tab-btn active" onclick="openTab(event, 'tab-detail')">상세정보</button>
-    <button class="tab-btn" onclick="openTab(event, 'tab-review')">상품후기</button>
-</div>
+            <!-- 오른쪽: 상세 정보 및 주문 영역 -->
+            <td class="info-text-zone">
+                <table class="inner-info-table">
+                    <tr>
+                        <th>상품명</th>
+                        <td><strong>${detail.p_title}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>가격</th>
+                        <td>
+                            <span class="price-text"><fmt:formatNumber value="${detail.p_price}"/></span>
+                            <div class="order-box">
+                                <form id="orderForm" action="/member/addCart" method="post" class="order-form-layout">
+                                    <input type="hidden" name="p_no" value="${detail.p_no}">
+                                    <div class="order-left">
+                                        <label>수량</label>
+                                        <input type="number" name="c_count" id="o_count" value="1" min="1">
+                                        <button type="button" onclick="addToCart()" class="btn-cart-icon" title="장바구니 담기">
+                                            <i class="fa-solid fa-cart-plus fa-xl"></i>
+                                        </button>
+                                    </div>
+                                    <div class="order-right">
+                                        <input type="button" value="바로 구매" onclick="directOrder()" class="btn-direct-buy">
+                                    </div>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>평점</th>
+                        <td>
+                            <div class="rating-display">
+                                <span class="stars">
+                                    <c:set var="avg" value="${detail.avg_rating != null ? detail.avg_rating : 0}" />
+                                    <c:forEach var="i" begin="1" end="5">
+                                        <c:choose>
+                                            <c:when test="${i <= avg}"><i class="fa-solid fa-star"></i></c:when>
+                                            <c:when test="${i - 0.5 <= avg}"><i class="fa-solid fa-star-half-stroke"></i></c:when>
+                                            <c:otherwise><i class="fa-regular fa-star"></i></c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </span>
+                                <strong class="avg-score">${avg}</strong>
+                                <span class="review-link" onclick="document.querySelectorAll('.tab-btn')[1].click(); location.href='#tab-review';">
+                                    (${detail.review_count}개의 후기 보기)
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>분류</th>
+                        <td>${detail.p_category}</td>
+                    </tr>
+                    <tr>
+                        <th>등록일</th>
+                        <td><fmt:formatDate value="${detail.p_date}" pattern="yyyy-MM-dd"/></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- 하단 버튼: 목록(좌), 수정/삭제(우) -->
+    <div class="link-container">
+        <div class="left-btns">
+            <a href="productList" class="btn-list">목록으로</a>
+        </div>
+        <div class="right-btns">
+            <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+                <a href="/admin/productUpdateForm?p_no=${detail.p_no}" class="btn-edit">상품 수정</a> 
+                <a href="/admin/productDelete?p_no=${detail.p_no}" class="btn-delete" onclick="return confirm('정말 삭제하시겠습니까?')">삭제하기</a>
+            </sec:authorize>
+        </div>
+    </div>
+    </div>
+	<div class="tab-menu">
+	    <button class="tab-btn active" onclick="openTab(event, 'tab-detail')">상세정보</button>
+	    <button class="tab-btn" onclick="openTab(event, 'tab-review')">상품후기</button>
+	</div>
 
 <!-- 탭 내용 1: 상세정보 -->
 <div id="tab-detail" class="tab-content active">
     <div class="detail-box">
-	    <div>
-	        <h1>전국 당일 퀵배송</h1>
-	        <p>배송가능시간 : 오전 10시 ~ 오후 8시</p>
-	    </div>
-	
-	    <div>
-	        <div>
-	            당일 주문, 당일 도착 O
-	        </div>
-	        <div>
-	            도착일 지정 O
-	        </div>
-	        <div>
-	            도착 희망 시간 지정 O
-	        </div>
-	    </div>
-	
-	    <div>
-	        <p>
-	            • 읍, 면, 리 지역은 배송비 1만 원이 추가됩니다. 해당 지역으로 배송을 원하시면 배송비 추가 옵션을 선택해 주세요.
-	        </p>
-	    </div>
+        <!-- 상단 배송 헤더 -->
+        <div class="delivery-header">
+            <h1>전국 당일 퀵배송</h1>
+            <p class="delivery-time">배송가능시간 : <span>오전 10시 ~ 오후 8시</span></p>
+        </div>
+    
+        <!-- 배송 장점 카드 레이아웃 -->
+        <div class="delivery-cards">
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                <div class="card-text">당일 주문<br>당일 도착 O</div>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="card-text">도착일<br>지정 O</div>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+                <div class="card-text">도착 희망<br>시간 지정 O</div>
+            </div>
+        </div>
+
+        <!-- 상세 이미지 영역 -->
         <div class="product-detail">
-		    <img src="${detail.p_detail}" alt="${detail.p_detail}" style="width:100%; max-width:800px;">
-		</div>
+            <img src="${detail.p_detail}" alt="상세설명이미지" class="detail-main-img">
+        </div>
     </div>
 </div>
 
@@ -215,14 +228,15 @@ function addToCart() {
 </div>
 
 
-<!--장바구니 모달 팝업-->
+<!-- 장바구니 모달 팝업 (기능 유지, 디자인 강화) -->
 <div id="cartModal" class="modal-overlay">
     <div class="modal-content">
+        <div class="modal-icon"><i class="fa-solid fa-circle-check"></i></div>
         <h3>장바구니 담기 완료</h3>
         <p>선택하신 상품이 장바구니에 담겼습니다.</p>
         <div class="modal-buttons">
-            <button onclick="closeCartModal()" class="btn-sub">쇼핑 계속하기</button>
-            <button onclick="location.href='/member/cartList'" class="btn-main">장바구니 이동</button>
+            <button onclick="closeCartModal()" class="btn-modal-sub">쇼핑 계속하기</button>
+            <button onclick="location.href='/member/cartList'" class="btn-modal-main">장바구니 이동</button>
         </div>
     </div>
 </div>

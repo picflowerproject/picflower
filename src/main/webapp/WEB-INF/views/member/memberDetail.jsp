@@ -125,173 +125,148 @@ function withdrawMember(m_no) {
 
     <main class="content-wrapper">
         <div class="content-container">
-			<h2>마이페이지</h2>
+            <h2>마이페이지</h2>
 
-				 <!-- 탭 메뉴 영역 -->
-		            <ul class="mypage-tabs">
-		                <li class="tab-item active" onclick="changeTab('info', this)">회원정보</li>
-		                <li class="tab-item" onclick="changeTab('order', this)">주문/배송 내역</li>
-		            </ul>
+            <!-- 1. 탭 메뉴 영역 -->
+            <ul class="mypage-tabs">
+                <li class="tab-item active" onclick="changeTab('info', this)">회원정보</li>
+                <li class="tab-item" onclick="changeTab('order', this)">주문/배송 내역</li>
+            </ul>
 
+            <!-- 2. 탭 콘텐츠 1: 회원정보 -->
             <div id="info" class="tab-content active">
-            <table border="1">
-                <tr>
-                    <td>번호</td>
-                    <td>${detail.m_no}</td>
-                    <td>아이디</td>
-                    <td>${detail.m_id}</td>
-                </tr>
-                <tr>
-                    <td>이름</td>
-                    <td>${detail.m_name}</td>
-                    <td>성별</td>
-                    <td>${detail.m_gender}</td>
-                </tr>
-                <tr>
-                    <td>생년월일</td>
-                    <c:set var="birth" value="${fn:replace(fn:substring(detail.m_birth, 0, 10), '-', '')}" />
-                    <td><c:out value="${fn:substring(birth,0,4)}년 ${fn:substring(birth,4,6)}월 ${fn:substring(birth,6,8)}일" /></td>
-                    <td>연락처</td>
-                    <td>${detail.m_tel}</td>
-                </tr>
-                <tr>
-                    <td>이메일</td>
-                    <td>${detail.m_email}</td>
-                    <td>좋아하는 꽃</td>
-                    <td>${detail.m_flower}</td>
-                </tr>
-				<!-- 가입일과 권한 항목 수정 -->
-							<sec:authorize access="hasAuthority('ROLE_ADMIN')">
-							    <tr>
-							        <td>가입일</td>
-							        <td><fmt:formatDate value="${detail.m_date}" pattern="yyyy-MM-dd"/></td>
-							        <td>권한</td>
-							        <td>${detail.m_auth}</td>
-							    </tr>
-							</sec:authorize>
-                <tr>
-                    <td>주소</td>
-                    <td colspan="3">${detail.m_addr}</td>
-                </tr>
-				
-              	
-            </table>
-			<div class="button-container">
-			    <!-- 관리자 버튼 -->
-			    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
-			        <button type="button" class="btn-admin-list" onclick="location.href='/admin/memberList'">회원목록</button>
-			    </sec:authorize>
-			
-			    <!-- 정보수정 및 회원탈퇴 버튼 -->
-			    <!-- 정보수정 및 회원탈퇴 버튼 -->
-<sec:authorize access="isAuthenticated()">
-    <sec:authentication property="name" var="currentId" />
-    <sec:authentication property="principal" var="principal" />
-    <c:set var="isSocial" value="${fn:contains(principal.getClass().name, 'OAuth2')}" />
-    <sec:authorize access="hasAuthority('ROLE_ADMIN')" var="isAdmin" />
+                <table class="info-table">
+                    <tr>
+                        <th>번호</th><td>${detail.m_no}</td>
+                        <th>아이디</th><td>${detail.m_id}</td>
+                    </tr>
+                    <tr>
+                        <th>이름</th><td>${detail.m_name}</td>
+                        <th>성별</th><td>${detail.m_gender}</td>
+                    </tr>
+                    <tr>
+                        <th>생년월일</th>
+                        <c:set var="birth" value="${fn:replace(fn:substring(detail.m_birth, 0, 10), '-', '')}" />
+                        <td><c:out value="${fn:substring(birth,0,4)}년 ${fn:substring(birth,4,6)}월 ${fn:substring(birth,6,8)}일" /></td>
+                        <th>연락처</th><td>${detail.m_tel}</td>
+                    </tr>
+                    <tr>
+                        <th>이메일</th><td>${detail.m_email}</td>
+                        <th>좋아하는 꽃</th><td>${detail.m_flower}</td>
+                    </tr>
+                    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+                        <tr>
+                            <th>가입일</th><td><fmt:formatDate value="${detail.m_date}" pattern="yyyy-MM-dd"/></td>
+                            <th>권한</th><td>${detail.m_auth}</td>
+                        </tr>
+                    </sec:authorize>
+                    <tr>
+                        <th>주소</th><td colspan="3">${detail.m_addr}</td>
+                    </tr>
+                </table>
 
-    <c:if test="${currentId == detail.m_id || isAdmin}">
-        <!-- 관리자면 '회원 삭제', 본인이면 '회원 탈퇴'로 표시 -->
-        <button type="button" class="btn-admin-list" onclick="withdrawMember(${detail.m_no})">
-            <c:choose>
-                <c:when test="${isAdmin}">회원 삭제</c:when>
-                <c:otherwise>회원 탈퇴</c:otherwise>
-            </c:choose>
-        </button>
+                <!-- 버튼 컨테이너: 좌(목록) / 우(수정,삭제) 분리 -->
+                <div class="button-container">
+                    <div class="left-action">
+                        <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+                            <button type="button" class="btn-list-gray" onclick="location.href='/admin/memberList'">회원목록</button>
+                        </sec:authorize>
+                    </div>
+                    <div class="right-action">
+                        <sec:authorize access="isAuthenticated()">
+                            <sec:authentication property="name" var="currentId" />
+                            <sec:authentication property="principal" var="principal" />
+                            <c:set var="isSocial" value="${fn:contains(principal.getClass().name, 'OAuth2')}" />
+                            <sec:authorize access="hasAuthority('ROLE_ADMIN')" var="isAdmin" />
+                            <c:if test="${currentId == detail.m_id || isAdmin}">
+                                <button type="button" class="btn-lavender" onclick="handleEditClick(${isSocial})">정보수정</button>
+                                <button type="button" class="btn-admin-list" onclick="withdrawMember(${detail.m_no})">
+                                    <c:choose>
+                                        <c:when test="${isAdmin}">회원 삭제</c:when>
+                                        <c:otherwise>회원 탈퇴</c:otherwise>
+                                    </c:choose>
+                                </button>     
+                            </c:if>
+                        </sec:authorize>
+                    </div>
+                </div>
+            </div> <!-- info 끝 -->
 
-        <button type="button" class="btn-lavender" onclick="handleEditClick(${isSocial})">정보수정</button>
-    </c:if>
-</sec:authorize>
-			</div>
-			</div>
-	
-            <!-- 탭 2: 나의 주문 내역 -->
+            <!-- 3. 탭 콘텐츠 2: 주문 내역 -->
             <div id="order" class="tab-content">
-				<table class="order-table">
-				    <thead>
-				        <tr>
-				            <th width="10%">주문번호</th>
-				            <th width="30%">상품명</th> <!-- 추가된 열 -->
-				            <th width="10%">받는분</th>
-				            <th width="10%">결제금액</th>
-				            <th width="20%">주문일자</th>
-				            <th width="10%">주문상태</th>
-				        </tr>
-				    </thead>
-				    <tbody>
-				        <c:forEach var="order" items="${orderList}">
-				            <tr>
-				                <td><span class="order-no">#${order.o_no}</span></td>
-				                
-				                <!-- 상품명 출력 영역 (서브쿼리로 가져온 p_title 활용) -->
-				                <td style="text-align: left; padding-left: 20px;">
-				                    <strong>
-				                        <c:out value="${order.p_title}" />
-				                        <c:if test="${order.product_count > 1}">
-				                            <span style="color: #888; font-size: 0.9em;">
-				                                외 ${order.product_count - 1}건
-				                            </span>
-				                        </c:if>
-				                    </strong>
-				                </td>
-				                
-				                <td><strong><c:out value="${order.o_name}" /></strong></td>
-				                <td class="price-text">
-				                    <fmt:formatNumber value="${order.o_total_price}" pattern="#,###"/>원
-				                </td>
-				                <td>
-				                    <fmt:formatDate value="${order.o_date}" pattern="yyyy.MM.dd HH:mm"/>
-				                </td>
-				               <td>
-							    <c:choose>
-							        <%-- 상태가 '결제완료'일 때: 상태 텍스트와 버튼을 모두 표시 --%>
-							        <c:when test="${order.o_status == '결제완료'}">
-							            <span class="status-badge">${order.o_status}</span>
-							            <button class="btn-cancel"
-							                    data-imp-uid="<c:out value='${order.imp_uid}'/>"
-							                    data-o-no="<c:out value='${order.o_no}'/>"
-							                    onclick="cancelOrder(this)"
-							                    style="margin-left: 5px;"> <!-- 간격 조절 -->
-							                환불하기
-							            </button>
-							        </c:when>
-							        
-							        <%-- 그 외 상태(환불완료 등): 상태 텍스트만 표시 --%>
-							        <c:otherwise>
-							            <span class="status-badge">${order.o_status}</span>
-							        </c:otherwise>
-							    </c:choose>
-							</td>
-				            </tr>
-				        </c:forEach>            
-				        <c:if test="${empty orderList}">
-				            <tr>
-				                <td colspan="6" class="no-data">
-				                    <div style="font-size: 40px; margin-bottom: 10px;">📦</div>
-				                    최근 주문하신 내역이 없습니다.
-				                </td>
-				            </tr>
-				        </c:if>
-				    </tbody>
-				</table>
-            </div> 
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th width="10%">주문번호</th>
+                            <th width="30%">상품명</th>
+                            <th width="10%">받는분</th>
+                            <th width="15%">결제금액</th>
+                            <th width="20%">주문일자</th>
+                            <th width="15%">상태</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="order" items="${orderList}">
+                            <tr>
+                                <td><span class="order-no">#${order.o_no}</span></td>
+                                <td class="p-title-cell">
+                                    <strong><c:out value="${order.p_title}" /></strong>
+                                    <c:if test="${order.product_count > 1}">
+                                        <span class="count-tag">외 ${order.product_count - 1}건</span>
+                                    </c:if>
+                                </td>
+                                <td><c:out value="${order.o_name}" /></td>
+                                <td class="price-cell"><fmt:formatNumber value="${order.o_total_price}" pattern="#,###"/>원</td>
+                                <td><fmt:formatDate value="${order.o_date}" pattern="yyyy.MM.dd HH:mm"/></td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${order.o_status == '결제완료'}">
+                                            <span class="status-badge status-paid">${order.o_status}</span>
+                                            <button class="btn-cancel" data-imp-uid="${order.imp_uid}" data-o-no="${order.o_no}" onclick="cancelOrder(this)">환불하기</button>
+                                        </c:when>
+                                        <c:otherwise><span class="status-badge status-refunded">${order.o_status}</span></c:otherwise>
+                                    </c:choose>
+                                </td>
+                            </tr>
+                        </c:forEach>            
+                        <c:if test="${empty orderList}">
+                            <tr><td colspan="6" class="no-data">📦 최근 주문하신 내역이 없습니다.</td></tr>
+                        </c:if>
+                    </tbody>
+                </table>
+            </div> <!-- order 끝 -->
 
-
-            <!-- 비밀번호 확인 모달 -->
-		<div id="pwModal" class="modal-overlay" style="display:none;">
-   			 <div class="modal-content">
-     		   <h3>비밀번호 확인</h3>
-       		 <p>보안을 위해 비밀번호를 다시 입력해주세요.</p>
-       	 <input type="password" id="confirmPw" placeholder="비밀번호 입력">
-        <div class="modal-buttons">
-            <button type="button" onclick="validatePw()">확인</button>
-            <button type="button" onclick="closePwCheck()">취소</button>
-        </div>
-    </div>
-</div>
-
+            <!-- 4. 비밀번호 확인 모달 -->
+            <div id="pwModal" class="modal-overlay">
+                <div class="modal-content">
+                    <h3>비밀번호 확인</h3>
+                    <p>보안을 위해 비밀번호를 다시 입력해주세요.</p>
+                    <input type="password" id="confirmPw" placeholder="비밀번호 입력">
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-lavender" onclick="validatePw()">확인</button>
+                        <button type="button" class="btn-list-gray" onclick="closePwCheck()">취소</button>
+                    </div>
+                </div>
+            </div>
         </div> 
     </main>
+
+    <script>
+        // 탭 전환 스크립트
+        function changeTab(tabId, element) {
+            // 모든 탭 콘텐츠 숨기기
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            // 모든 탭 메뉴 비활성화
+            document.querySelectorAll('.tab-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            // 선택된 탭 보이기
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+    </script>
 
     <%@ include file="/WEB-INF/views/common/footer.jsp" %>
 </body>
