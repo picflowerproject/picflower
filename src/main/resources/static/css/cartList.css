@@ -1,7 +1,7 @@
 /* 전체 레이아웃 구성 */
 main { max-width: 1000px; margin: 50px auto; padding: 0 20px; font-family: 'Pretendard', sans-serif; }
 /* 보라색 강조 라인으로 변경 */
-h2 { font-size: 24px; margin-bottom: 30px; border-bottom: 2px solid #6f42c1; padding-bottom: 10px; }
+h2 { font-size: 24px; margin-bottom: 30px; border-bottom: 2px solid #B06DF2; padding-bottom: 10px; }
 
 /* 장바구니 테이블 스타일링 */
 .cart-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
@@ -30,8 +30,8 @@ h2 { font-size: 24px; margin-bottom: 30px; border-bottom: 2px solid #6f42c1; pad
 .btn-shop { background: #e9ecef; color: #333; }
 .btn-shop:hover { background: #dee2e6; }
 /* 주문하기 버튼 (이미지의 '등록하기' 버튼 스타일 적용) */
-.btn-order { background: #9b59b6; color: #fff; font-weight: bold; }
-.btn-order:hover { background: #8e44ad; }
+.btn-order { background: #B06DF2; color: #fff; font-weight: bold; }
+.btn-order:hover { background: #A36CD9; }
 /* 삭제 버튼 색상 유지 (위험 요소는 빨간색이 명확) */
 .btn-delete { color: #dc3545; text-decoration: none; font-size: 0.9em; }
 .btn-delete:hover { text-decoration: underline; }

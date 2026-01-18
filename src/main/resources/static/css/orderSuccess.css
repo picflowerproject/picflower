@@ -41,7 +41,7 @@
 
 /* 금액 강조 스타일 */
 .order-info span {
-    color: #9b59b6; /* 이미지의 등록하기 버튼과 유사한 보라색 계열 */
+    color: #B06DF2; /* 이미지의 등록하기 버튼과 유사한 보라색 계열 */
     font-weight: bold;
     font-size: 18px;
 }
@@ -67,12 +67,12 @@
 
 /* 메인 액션 버튼 (주문 내역 확인하기) - 이미지의 보라색 버튼 스타일 적용 */
 a[href*="myOrderList"] {
-    background-color: #9b59b6; /* 보라색 배경 */
+    background-color: #B06DF2; /* 보라색 배경 */
     color: white;
 }
 
 a[href*="myOrderList"]:hover {
-    background-color: #8e44ad;
+    background-color: #A36CD9;
 }
 
 /* 보조 버튼 (쇼핑 계속하기) - 이미지의 취소 버튼 스타일 적용 */
