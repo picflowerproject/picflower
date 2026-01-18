@@ -18,7 +18,7 @@ h2 { font-size: 24px; margin-bottom: 30px; border-bottom: 2px solid #6f42c1; pad
     border: 1px solid #eee; text-align: right; 
 }
 /* 금액 강조 색상 (이미지의 보라색 톤에 맞춤) */
-.total-area span { font-size: 28px; margin-left: 15px; color: #6f42c1; }
+.total-area span { font-size: 28px; margin-left: 15px; color: #ff6b6b; }
 
 /* 버튼 스타일 */
 .btn-group { margin-top: 40px; display: flex; justify-content: center; gap: 15px; }
@@ -30,8 +30,8 @@ h2 { font-size: 24px; margin-bottom: 30px; border-bottom: 2px solid #6f42c1; pad
 .btn-shop { background: #e9ecef; color: #333; }
 .btn-shop:hover { background: #dee2e6; }
 /* 주문하기 버튼 (이미지의 '등록하기' 버튼 스타일 적용) */
-.btn-order { background: #6f42c1; color: #fff; font-weight: bold; }
-.btn-order:hover { background: #5a369a; }
+.btn-order { background: #9b59b6; color: #fff; font-weight: bold; }
+.btn-order:hover { background: #8e44ad; }
 /* 삭제 버튼 색상 유지 (위험 요소는 빨간색이 명확) */
 .btn-delete { color: #dc3545; text-decoration: none; font-size: 0.9em; }
 .btn-delete:hover { text-decoration: underline; }

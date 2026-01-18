@@ -59,7 +59,7 @@ function addReply(b_no) {
                         <div id="reply-view-${res.r_no}">
                             <div class="reply-main">
                                 <div class="reply-meta">
-                                    🌸 <span class="author-id">${res.m_id}</span>
+                                    ❣️ <span class="author-id">${res.m_id}</span>
                                     <small>방금 전</small>
                                 </div>
                                 <span class="reply-content" id="reply-text-content-${res.r_no}">${res.r_text}</span> 

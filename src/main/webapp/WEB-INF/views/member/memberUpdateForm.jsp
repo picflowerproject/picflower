@@ -9,41 +9,7 @@
     <meta charset="UTF-8">
     <title>회원정보 수정</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/memberWrite.css">
-<style>
-/* 모달 배경: 화면 전체를 반투명하게 덮음 */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
-    display: flex;                  /* 유연한 박스 모델 사용 */
-    justify-content: center;        /* 가로 중앙 정렬 */
-    align-items: center;            /* 세로 중앙 정렬 */
-    z-index: 9999;                  /* 다른 요소보다 항상 위에 표시 */
-}
-
-/* 모달 박스 스타일 */
-.modal-content {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    width: 350px;                   /* 모달 너비 설정 */
-    text-align: center;
-}
-
-/* 입력창 및 버튼 간격 조절 */
-.modal-content h3 { margin-bottom: 20px; }
-.modal-content input { 
-    width: 100%; 
-    padding: 10px; 
-    margin-bottom: 10px; 
-    box-sizing: border-box; 
-}
-.modal-buttons { margin-top: 15px; }
-</style>
+<script src="${pageContext.request.contextPath}/js/simple_board.js"></script>
 </head>
 <body>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -51,7 +17,7 @@
     <main class="content-wrapper">
     <div class="content-container">
         <h2>회원정보 수정</h2>
-        <form name="member" method="post" action="/member/memberUpdate">
+        <form name="member" method="post" action="/member/memberUpdate" onsubmit="return confirmUpdate()">
             <!-- 회원 식별값 고정 -->
             <input type="hidden" name="m_no" value="${edit.m_no}">
             
@@ -123,6 +89,8 @@
                         <select name="m_email2">
                             <option value="gmail.com" ${fn:contains(edit.m_email,'gmail.com')?'selected':''}>gmail.com</option>
                             <option value="naver.com" ${fn:contains(edit.m_email,'naver.com')?'selected':''}>naver.com</option>
+                            <option value="apple.com" ${fn:contains(edit.m_email,'apple.com')?'selected':''}>apple.com</option>
+                            <option value="hanmail.net" ${fn:contains(edit.m_email,'hanmail.net')?'selected':''}>hanmail.net</option>
                         </select>
                     </td>
                 </tr>
@@ -155,17 +123,25 @@
 	
     <!-- 비밀번호 변경 모달 (body 하단 추가) -->
 					<div id="pwUpdateModal" class="modal-overlay" style="display:none;">
-					    <div class="modal-content">
-					        <h3>비밀번호 변경</h3>
-					        <input type="password" id="new_m_pwd" placeholder="새 비밀번호 입력">
-					        <input type="password" id="new_m_pwd_check" placeholder="새 비밀번호 확인">
-					        <div class="modal-buttons">
-					            <button type="button"  onclick="updatePassword()">변경</button>
-					            <button type="button"  onclick="closePwUpdateModal()">취소</button>
-					        </div>
-					    </div>
-					</div>
+    <div class="modal-content">
+        <h3>비밀번호 변경</h3>
+        <!-- 입력창들도 공통 스타일이 적용되도록 type="password" 유지 -->
+        <input type="password" id="new_m_pwd" placeholder="새 비밀번호 입력">
+        <input type="password" id="new_m_pwd_check" placeholder="새 비밀번호 확인">
+        <div class="modal-buttons">
+            <!-- 클래스 btn-confirm 추가 -->
+            <button type="button" class="btn-confirm" onclick="updatePassword()">변경</button>
+            <!-- 클래스 btn-cancel 추가 -->
+            <button type="button" class="btn-cancel" onclick="closePwUpdateModal()">취소</button>
+        </div>
+    </div>
+</div>
    <script>
+   
+   $(document).ready(function() {
+	    // 세션 삭제 로그가 콘솔에 찍히는 시점에 실행
+	    alert("본인 확인이 완료되었습니다. 정보를 수정하실 수 있습니다.");
+	});
    /*주소검색*/
     function goPopup(){
         window.open("${pageContext.request.contextPath}/guest/jusoPopup", "pop", "width=570,height=420, scrollbars=yes, resizable=yes"); 
@@ -201,9 +177,11 @@
 	        },
 	        body: "m_no=" + m_no + "&m_pwd=" + encodeURIComponent(pw)
 	    })
-	    .then(response => response.text())
+	    .then(response => response.json())
 	    .then(data => {
-	        if(data === "success") {
+	    	
+	    	console.log("응답 데이터:", data); 
+	    	if(data.success === true) { // 2. 비교 조건 변경
 	            alert("비밀번호가 성공적으로 변경되었습니다.");
 	            document.getElementById('pwStatus').innerText = "비밀번호 변경됨";
 	            closePwUpdateModal();
@@ -211,7 +189,18 @@
 	            alert("변경에 실패했습니다.");
 	        }
 	    })
-	    .catch(error => console.error('Error:', error));
+	    .catch(error => {
+	        console.error('Error:', error);
+	        alert("서버 통신 중 오류가 발생했습니다.");
+	    });
+	}
+	
+	
+	function confirmUpdate() {
+	    if (confirm("입력하신 정보로 수정하시겠습니까?")) {
+	        return true; // 폼 전송 진행
+	    }
+	    return false; // 폼 전송 취소
 	}
     </script>
 

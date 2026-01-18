@@ -30,6 +30,7 @@ import com.picflower.dto.memberDTO;
 import com.picflower.dto.orderRequestDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -54,51 +55,46 @@ public class memberController {
 	        String nickname = (String) properties.get("nickname");
 
 	        memberDTO dto = dao.findByM_id(kakaoId);
+	        boolean isNewMember = false; // 최초 가입 여부 플래그
 
 	        if (dto == null) {
+	        	 isNewMember = true; 
 	            dto = new memberDTO();
 	            dto.setM_id(kakaoId);
 	            dto.setM_name(nickname);
 	            dto.setM_pwd(passwordEncoder.encode("kakao_user_" + kakaoId));
 	            
-	            // 필수값(NOT NULL) 에러 방지를 위해 기본값 세팅
-	            dto.setM_gender("N");        // 미선택
-	            dto.setM_tel("010-0000-0000"); // 임시 번호
+	            dto.setM_gender("N");       
+	            dto.setM_tel("010-0000-0000");
 	            dto.setM_birth("1900-01-01");
 	            dto.setM_addr(" ");
 	            dto.setM_flower("없음");
 	            dto.setM_email("kakao@user.com");
-	            dto.setM_auth("MEMBER");  // 시큐리티 권한 (WebSecurityConfig와 맞출 것)
+	            dto.setM_auth("MEMBER");
 	            
 	            dao.memberWriteDao(dto);
-	            // 가입 후 다시 조회하여 m_no 등 자동 생성된 값을 포함한 완전한 객체 확보
 	            dto = dao.findByM_id(kakaoId);
-	         // 가입 즉시 수정 페이지로 보내려면 여기서 리다이렉트
 	        }
 	        
-	     // 2. 권한 강제 갱신 (리다이렉트보다 먼저 실행되어야 함!)
 	        String role = dto.getM_auth().startsWith("ROLE_") ? dto.getM_auth() : "ROLE_" + dto.getM_auth();
 	        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(role);
 	        
-	        // OAuth2User 타입을 유지해야 403 에러가 발생하지 않음
 	        Authentication newAuth = new OAuth2AuthenticationToken(oauth2User, authorities, "kakao");
 	        SecurityContextHolder.getContext().setAuthentication(newAuth);
 	        
-	        // 세션에 정보 저장
 	        session.setAttribute("m_id", dto.getM_id());
 	        session.setAttribute("m_name", dto.getM_name());
 	        session.setAttribute("m_auth", dto.getM_auth());
 	        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-	        // 3. 추가 정보 입력 여부 체크 (이제 권한이 갱신되었으므로 403이 나지 않음)
-	        if (" ".equals(dto.getM_addr()) || "010-0000-0000".equals(dto.getM_tel())) {
+	        if (isNewMember) {
+	            session.setAttribute("pwVerified", true);
 	            return "redirect:/member/memberUpdateForm?m_no=" + dto.getM_no();
 	        }
 
 	        model.addAttribute("userName", nickname);
-
+	        
 	    } else if (principal instanceof UserDetails) {
-	        // 일반 로그인 처리
 	        UserDetails userDetails = (UserDetails) principal;
 	        model.addAttribute("userName", userDetails.getUsername());
 	        session.setAttribute("m_id", userDetails.getUsername());
@@ -259,8 +255,9 @@ public class memberController {
 	    memberDTO member = dao.findByM_id(loginId);
 	    
 	    if (member != null && passwordEncoder.matches(inputPw, member.getM_pwd())) {
-	        response.put("success", true);
-	        session.setAttribute("pwVerified", true);
+	    	session.setAttribute("pwVerified", true);
+	    	response.put("success", true);
+	       // session.setAttribute("pwVerified", true);
 	    } else {
 	        response.put("success", false);
 	    }
@@ -290,28 +287,37 @@ public class memberController {
 	    return response;
 	}
 	
+	@GetMapping("/member/goSocialReauth")
+	public String goSocialReauth(HttpServletRequest request) {
+	    // 세션을 강제로 새로 생성하여 신선한 상태로 카카오에 보냅니다.
+	    HttpSession session = request.getSession(true);
+	    session.setAttribute("isUpdateMode", true);
+	    return "redirect:/oauth2/authorization/kakao?prompt=login";
+	}
+	
 	@RequestMapping("/member/memberUpdateForm")
-	public String memberUpdateForm(HttpSession session, HttpServletRequest request, Model model, Authentication auth) {
-	    // 1. 접근 권한 확인 (소셜 로그인 유저거나 비밀번호 검증을 마친 일반 유저여야 함)
+	public String memberUpdateForm(HttpSession session, Model model, Authentication auth) {
+	    // 1. 보안 세션 확인
 	    Boolean isVerified = (Boolean) session.getAttribute("pwVerified");
-	    boolean isSocialUser = auth.getPrincipal() instanceof OAuth2User;
 
-	    // 소셜 유저도 아니고 비밀번호 확인도 안 됐다면 차단
-	    if (!isSocialUser && (isVerified == null || !isVerified)) {
-	        String m_no = request.getParameter("m_no");
-	        return "redirect:/member/memberDetailId"; // ID 기반 상세페이지로 유도
+	    if (isVerified == null || !isVerified) {
+	        return "redirect:/member/memberDetailId?m_id=" + auth.getName(); 
 	    }
 	    
-	    // 일반 유저인 경우에만 1회성 세션 제거
-	    if (!isSocialUser) {
-	        session.removeAttribute("pwVerified");
+	    // 1회성 세션 즉시 파기
+	    session.removeAttribute("pwVerified"); 
+
+	    // 2. 데이터 조회
+	    // [보안 강화] 파라미터(request) 대신 로그인된 인증 정보(auth)로 ID를 가져와 DB 조회
+	    String loginId = auth.getName();
+	    memberDTO dto = dao.findByM_id(loginId); // ID로 회원 정보를 가져오는 메서드 사용
+
+	    if (dto == null) {
+	        return "redirect:/"; // 회원이 없으면 홈으로
 	    }
 
-	    // 2. 데이터 조회 및 파싱 (기존 로직 유지)
-	    int m_no = Integer.parseInt(request.getParameter("m_no"));
-	    memberDTO dto = dao.memberViewDao(m_no);
-	    
-	    if (dto != null && dto.getM_addr() != null && dto.getM_addr().contains("]")) {
+	    // 3. 주소 파싱 (기존 로직 유지)
+	    if (dto.getM_addr() != null && dto.getM_addr().contains("]")) {
 	        try {
 	            String fullAddr = dto.getM_addr();
 	            String zipcode = fullAddr.substring(1, fullAddr.indexOf("]"));
@@ -329,16 +335,18 @@ public class memberController {
 	                model.addAttribute("address", addrPart.trim());
 	            }
 	        } catch (Exception e) {
-	            // 주소 형식이 [우편번호] 주소 형태가 아닐 경우의 예외 처리
 	            model.addAttribute("address", dto.getM_addr());
 	        }
 	    }
-	 // memberUpdateForm 메서드 내부에 추가
+
+	    // 4. 연락처 파싱 (기존 로직 유지)
 	    if (dto.getM_tel() != null && dto.getM_tel().contains("-")) {
 	        String[] parts = dto.getM_tel().split("-");
-	        model.addAttribute("phone1", parts[0]);
-	        model.addAttribute("phone2", parts[1]);
-	        model.addAttribute("phone3", parts[2]);
+	        if(parts.length >= 3) {
+	            model.addAttribute("phone1", parts[0]);
+	            model.addAttribute("phone2", parts[1]);
+	            model.addAttribute("phone3", parts[2]);
+	        }
 	    }
 
 	    model.addAttribute("edit", dto);
@@ -372,9 +380,7 @@ public class memberController {
 	    HttpSession session = request.getSession();
 	    session.setAttribute("m_name", dto.getM_name());
 	    
-		
-		
-		 return "redirect:/home";
+	    return "redirect:/member/memberDetail?m_no=" + dto.getM_no();
 	}
 	
 	@RequestMapping("/member/memberDelete")

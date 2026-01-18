@@ -7,17 +7,12 @@
 <meta charset="UTF-8">
 <title>후기 작성</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/boardForm.css">
-<style>
-
-
-   
-</style>
 </head>
 <body>
 <div class="content-container">
 		
 <!-- 실제 후기 작성 페이지 영역 -->
-<div class="review-trigger-container" style="text-align: center; margin: 40px 0;">
+<div class="review-trigger-container" style="text-align: center;">
     <div class="fake-input" onclick="openProductModal()" 
          style="width: 80%; max-width: 600px; height: 50px; border: 2px solid #dcbbf2; border-radius: 25px; margin: 0 auto; display: flex; align-items: center; padding: 0 20px; color: #a36cd9; cursor: pointer; background: #fff;">
         꽃과 함께한 행복한 순간을 적어주세요 (상품 선택 필요)
@@ -103,7 +98,7 @@
 			<!-- 3행: 텍스트 (가로 전체 차지) -->
 			<tr>
 			   <td colspan="2">
-			       <textarea name="b_text" id="content" rows="6" placeholder="꽃과 함께한 행복한 순간을 적어주세요."></textarea>
+			       <textarea name="b_text" id="content" rows="6" placeholder="꽃과 함께한 행복한 순간을 적어주세요.(최대 50자)" maxlength="50"></textarea>
 			    </td>
 			 </tr>
 			</table>
@@ -120,32 +115,6 @@
 
 <script>
 
-
-	// 리뷰 제출 함수 보완
-	function submitReview() {
-	    const f = document.reviewForm;
-	    const p_no_val = document.getElementById('selected_p_no').value;
-	    
-	    // 디버깅을 위해 콘솔 출력
-	    console.log("전송 시도 상품 번호(p_no):", p_no_val);
-	    
-	    if(!p_no_val) {
-	        alert("후기를 작성할 상품을 먼저 선택해주세요!");
-	        openProductModal(); // 상품 미선택 시 모달 다시 띄움
-	        return;
-	    }
-	    
-	    // ... 나머지 별점 및 텍스트 체크 ...
-	    
-	    if(!f.b_text.value.trim()) {
-	        alert("내용을 입력해주세요!");
-	        f.b_text.focus();
-	        return;
-	    }
-
-	    alert("후기가 등록되었습니다!");
-	    f.submit(); 
-	}
 // 3. 여러 장 미리보기 함수
 function previewMultipleImages(input) {
     const container = document.getElementById('image-preview-container');

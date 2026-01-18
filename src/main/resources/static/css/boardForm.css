@@ -43,10 +43,17 @@
     justify-content: center;
     font-size: 35px;
 }
-.star-rating input { display: none; }
+/* 요소를 완전히 제거하지 않고 투명하게 숨겨서 인지력 향상 */
+.star-rating input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 .star-rating label {
     color: #eee; /* 빈 별색상 */
     cursor: pointer;
+    transition: color 0.2s;
 }
 .star-rating input:checked ~ label,
 .star-rating label:hover,

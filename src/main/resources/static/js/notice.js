@@ -63,3 +63,17 @@ function toggleEdit(n_no, isEdit) {
         editArea.style.display = 'none';
     }
 }
+
+
+// 수정 창 열기/닫기 함수 (기존 로직 보완)
+function toggleEdit(nNo, isShow) {
+    if (isShow) {
+        $(`#view_area_${nNo}`).hide();
+        $(`#edit_area_${nNo}`).show();
+        // 수정 창이 열릴 때 에디터 포커싱 (선택 사항)
+        $(`#edit_summernote_${nNo}`).summernote('focus');
+    } else {
+        $(`#view_area_${nNo}`).show();
+        $(`#edit_area_${nNo}`).hide();
+    }
+}

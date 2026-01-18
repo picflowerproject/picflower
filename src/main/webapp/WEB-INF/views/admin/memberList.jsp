@@ -35,7 +35,7 @@ function deleteSelected() {
             <td width="15%">생일</td>
             <td width="15%">연락처</td>
             <td width="17%">좋아하는 꽃</td>
-            <td width="10%">선택 <input type="checkbox" id="selectAll" onclick="for(c of document.getElementsByName('m_nos')) c.checked=this.checked"></td>
+            <td width="10%"><input type="checkbox" id="selectAll" onclick="for(c of document.getElementsByName('m_nos')) c.checked=this.checked"></td>
         </tr>
         <c:forEach var="list" items="${list}">
         <tr onclick="location.href='${pageContext.request.contextPath}/member/memberDetail?m_no=${list.m_no}'" style="cursor:pointer;">
@@ -57,8 +57,9 @@ function deleteSelected() {
         </c:forEach>
     </table>
     
-    <div class="button-container">
-        <button type="button" onclick="deleteSelected()">선택 삭제</button>
+     <div class="button-container">
+        <!-- class="btn-delete" 추가 -->
+        <button type="button" class="btn-delete" onclick="deleteSelected()">선택 삭제</button>
     </div>
 </form>
 

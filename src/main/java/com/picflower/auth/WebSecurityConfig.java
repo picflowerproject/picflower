@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpSession;
 
 @Configuration
 public class WebSecurityConfig {
@@ -36,33 +37,44 @@ public class WebSecurityConfig {
                 .requestMatchers("/qna/**").hasAnyRole("MEMBER", "ADMIN")
                 .requestMatchers("/css/**", "/js/**", "/img/**", "/assets/**", "/product_img/**", "/flower_img/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/member/**").hasAnyRole("MEMBER", "ADMIN")
+                .requestMatchers("/member/**").hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "OAUTH2_USER")
                 .anyRequest().authenticated()
             );
 
         // 폼 로그인
-        // 폼 로그인 설정 수정
         http.formLogin((formLogin) -> formLogin
-                .loginPage("/guest/loginForm")
-                // [수정] JSP의 <form action="/login"> 과 일치시킴
+                .loginPage("/home")
                 .loginProcessingUrl("/login") 
-                // [수정] JSP의 <input name="username"> 과 일치시킴
                 .usernameParameter("username")
-                // [수정] JSP의 <input name="password"> 과 일치시킴
                 .passwordParameter("password")
                 .defaultSuccessUrl("/", true)
-                // [팁] 실패 시 로그인 폼으로 다시 가도록 수정
-                .failureUrl("/guest/loginForm?error=true")
+                .failureUrl("/home?loginError=true")
                 .permitAll()
         );
 
-        // OAuth2 로그인 (카카오)
+     // OAuth2 로그인 (카카오)
         http.oauth2Login((oauth2) -> oauth2
-                .loginPage("/home")
-                .defaultSuccessUrl("/", true)
-                .permitAll()
+            .loginPage("/home")
+            .successHandler((request, response, authentication) -> {
+                HttpSession session = request.getSession(true);
+                
+                Boolean isUpdateMode = (Boolean) session.getAttribute("isUpdateMode");
+                
+                if (Boolean.TRUE.equals(isUpdateMode)) {
+                    session.setAttribute("pwVerified", true);
+                    session.removeAttribute("isUpdateMode");
+                    response.sendRedirect(request.getContextPath() + "/member/memberUpdateForm");
+                } else {
+                    session.removeAttribute("loginError");
+                    response.sendRedirect(request.getContextPath() + "/home");
+                }
+            })
         );
 
+        http.sessionManagement(session -> session
+        		.sessionFixation().migrateSession() 
+        );
+        
         // 로그아웃
         http.logout((logout) -> logout
                 .logoutUrl("/logout")

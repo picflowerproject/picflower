@@ -114,7 +114,6 @@ function handlePriceInput(obj, hiddenId) {
         <input type="hidden" name="m_no" value="1001">
         
         <div class="btn-group">
-        	<input type="reset" value="취소">
             <input type="submit" value="등록하기">
         </div>
     </form>

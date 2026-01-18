@@ -6,27 +6,20 @@ html, body {
 }
 
 body {
-    -webkit-font-smoothing: antialiased; /* 폰트를 더 매끄럽게 표현 */
-    letter-spacing: -0.5px; /* 텍스트 자간 조정으로 세련된 느낌 부여 */
-}
-
-h2 {
-    font-size: 26px;
-    letter-spacing: -1px;
-    color: #444; /* 너무 진한 검정보다 짙은 회색이 더 고급스러움 */
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.5px;
+    font-family: 'Pretendard', sans-serif; /* 폰트 환경에 맞게 조절 */
 }
 
 .content-wrapper {
-    flex: 1;
     display: flex;
     justify-content: center;
-    padding-top: 50px;
-    padding-bottom: 80px;
+    padding: 50px 0 80px 0;
 }
 
 .content-container {
     width: 100%;
-    max-width: 600px; /* PC에서는 500px 유지 */
+    max-width: 600px;
     padding: 20px;
     box-sizing: border-box;
 }
@@ -36,6 +29,7 @@ h2 {
     margin-bottom: 25px;
     border-bottom: 3px solid #B06DF2;
     padding-bottom: 12px;
+    color: #444;
 }
 
 /* 2. 테이블 레이아웃 */
@@ -50,49 +44,57 @@ table tr {
 }
 
 table td {
-    padding: 10px 5px;
+    padding: 15px 0; /* 상하 여백 확대 */
     border: none !important;
+    vertical-align: middle;
 }
 
 table td:first-child {
-    width: 100px;
+    width: 120px; /* 제목 너비 고정 */
     font-weight: bold;
     color: #444;
 }
 
 /* 3. 입력창 공통 스타일 */
-
 input[type="text"], 
 input[type="password"], 
 select {
-    height: 36px;
-    padding: 0 15px;
+    width: 100%; /* 기본적으로 꽉 채움 */
+    height: 40px;
+    padding: 0 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 14px;
     box-sizing: border-box;
     outline: none;
-    margin: 0; 
 }
 
-/* 1. 일반 단독 입력창: 너비를 320px로 통일하여 정렬감 부여 */
+/* 4. 항목별 배열 정렬 */
+
+/* 아이디 그룹 (메시지 상단 + 하단 입력&버튼) */
 .id-group {
     display: flex;
-    flex-direction: column; /* 세로 배치 */
-    width: 350px;           /* 전체 너비 유지 */
-    gap: 4px;              /* 메시지와 입력창 사이 간격 */
+    flex-direction: column;
+    gap: 5px;
 }
 
- input[name="m_id"] {
-    flex: 1 !important; /* 남은 공간을 꽉 채움 */
-    width: auto !important; /* 기존 350px 고정 해제 */
-    margin: 0 !important;
+.id-input-area {
+    display: flex;
+    gap: 8px;
 }
 
-/* 중복확인 버튼 크기 고정 */
-.check-btn {
-    width: 100px; /* 주소찾기 버튼(.btn-addr)과 동일한 너비로 통일감 부여 */
-    height: 36px;
+/* 주소 그룹 */
+.addr-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+/* 버튼 공통 (중복확인, 주소검색) */
+.check-btn, .btn-addr {
+    width: 100px;
+    flex-shrink: 0; /* 버튼 크기 유지 */
+    height: 40px;
     background-color: #A36CD9;
     color: white;
     border: none;
@@ -100,115 +102,36 @@ select {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    white-space: nowrap;
     transition: background-color 0.2s;
 }
-/* 메시지 텍스트 정렬 */
-/* 2. 메시지 영역 스타일 */
-.id-msg {
-    font-size: 12px;
-    color: #888;
-    min-height: 14px;
-    padding-left: 2px;
-    line-height: 1.2;
+
+.check-btn:hover, .btn-addr:hover {
+    background-color: #8E54C1;
 }
 
-.id-input-area {
-    display: flex;          /* 가로 배치 */
-    gap: 8px;
-    width: 100%;
-}
-input[name="m_pwd"], 
-input[name="m_pwd2"], 
-input[name="m_name"],
-input[name="m_birth"],
-input[name="m_flower"] {
-    width: 350px !important; /* 기존 250px에서 확장 */
-}
-
-/* 2. 연락처 입력란: 전체 합이 약 320px가 되도록 조정 */
-select[name="m_tel1"] { 
-    width: 110px !important; 
-    display: inline-block; 
-}
+/* 연락처 & 이메일 (한 줄에 여러 개 배치) */
+/* HTML 구조상 td 내부에서 직접 input들이 나열되므로 아래와 같이 처리 */
 input[name="m_tel2"], 
-input[name="m_tel3"] { 
-    width: 110px !important; /* (320 - 80 - 기호여백)/2 계산 */
-    display: inline-block; 
+input[name="m_tel3"],
+select[name="m_tel1"] {
+    width: calc((100% - 30px) / 3) !important; /* 3분할 */
+    display: inline-block;
 }
 
-/* 3. 이메일 입력란: 전체 합이 약 320px가 되도록 조정 */
-input[name="m_email1"] { 
-    width: 165px !important; 
-    display: inline-block; 
-}
-select[name="m_email2"] { 
-    width: 165px !important; 
-    display: inline-block; 
+input[name="m_email1"], 
+select[name="m_email2"] {
+    width: calc((100% - 25px) / 2) !important; /* 2분할 */
+    display: inline-block;
 }
 
-/* 4. 주소 입력란: 우측 끝 라인(320px)에 맞춤 */
-.addr-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 350px; /* 전체 너비 제한 */
-    margin-bottom: 8px;
-}
-
-#m_zipcode { 
-    flex: 1; /* 가용한 공간 차지 */
-    background-color: #f9f9f9; 
-}
-
-.btn-addr {
-    width: 100px; /* 버튼 너비 고정 */
-    height: 36px;
-    background-color: #A36CD9;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-#m_addr_base, #m_addr_detail {
-    width: 350px !important; /* 상단 입력창들과 동일하게 맞춤 */
-    display: block; 
-}
-
-#m_addr_base { 
-    margin-bottom: 5px !important; 
-}
-
-/* [추가] 모바일 대응: 화면이 좁아질 경우 너비 자동 조절 */
-@media (max-width: 480px) {
-    input[name="m_id"], 
-    input[name="m_pwd"], 
-    input[name="m_pwd2"], 
-    input[name="m_name"],
-    input[name="m_birth"],
-    input[name="m_flower"],
-    #m_addr_base, 
-    #m_addr_detail,
-    .addr-group {
-        width: 100% !important;
-    }
-}
-td br {
-    display: none;
-}
-/* 4. 버튼 디자인 */
+/* 5. 하단 제출 버튼 */
 .button-group {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+    margin-top: 40px;
 }
 
 .btn-submit {
-    width: 455px;
-    height: 45px;
+    width: 100%; /* 테이블 너비와 일치 */
+    height: 50px;
     background-color: #B06DF2;
     color: white;
     border: none;
@@ -216,46 +139,127 @@ td br {
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.btn-addr {
-    height: 36px;
-    background-color: #A36CD9;
-    color: white;
-    border: none;
-    padding: 0 12px;
-    border-radius: 4px;
-    font-size: 13px;
-    cursor: pointer;
-}
 .btn-submit:hover {
-    background-color: #9A59E0; /* 기존 #B06DF2보다 살짝 어두운 톤 */
-    transition: background-color 0.3s ease;
+    background-color: #9A59E0;
 }
 
-.btn-addr:hover {
-    background-color: #8E57C2;
+/* 메시지 텍스트 */
+.id-msg {
+    font-size: 12px;
+    min-height: 15px;
+    color: #888;
 }
 
-/* 아이디 중복 체크 버튼 */
-.check-btn {
-    background-color: #A36CD9;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    white-space: nowrap; /* 글자 줄바꿈 방지 */
-}
-.check-btn:hover {
-    background-color: #8E54C1;
+/* 1. 모달 배경 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* 배경 투명도 조절 */
+    display: flex;                  
+    justify-content: center;        
+    align-items: center;            
+    z-index: 10000;                 
 }
 
-/* 5. 푸터 */
-footer {
-    margin-top: auto;
-    padding: 20px;
-    border-top: 1px solid #eee;
+/* 2. 모달 컨텐츠 박스 */
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;            
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 350px;               
     text-align: center;
+    box-sizing: border-box;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #444;
+    font-weight: bold;
+}
+
+/* 3. 모달 내 입력창 */
+.modal-content input[type="password"] { 
+    width: 100% !important;        /* 테이블 스타일과 충돌 방지 */
+    height: 45px;                   
+    padding: 0 15px; 
+    margin-bottom: 10px; 
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box; 
+    font-size: 15px;
+    outline: none;
+}
+
+.modal-content input[type="password"]:focus {
+    border-color: #B06DF2;          /* 보라색 강조 */
+}
+
+/* 4. 모달 버튼 영역 */
+.modal-buttons { 
+    display: flex;
+    gap: 8px;
+    margin-top: 15px; 
+}
+
+.modal-buttons button {
+    flex: 1;                        /* 버튼 크기 균등 배분 */
+    height: 45px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+/* 변경(확인) 버튼 - 메인 보라색 */
+.btn-confirm {
+    background-color: #B06DF2;
+    color: white;
+}
+
+.btn-confirm:hover {
+    background-color: #9A59E0;
+}
+
+/* 취소 버튼 - 연한 회색 */
+.btn-cancel {
+    background-color: #f2f2f2;
+    color: #666;
+}
+
+.btn-cancel:hover {
+    background-color: #e5e5e5;
+}
+
+/* 모바일 대응 */
+@media (max-width: 400px) {
+    .modal-content {
+        width: 85%;
+        padding: 25px 20px;
+    }
+}
+
+/* 6. 모바일 대응 */
+@media (max-width: 480px) {
+    table td:first-child {
+        width: 80px;
+        font-size: 13px;
+    }
+    .id-input-area, .addr-group {
+        flex-direction: row;
+    }
+    .check-btn, .btn-addr {
+        width: 80px;
+    }
 }

@@ -1,0 +1,136 @@
+@charset "UTF-8";
+  /* 1. 전체 컨테이너: 시인성을 위해 최대 너비 제한 */
+    .admin-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+        color: #333;
+    }
+
+     h2 { 
+        font-size: 20px;
+        padding-bottom: 15px; 
+        margin-bottom: 25px; 
+        /* display: inline-block; 을 삭제하거나 block으로 설정 */
+        display: block; 
+        /* 밑줄을 전체 너비로 설정 (브랜드 컬러 활용) */
+        border-bottom: 2px solid #B06DF2; 
+        width: 100%;
+        letter-spacing: -0.5px;
+    }
+
+    /* 2. 테이블: 가독성 중심의 슬림 디자인 */
+    .qna-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+    
+    .qna-table th { 
+        background: #fdfbff; /* 아주 연한 보라빛 회색 */
+        padding: 14px 10px; 
+        border-bottom: 1px solid #DCBBF2; /* 연한 보라색 경계선 */
+        color: #666; 
+        font-size: 13px;
+        font-weight: 600;
+    }
+    
+    .qna-table td { 
+        padding: 12px 8px; 
+        border-bottom: 1px solid #f0f0f0; 
+        text-align: center; 
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    /* 문의내용: 내용이 많아도 테이블이 망가지지 않게 조정 */
+    .content-cell {
+        text-align: left !important;
+        line-height: 1.4;
+        word-break: break-all;
+    }
+
+    /* 3. 상태 배지 (포인트 컬러 활용) */
+    .status-badge { 
+        padding: 3px 8px; 
+        border-radius: 4px; 
+        font-size: 11px; 
+        font-weight: bold; 
+    }
+    .st-0 { background: #E9C9F2; color: #A36CD9; } /* 답변대기: 연보라 */
+    .st-1 { background: #f0f0f0; color: #888; }    /* 답변완료: 차분한 회색 */
+
+    /* 4. 답변 영역 (펼쳐지는 부분) */
+    .reply-row { display: none; background-color: #fafafa; }
+    
+    .reply-wrapper {
+        padding: 20px; 
+        display: flex; 
+        justify-content: center;
+    }
+    
+    .reply-box {
+        width: 100%;
+        max-width: 900px;
+        display: flex; 
+        gap: 12px; 
+        background: #fff;
+        padding: 15px; 
+        border: 1px solid #DCBBF2; /* 경계선만 보라색 포인트 */
+        border-radius: 8px;
+    }
+    
+    .reply-input {
+        flex: 1; 
+        padding: 12px; 
+        border: 1px solid #eee; 
+        border-radius: 4px;
+        resize: none; 
+        height: 60px;
+        font-size: 13px;
+    }
+    .reply-input:focus {
+        outline: 1px solid #B06DF2;
+    }
+
+    /* 5. 버튼 세트 (요청하신 색상 반영) */
+    
+    /* 저장 버튼: 메인 보라색 */
+    .btn-save { 
+        background: #B06DF2; color: white; border: none; 
+        padding: 0 25px; cursor: pointer; border-radius: 4px; 
+        font-weight: bold; transition: 0.2s;
+    }
+    .btn-save:hover { background: #A36CD9; }
+
+    /* 답변 버튼: 깔끔한 화이트/그레이 */
+    .btn-answer { 
+        background: #fff; color: #666; border: 1px solid #ccc; 
+        padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;
+    }
+    .btn-answer:hover { background: #f8f8f8; border-color: #B06DF2; color: #B06DF2; }
+
+    /* 수정 버튼: 강조 보라색 */
+    .btn-edit { 
+        background: #B06DF2; color: #fff; border: 1px solid #B06DF2; 
+        padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;
+    }
+    .btn-edit:hover { background: #A36CD9; }
+
+    /* 삭제 버튼: 레드 포인트 */
+    .btn-delete2 { 
+        background: #fff; color: #ff4d4f; border: 1px solid #ff4d4f; 
+        padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;
+        margin-left: 4px;
+    }
+    .btn-delete2:hover { background: #fff1f0; }
+
+    /* 기존 답변 표시란 */
+    .admin-answer-text {
+        margin-top: 8px;
+        padding: 10px;
+        background: #f4f0f9; /* 아주 연한 보라 바탕 */
+        border-radius: 4px;
+        font-size: 13px;
+        color: #555;
+    }

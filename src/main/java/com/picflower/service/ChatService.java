@@ -21,18 +21,14 @@ public class ChatService {
 
     private final ResourceLoader resourceLoader;
 
-    // 생성자 주입
     public ChatService(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
-    // 1. 엔드포인트 URL 전체 경로 입력 (v1beta 또는 v1)
     private final String URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";;
 
-    // 2. 리소스 로더를 이용한 안전한 파일 읽기
     private String loadProductJson() {
         try {
-            // 정제한 파일명이 products-edit.json이 맞는지 확인하세요.
             Resource resource = resourceLoader.getResource("classpath:static/products-edit.json");
             return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
         } catch (Exception e) {
@@ -45,7 +41,6 @@ public class ChatService {
         RestTemplate restTemplate = new RestTemplate();
         String productJson = loadProductJson();
 
-        // 3. 시스템 지침 구성
         String systemInstruction = 
             "2026년 1월 현재 활동 중인 전문 플로리스트입니다. 고객의 질문에 대해 아래 [상품데이터]와 [추천 가이드라인]을 엄격히 준수하여 답변합니다.\n\n" +
             "[추천 가이드라인]\n" +
@@ -58,7 +53,7 @@ public class ChatService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        // API 키는 URL 파라미터로 붙이거나 헤더에 넣을 수 있는데, Gemini는 URL 파라미터 방식을 선호합니다.
+
         String finalUrl = URL + "?key=" + apiKey;
 
         Map<String, Object> textPart = Map.of("text", systemInstruction);

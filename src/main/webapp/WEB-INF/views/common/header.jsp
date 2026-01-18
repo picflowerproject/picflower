@@ -8,6 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Flower Garden</title>
+    <script src="${pageContext.request.contextPath}/js/simple_board.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/header.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/loginPopup.css">
@@ -92,8 +93,9 @@
                             <option value="">관리자 메뉴</option>
                             <option value="/admin/n_insertForm">공지 등록</option>
                             <option value="/admin/memberList">회원 리스트</option>
-                             <option value="/admin/qnaList">1:1 문의 관리</option>
                             <option value="/admin/productWriteForm">상품 등록</option>
+                            <option value="/admin/qnaList">1:1 문의 관리</option>
+                            
                         </select>
                     </div>
                     </sec:authorize>
@@ -104,7 +106,7 @@
    </div> <!-- .user-info-box 닫기 -->
     </div>
 
-    <!-- 4. 사라졌던 네비게이션 메뉴 바 -->
+
     <nav class="nav-bar">
         <div class="nav-container">
             <a href="/guest/productList" class="nav-item">테마 상품</a>
@@ -157,13 +159,22 @@ function closeLoginModal() {
     document.getElementById('loginModal').style.display = 'none';
 }
 
-// ✅ [중요] 로그인 실패 후 리다이렉트 되었을 때 자동으로 팝업 다시 띄우기
-window.onload = function() {
+// ✅ 로직 통합: 하나로 관리하여 중복 실행 방지
+$(document).ready(function() {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('error')) {
+    
+    // 1. 에러 파라미터 확인 (loginError 또는 error)
+    if (urlParams.has('loginError') || urlParams.has('error')) {
+        
+        // 2. [핵심] 주소창에서 에러 파라미터 즉시 제거
+        // 새로고침 시 다시 실행되지 않도록 함
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+        
+        // 3. 모달 열기 및 알림
         openLoginModal();
         alert("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
-}
+});
 </script>
 </body>

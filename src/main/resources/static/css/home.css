@@ -6,7 +6,7 @@
     margin: 40px auto;    /* 위아래 여백을 주고 중앙 정렬 */
     overflow: hidden;
     position: relative;
-    border-radius: 20px;  /* 모서리를 둥글게 */
+    border-radius: 10px;  /* 모서리를 둥글게 */
     box-shadow: 0 15px 35px rgba(0,0,0,0.2); /* 고급스러운 그림자 효과 */
 }
 

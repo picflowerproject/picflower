@@ -56,18 +56,17 @@
 					    
 					    <!-- 2. 댓글 토글 버튼 -->
 					    <c:if test="${not empty board.replies}">
-					        <button type="button" class="btn-reply-toggle">
-					            댓글 보기 <span class="icon">▼</span>
-					        </button>
-					
-					        <!-- 버튼 바로 다음에 와야 .next()가 작동합니다 -->
-					        <div class="review-replies" style="display: none;"> 
-					            <c:forEach var="reply" items="${board.replies}">
-					                <div class="reply-item">
-					                    <strong>${reply.m_id}</strong> : ${reply.r_text}
-					                </div>
-					            </c:forEach>
-					        </div>
+					       <button type="button" class="btn-reply-toggle">
+							    댓글 보기 <span class="icon">▼</span>
+							</button>
+							<!-- 반드시 버튼 바로 다음에 div가 와야 합니다 (nextElementSibling 작동을 위해) -->
+							<div class="review-replies"> 
+							    <c:forEach var="reply" items="${board.replies}">
+							        <div class="reply-item">
+							            <strong>${reply.m_id}</strong> : ${reply.r_text}
+							        </div>
+							    </c:forEach>
+							</div>
 					    </c:if>
 					</td>
 
@@ -97,11 +96,13 @@
     
     <c:if test="${empty reviewList}">
               
-                    <div colspan="5" class="text-center" style="padding: 50px; color: #999;">
-                        아직 작성된 후기가 없습니다. 첫 번째 후기를 남겨보세요! 🌸
-                    </div>
+                    <div colspan="5" class="text-center" style="padding: 50px;">
+					    <a href="/guest/b_list" class="custom-link">
+					        아직 작성된 후기가 없습니다. 첫 번째 후기를 남겨보세요! 🌸
+					    </a>
+					</div>
                
     </c:if>
 </div>
-	</body>
+</body>
 </html>

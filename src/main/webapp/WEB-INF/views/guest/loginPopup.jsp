@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <title>Header</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/LoginPopup.css">
-<link href="fonts.googleapis.com" rel="stylesheet">
 
 </head>
 <body>

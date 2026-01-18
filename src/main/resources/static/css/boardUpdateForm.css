@@ -172,13 +172,13 @@
 
 /* 수정 완료 버튼 (등록 버튼과 동일 테마) */
 .btn-save {
-    background-color: #dcbbf2;
-    color: #000;
+    background-color: #A36CD9;
+    color: #fff;
     box-shadow: 0 4px 10px rgba(163, 108, 217, 0.2);
 }
 
 .btn-save:hover {
-    background-color: #c9a7e6;
+    background-color: #A36CD9;
     transform: translateY(-2px);
 }
 

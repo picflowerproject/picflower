@@ -5,24 +5,26 @@
 <head>
 <meta charset="UTF-8">
 <title>공지사항 입력</title>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/summernote/summernote-lite.css">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/n_insertForm.css">
-<script src="${pageContext.request.contextPath}/js/n_insertForm.js"></script>
 
-<!-- Summernote Lite CDN -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <script src="${pageContext.request.contextPath}/summernote/summernote-lite.js"></script>
-  <script src="${pageContext.request.contextPath}/summernote/lang/summernote-ko-KR.js"></script>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/summernote/summernote-lite.css">
 </head>
 <body>
 <header>
 	<%@ include file="/WEB-INF/views/common/header.jsp" %>
 </header>
 <main>
+
+<!-- Summernote Lite CDN -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="${pageContext.request.contextPath}/summernote/summernote-lite.js"></script>
+  <script src="${pageContext.request.contextPath}/summernote/lang/summernote-ko-KR.js"></script>
+
+<script src="${pageContext.request.contextPath}/js/n_insertForm.js"></script>
 <div class="content-container">
    <h1>공지 사항 입력</h1>
    <form name ="notice" method="post" action="n_insert" enctype="multipart/form-data">
@@ -55,7 +57,6 @@
 <footer>
 	<%@ include file="/WEB-INF/views/common/footer.jsp" %>	
 </footer>
-
 <script>
 $(document).ready(function() {
     $('#summernote').summernote({

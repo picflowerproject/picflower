@@ -8,58 +8,26 @@
 <head>
 <meta charset="UTF-8">
 <title>공지사항</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/summernote/summernote-lite.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/notice.css">
+<script>
+	const contextPath = "${pageContext.request.contextPath}";
+
+</script>
+
+</head>
+<body>
+<%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 <!-- Summernote Lite CDN -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
   <script src="${pageContext.request.contextPath}/summernote/summernote-lite.js"></script>
   <script src="${pageContext.request.contextPath}/summernote/lang/summernote-ko-KR.js"></script>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/summernote/summernote-lite.css">
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css">
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/notice.css">
-<script>
-	const contextPath = "${pageContext.request.contextPath}";
-	
-	$(document).ready(function() {
-	    // 등록 폼 에디터 (기존 유지)
-	    $('#summernote').summernote({
-	        height: 400,
-	        lang: "ko-KR"
-	    });
 
-	    // 수정 폼 에디터 (class가 summernote-edit인 모든 요소를 에디터로 변환)
-	    $('.summernote-edit').summernote({
-	        height: 300,
-	        lang: "ko-KR",
-	        placeholder: '수정할 내용을 입력하세요.',
-	        toolbar: [
-	            ['style', ['style']],
-	            ['font', ['bold', 'underline', 'clear']],
-	            ['insert', ['link', 'picture', 'video']],
-	            ['view', ['fullscreen', 'codeview']]
-	        ]
-	    });
-	});
-
-	// 수정 창 열기/닫기 함수 (기존 로직 보완)
-	function toggleEdit(nNo, isShow) {
-	    if (isShow) {
-	        $(`#view_area_${nNo}`).hide();
-	        $(`#edit_area_${nNo}`).show();
-	        // 수정 창이 열릴 때 에디터 포커싱 (선택 사항)
-	        $(`#edit_summernote_${nNo}`).summernote('focus');
-	    } else {
-	        $(`#view_area_${nNo}`).show();
-	        $(`#edit_area_${nNo}`).hide();
-	    }
-	}
-</script>
 <script src="${pageContext.request.contextPath}/js/notice.js"></script>
-</head>
-<body>
-<%@ include file="/WEB-INF/views/common/header.jsp" %>
 <div class="content-container">
 	<h1>공지사항</h1>
 	
@@ -118,6 +86,30 @@
 		    </details>
 		</c:forEach>
 
+<script type="text/javascript">
+
+$(document).ready(function() {
+    // 등록 폼 에디터 (기존 유지)
+    $('#summernote').summernote({
+        height: 400,
+        lang: "ko-KR"
+    });
+
+    // 수정 폼 에디터 (class가 summernote-edit인 모든 요소를 에디터로 변환)
+    $('.summernote-edit').summernote({
+        height: 300,
+        lang: "ko-KR",
+        placeholder: '수정할 내용을 입력하세요.',
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview']]
+        ]
+    });
+});
+
+</script>
 <%@ include file="/WEB-INF/views/common/pagination.jsp"%>
 
 </div>

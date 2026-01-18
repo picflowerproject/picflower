@@ -7,12 +7,11 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/memberwrite.css">
     <!-- 외부 CDN을 사용하여 MIME 타입 에러 및 로드 실패 방지 -->
     
-<script src="${pageContext.request.contextPath}/js/memberValidation.js"></script>
 
 </head>
 <body>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
-
+<script src="${pageContext.request.contextPath}/js/memberValidation.js"></script>
     <main class="content-wrapper">
         <div class="content-container">
             <h2>회원가입</h2>
@@ -28,7 +27,7 @@
 						        <div id="id_msg" class="id-msg"></div>
 						        <!-- 2. 입력창과 버튼이 아래로 (이 둘은 가로 배치) -->
 						        <div class="id-input-area">
-						            <input type="text" id="m_id" name="m_id" placeholder="아이디 입력(4자 이상)" required>
+						            <input type="text" id="m_id" name="m_id" placeholder="아이디 입력(4자 이상)">
 						            <button type="button" onclick="checkDuplicateId()" class="check-btn">중복확인</button>
 						        </div>
 						    </div>
@@ -36,15 +35,15 @@
 					</tr>
                     <tr>
                         <td>비밀번호</td>
-                        <td><input type="password" name="m_pwd" required></td>
+                        <td><input type="password" name="m_pwd"></td>
                     </tr>
                     <tr>
                         <td>비밀번호 확인</td>
-                        <td><input type="password" name="m_pwd2" required></td>
+                        <td><input type="password" name="m_pwd2"></td>
                     </tr>
                     <tr>
                         <td>이름</td>
-                        <td><input type="text" name="m_name" required></td>
+                        <td><input type="text" name="m_name"></td>
                     </tr>
                     <tr>
                         <td>성별</td>
@@ -55,7 +54,7 @@
                     </tr>
                     <tr>
                         <td>생일</td>
-                        <td><input type="text" name="m_birth" required></td>
+                        <td><input type="text" name="m_birth" maxlength="8" placeholder="8자리로 입력해 주세요(20260119)"></td>
                     </tr>
                     <tr>
                         <td>연락처</td>
@@ -89,6 +88,7 @@
                             <select name="m_email2">
                                 <option value="gmail.com">gmail.com</option>
                                 <option value="naver.com">naver.com</option>
+                                <option value="apple.com">apple.com</option>
                                 <option value="hanmail.net">hanmail.net</option>
                             </select>
                         </td>
@@ -114,6 +114,13 @@ function checkDuplicateId() {
     const mid = idField.value.trim();
     const msg = document.getElementById('id_msg');
 
+ // [추가] 빈 값일 때 중복 확인 중단
+    if (mid === "") {
+        alert("중복 확인을 하기 전에 아이디를 입력해주세요.");
+        idField.focus();
+        return;
+    }
+    
     console.log("검색 요청 아이디: [" + mid + "]");
 
     // [핵심 수정] URL 뒤에 타임스탬프 추가하여 캐시 방지
@@ -126,6 +133,7 @@ function checkDuplicateId() {
                 msg.innerText = "사용 가능한 아이디입니다.";
                 msg.style.color = "#A36CD9";
                 idField.dataset.check = "ok";
+                isIdChecked = true; 
             } else {
                 msg.innerText = "이미 사용 중인 아이디입니다.";
                 msg.style.color = "red";
@@ -148,13 +156,7 @@ document.getElementById('m_id').addEventListener('input', function() {
  }
 });
 
-function validateForm() {
-    if (!isIdChecked) {
-        alert("아이디 중복 확인 버튼을 눌러주세요.");
-        return false;
-    }
-    return true;
-}
+
 function goPopup(){
     // 팝업 파일의 경로를 프로젝트 구조에 맞게 수정하세요 (예: /guest/jusoPopup)
     var pop = window.open("${pageContext.request.contextPath}/guest/jusoPopup", "pop", "width=570,height=420, scrollbars=yes, resizable=yes"); 

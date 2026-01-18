@@ -1,5 +1,7 @@
 @charset "UTF-8";
-
+html {
+  scroll-behavior: smooth;
+}
 /* [1] 테마 및 공통 설정 */
 :root {
     --point-purple: #9b59b6;
@@ -9,7 +11,7 @@
     --transition: 0.2s ease-in-out;
 }
 
-h1 { color: #333; margin-bottom: 5px; font-size: 2rem; }
+h1 { color: #333; font-size: 2rem; }
 button { cursor: pointer; transition: var(--transition); border: none; background: none; }
 
 /* [1] 전체 컨테이너는 중앙 정렬만 담당 */
@@ -57,7 +59,7 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 .result-container {
     position: relative;
     padding-bottom: 50px;  /* 선 위쪽 여백 */
-    margin-bottom: 50px;   /* 선 아래쪽 여백 */
+    margin-bottom: 100px;   /* 선 아래쪽 여백 */
     border-bottom: 1px solid #f0f0f0;
     z-index: 1; /* 희미한 실선 */
 }
@@ -100,7 +102,7 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 .view-wrapper-reverse { flex-direction: row-reverse; }
 
 .image-area {
-    flex: 0 0 600px;
+    flex: 0 0 720px;
     z-index: 1;
     position: relative;
 }
@@ -110,7 +112,7 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     height: 600px;
     object-fit: cover;
     display: block;
-    border-radius: 20px;
+    border-radius: 15px;
     box-shadow: 0 30px 20px rgba(0,0,0,0.1);
 }
 
@@ -166,7 +168,8 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 
 /* 호버 시 조금 더 진한 검정색으로 변경 */
 .slider-btn:hover { 
-    background: rgba(0, 0, 0, 0.8); 
+    background: #a36cd9;
+    box-shadow: 0 0 15px rgba(163, 108, 217, 0.5); 
     color: #fff; 
 }
 
@@ -200,13 +203,13 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 }
 /* [3] 텍스트 영역 (부모) */
 .text-area {
-    height: 330px;
+    height: 340px;
     overflow-y: auto; /* 최대 높이를 넘으면 스크롤바가 생깁니다 */
 	overflow: visible !important; 
     flex: 0 0 260px;
     margin-left: -40px;
-    margin-bottom: 80px;
-    border-radius: 20px;
+    margin-bottom: 5px;
+    border-radius: 15px;
     padding: 15px 15px;
     background: transparent url('/assets/paper.png') no-repeat center / cover;
     z-index: 20 !important;
@@ -221,7 +224,7 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 /* 게시글 본문 텍스트 (줄바꿈 허용) */
 .review-text { /* #text-p-ID 대신 이 공통 클래스 사용 */
     flex-shrink: 0;
-    margin: 10px 0 20px 0;
+    margin: 10px 0 10px 0;
     font-size: 0.9rem;
     line-height: 1.5;
     
@@ -231,7 +234,7 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     text-overflow: clip;    /* ellipsis 속성 제거 */
     word-break: break-word; /* 긴 단어 강제 줄바꿈 */
 	
-	max-height: 50px; /* 본문은 최대 3줄 정도만 보이게 고정 (원하는 대로 조절) */
+	max-height: 45px; /* 본문은 최대 3줄 정도만 보이게 고정 (원하는 대로 조절) */
 	overflow-y: auto; /* 본문이 더 길면 본문 안에서 스크롤 */
 	flex-shrink: 0;   /* 본문이 댓글창을 압박하지 않게 고정 */
 }
@@ -244,7 +247,7 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 
     /* 본문이 너무 길면 댓글창이 아예 안 보일 수 있으므로 최대 2~3줄로 제한 */
     display: -webkit-box;
-    -webkit-line-clamp: 2; 
+    -webkit-line-clamp: 3; 
     -webkit-box-orient: vertical;
     overflow: visible;
     text-overflow: ellipsis;
@@ -252,9 +255,7 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
 
 
 .view-wrapper-reverse .text-area {
-    margin-left: 0;
-    margin-right: -50px; 
-    margin-bottom: -40px;
+    margin-right: -40px; 
 }
 
 
@@ -292,7 +293,6 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     /* 핵심 수정 사항 */
     white-space: nowrap;      /* 글자가 길어져도 줄바꿈 방지 */
     overflow: hidden;         /* 영역을 넘어가면 숨김 */
-    text-overflow: ellipsis;  /* 너무 길면 ... 으로 표시 (선택 사항) */
     flex-shrink: 1;           /* 공간이 부족하면 줄어들 수 있게 설정 */
 }
 
@@ -305,9 +305,28 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     border-radius: 15px;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-left: 65px; 
+    margin-left: 2px; 
 }
 
+.like-btn:hover .flower-icon {
+    color: #ffb3b3; /* 누르기 전 살짝 분홍색으로 변하며 유도 */
+}
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.like-btn:not(.active):hover .flower-icon {
+    animation: heartBeat 0.8s infinite; /* 비활성 상태 호버 시 무한 반복 */
+    color: #ff7875; /* 좀 더 진한 색상으로 시선 강탈 */
+}
+
+/* 3. 클릭하는 순간 피드백 (눌리는 느낌) */
+.like-btn:active {
+    transform: scale(0.9);
+    transition: transform 0.1s;
+}
 .like-btn.active {
     border-color: #ff4d4f;
 }
@@ -363,11 +382,20 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     border-bottom: 1px solid #f5f5f5;
 }
 .reply-item {
-    margin-bottom: 8px;    /* 댓글 사이 간격 축소 */
-    padding: 5px 0;        /* 상하 여백 최소화 */
-    position: relative;
+    display: flex;             /* 가로 배치를 위해 flex 설정 */
+    justify-content: space-between; /* 텍스트는 왼쪽, 버튼은 오른쪽 */
+    align-items: flex-start;   /* 상단 정렬 */
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px dotted #f0f0f0;
+    gap: 10px;                 /* 텍스트와 버튼 사이 간격 확보 */
 }
 
+/* 댓글 내용 영역 (왼쪽) */
+.reply-main {
+    flex: 1;                   /* 남은 공간을 모두 차지 */
+    min-width: 0;              /* 텍스트가 부모를 넘지 않고 줄바꿈되게 함 */
+}
 .reply-meta {
     display: flex;
     align-items: center;
@@ -376,12 +404,48 @@ button { cursor: pointer; transition: var(--transition); border: none; backgroun
     margin-bottom: 2px;
 }
 
+/* 댓글 텍스트 상세 설정 */
 .reply-content {
-    font-size: 0.8rem !important; /* 글자 크기 축소 */
-    line-height: 1.3;            /* 줄간격 축소 */
     display: block;
-    color: #555;
-    word-break: break-all;       /* 좁은 영역에서 강제 줄바꿈 */
+    word-break: break-all;     /* 긴 단어나 URL도 강제 줄바꿈 */
+    white-space: normal;       /* 줄바꿈 허용 */
+    line-height: 1.4;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* 메뉴 버튼 영역 - 버튼이 밀리지 않게 너비 보호 */
+.reply-menu-container {
+    flex-shrink: 0;             /* [핵심] 왼쪽 텍스트가 길어져도 이 영역은 절대 안 줄어듦 */
+    min-width: 120px;           /* 버튼 3개(수정,삭제,취소)가 가로로 들어갈 충분한 너비 */
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+}
+
+/* 각 버튼 스타일 (작게 조절) */
+.inline-btn {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    white-space: nowrap;        /* 버튼 안의 글자도 줄바꿈 금지 */
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* 버튼들을 감싸는 그룹 - 가로 정렬 강제 */
+.inline-menu-group {
+    display: none;   /* 가로 정렬 */
+    flex-direction: row;        /* 가로 방향 */
+    gap: 4px;                   /* 버튼 사이 간격 */
+    white-space: nowrap;        /* [핵심] 줄바꿈 절대 금지 */
+    background: #fff;           /* 겹침 방지 배경색 */
+    padding: 2px 5px;
+    border: none;
+    border-radius: 4px;
+    position: absolute;         /* 위치 고정 */
+    right: 0;
+    top: 0;
+    z-index: 100;               /* 댓글 내용보다 위로 */
 }
 
 /* 댓글 작성자 아이디 크기 */

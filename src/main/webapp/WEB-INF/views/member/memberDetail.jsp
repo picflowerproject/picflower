@@ -75,12 +75,36 @@ function closePwCheck() { document.getElementById('pwModal').style.display = 'no
 
 function handleEditClick(isSocial) {
     if (isSocial) {
-        // 카카오 유저는 비번 입력 없이 바로 검증 함수 호출 (빈 값 전송)
-        validatePw(""); 
+    	 if (confirm("보안을 위해 소셜 계정 재인증이 필요합니다.")) {
+    		 
+    		 showSecurityLoading(); 
+    		 
+    		 // 2. 0.5초~0.8초 정도 대기 후 서버로 이동 (사용자가 로딩을 인지할 시간)
+             setTimeout(function() {
+                 location.href = "/member/goSocialReauth";
+             },600);
+    		 
+         }
     } else {
-        // 일반 유저는 비밀번호 입력 모달 열기
-        openPwCheck();
+        openPwCheck(); 
     }
+}
+
+
+// 시각적 로딩 레이어 생성 함수
+function showSecurityLoading() {
+    const loader = document.createElement('div');
+    loader.id = "security-overlay";
+    loader.innerHTML = `
+        <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); 
+                    z-index:10000; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white;">
+            <div class="spinner" style="border:5px solid #f3f3f3; border-top:5px solid #A36CD9; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite;"></div>
+            <h3 style="margin-top:20px;">카카오 보안 세션을 연결 중입니다...</h3>
+            <p style="font-size:0.9em; opacity:0.8;">잠시 후 카카오 로그인 창으로 이동합니다.</p>
+        </div>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    `;
+    document.body.appendChild(loader);
 }
 
 /* 비밀번호 체크 및 페이지 이동 로직 */
@@ -99,6 +123,15 @@ function validatePw(inputPw) {
         data: { m_pwd: pw },
         success: function(res) {
             if (res.success) {
+            	 var mno = "${detail.m_no}"; // JSP에서 서버 데이터가 잘 박혔는지 확인
+            	    console.log("이동할 번호:", mno);
+            	    if(!mno || mno === "") {
+            	        alert("회원 번호가 없습니다. 상세페이지로 이동합니다.");
+            	        location.href = "/member/memberDetailId"; 
+            	        return;
+            	    }
+            	
+            	
                 // 수정 폼으로 이동 (m_no 파라미터 포함)
                 location.href = '/member/memberUpdateForm?m_no=${detail.m_no}';
             } else {
@@ -266,6 +299,8 @@ function withdrawMember(m_no) {
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
         }
+      
+       
     </script>
 
     <%@ include file="/WEB-INF/views/common/footer.jsp" %>

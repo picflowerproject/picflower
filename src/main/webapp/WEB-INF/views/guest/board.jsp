@@ -14,12 +14,12 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/board_style.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/boardUpdateForm.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reply.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
 <script>
     const contextPath = "${pageContext.request.contextPath}";
 	const isLogin = ${pageContext.request.userPrincipal != null};
 </script>
 <script src="${pageContext.request.contextPath}/js/board.js"></script>
+<script src="${pageContext.request.contextPath}/js/boardValidation.js"></script>
 <script src="${pageContext.request.contextPath}/js/reply.js"></script>
 <script>
 function showProductInfo(p_no, p_title) {
@@ -32,7 +32,10 @@ function showProductInfo(p_no, p_title) {
 </script>
 </head>
 <body>
-<%@ include file="/WEB-INF/views/common/header.jsp" %>
+<header>
+	<%@ include file="/WEB-INF/views/common/header.jsp" %>
+</header>
+<main>
 <div class="content-container">
 	    
 		 <div class="form-section">
@@ -179,24 +182,13 @@ function showProductInfo(p_no, p_title) {
 												           </div>
 												       </c:if>
 												   </sec:authorize>
-											    <!-- [클릭 후] 전환될 메뉴 그룹 (기본 숨김) -->
-											    <div class="inline-menu-group" id="inline-menu-${reply.r_no}" style="display:none;">
-											        <c:if test="${pageContext.request.userPrincipal.name == reply.m_id}">
-											            <button type="button" class="inline-btn edit" onclick="showReplyEditForm(${reply.r_no})">수정</button>
-											        </c:if>
-											        <c:if test="${pageContext.request.userPrincipal.name == reply.m_id || pageContext.request.isUserInRole('ADMIN')}">
-											            <button type="button" class="inline-btn delete" onclick="deleteReply(${reply.r_no}, ${board.b_no})">삭제</button>
-											        </c:if>
-											        <!-- 다시 점으로 돌아가는 취소 버튼 -->
-											        <button type="button" class="inline-btn cancel" onclick="hideInlineMenu(${reply.r_no})">취소</button>
-											    </div>
 											</div>
 											<div id="reply-view-${reply.r_no}">
 											    <!-- 왼쪽: 작성자 아이콘 + ID + 내용 -->
 											    <div class="reply-main">
 											        <!-- 메타 정보 (아이디 + 시간)를 한 줄로 묶음 -->
 											        <div class="reply-meta">
-											            ◽ <span class="author-id">${reply.m_id}</span>
+											            ❣️ <span class="author-id">${reply.m_id}</span>
 											            <small><fmt:formatDate value="${reply.r_date}" pattern="MM.dd HH:mm" /></small>
 											        </div>
 											        
@@ -215,9 +207,10 @@ function showProductInfo(p_no, p_title) {
 	                    </div> <!-- .scroll-content 닫기 -->
 
 						<div class="reply-input-wrapper">
-						    <input type="text" 
+						    <input type="text"
+						    	   oninput="if(this.value.length > 20) this.value = this.value.substring(0, 20);"
 						           id="reply-input-${board.b_no}" 
-						           placeholder="${pageContext.request.userPrincipal != null ? '댓글을 입력하세요...' : '로그인이 필요한 서비스입니다.'}"
+						           placeholder="${pageContext.request.userPrincipal != null ? '댓글을 입력하세요.' : '로그인이 필요한 서비스입니다.'}"
 						           ${pageContext.request.userPrincipal == null ? 'readonly' : ''}>
 						    <button onclick="addReply(${board.b_no})">등록</button>
 						</div>
@@ -265,7 +258,7 @@ function showProductInfo(p_no, p_title) {
 							<!-- 3행: 텍스트 (가로 꽉 채우기) -->
 							            <tr>
 							                <td colspan="2">
-							                    <textarea id="edit-text-${board.b_no}" name="b_text" class="edit-textarea" rows="5">${board.b_text}</textarea>
+							                    <textarea id="edit-text-${board.b_no}" name="b_text" class="edit-textarea" rows="5" maxlength="50">${board.b_text}</textarea>
 							                </td>
 							            </tr>
 							        </table>
@@ -280,7 +273,11 @@ function showProductInfo(p_no, p_title) {
 	        </div> <!-- .result-container 닫기 -->
 	    </c:forEach>
 	</div> <!-- #review-list 닫기 -->
-			</div> <!-- .content-container 닫기 -->
-		<%@ include file="/WEB-INF/views/common/footer.jsp" %>    
-	</body>
+</div> <!-- .content-container 닫기 -->
+
+</main>
+<footer>
+	<%@ include file="/WEB-INF/views/common/footer.jsp" %>
+</footer>   
+</body>
 </html>

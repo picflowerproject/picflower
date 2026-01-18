@@ -110,7 +110,7 @@ function changeQty(c_no, delta) {
 
             <%-- 하단 버튼 그룹 --%>
             <div class="btn-group">
-                <a href="/guest/productList" class="btn-shop">계속 쇼핑하기</a>
+                <a href="/guest/productList" class="btn-shop">쇼핑하기</a>
                 <button type="button" class="btn-order" onclick="location.href='/member/orderForm'">주문하기</button>
             </div>
         </c:otherwise>

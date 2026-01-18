@@ -13,73 +13,89 @@
 <script src="${pageContext.request.contextPath}/js/productDetail.js"></script>
 
 <script>
-function addToCart() {
-    const form = document.getElementById('orderForm');
-    const countInput = document.getElementById('o_count');
+    // [로그인 체크 변수] Spring Security 태그를 이용해 로그인 여부를 판단
+    const isGuest = <sec:authorize access="isAnonymous()">true</sec:authorize>
+                    <sec:authorize access="isAuthenticated()">false</sec:authorize>;
+
+    // 공통 로그인 체크 함수
+    function checkLogin() {
+        if (isGuest) {
+            alert("로그인이 필요한 서비스입니다.");
+            // 여기서 로그인이 필요한 알람만 띄우고 끝납니다. 
+            // (이미 구현된 로그인 팝업이 있다면 여기서 띄우는 함수를 추가로 호출해도 됩니다.)
+            return false;
+        }
+        return true;
+    }
+
+    function addToCart() {
+        // [추가] 로그인 체크 실행
+        if (!checkLogin()) return;
+
+        const form = document.getElementById('orderForm');
+        const countInput = document.getElementById('o_count');
+        
+        // name을 장바구니용 c_count로 원복
+        if(countInput) countInput.setAttribute("name", "c_count");
+
+        if (!form) return;
+
+        const formData = new FormData(form);
+        fetch("/member/addCart", {
+            method: "POST",
+            body: new URLSearchParams(formData)
+        })
+        .then(res => {
+            document.getElementById('cartModal').style.display = 'flex';
+        })
+        .catch(err => alert("오류가 발생했습니다."));
+    }
+
+    function closeCartModal() {
+        document.getElementById('cartModal').style.display = 'none';
+    }
     
-    // name을 장바구니용 c_count로 원복 (바로구매 클릭 후 돌아온 경우 대비)
-    if(countInput) countInput.setAttribute("name", "c_count");
+    function directOrder() {
+        // [추가] 로그인 체크 실행
+        if (!checkLogin()) return;
 
-    if (!form) return;
+        const form = document.getElementById('orderForm');
+        const countInput = document.getElementById('o_count');
+        
+        if(!countInput || !countInput.value) {
+            alert("수량을 확인해주세요.");
+            return;
+        }
 
-    const formData = new FormData(form);
-    fetch("/member/addCart", {
-        method: "POST",
-        body: new URLSearchParams(formData)
-    })
-    .then(res => {
-        document.getElementById('cartModal').style.display = 'flex';
-    })
-    .catch(err => alert("오류가 발생했습니다."));
-}
+        // 1. 가격 정보 가져오기
+        const priceElement = document.querySelector('.price-text');
+        let priceText = priceElement ? priceElement.innerText : "${detail.p_price}";
+        
+        const price = parseInt(priceText.replace(/[^0-9]/g, '')) || 0;
+        const count = parseInt(countInput.value) || 1;
+        const totalPrice = price * count;
 
-	function closeCartModal() {
-	    document.getElementById('cartModal').style.display = 'none';
-	}
-	
-	function directOrder() {
-	    const form = document.getElementById('orderForm');
-	    const countInput = document.getElementById('o_count');
-	    
-	    if(!countInput || !countInput.value) {
-	        alert("수량을 확인해주세요.");
-	        return;
-	    }
+        if(totalPrice <= 0) {
+            alert("결제 금액 계산에 실패했습니다. 다시 시도해주세요.");
+            return;
+        }
 
-	    // 1. 가격 정보 가져오기 (가장 안전한 방법: HTML 태그의 텍스트에서 추출)
-	    // ${detail.p_price}가 null이거나 포맷팅되어 깨질 경우를 대비해 화면에 표시된 숫자를 읽습니다.
-	    const priceElement = document.querySelector('.price-text');
-	    let priceText = priceElement ? priceElement.innerText : "${detail.p_price}";
-	    
-	    // 숫자 외의 모든 문자(콤마, 원 등) 제거 후 정수 변환
-	    const price = parseInt(priceText.replace(/[^0-9]/g, '')) || 0;
-	    const count = parseInt(countInput.value) || 1;
-	    const totalPrice = price * count;
+        // 2. 총 결제 금액 hidden 필드 생성/수정
+        let totalInput = form.querySelector('input[name="o_total_price"]');
+        if(!totalInput) {
+            totalInput = document.createElement('input');
+            totalInput.type = 'hidden';
+            totalInput.name = 'o_total_price';
+            form.appendChild(totalInput);
+        }
+        totalInput.value = totalPrice;
 
-	    console.log("읽어온 가격:", price, "수량:", count, "최종 금액:", totalPrice);
-
-	    if(totalPrice <= 0) {
-	        alert("결제 금액 계산에 실패했습니다. 다시 시도해주세요.");
-	        return;
-	    }
-
-	    // 2. 총 결제 금액 hidden 필드 생성/수정
-	    let totalInput = form.querySelector('input[name="o_total_price"]');
-	    if(!totalInput) {
-	        totalInput = document.createElement('input');
-	        totalInput.type = 'hidden';
-	        totalInput.name = 'o_total_price';
-	        form.appendChild(totalInput);
-	    }
-	    totalInput.value = totalPrice;
-
-	    // 3. 목적지 변경 및 전송
-	    form.action = "/member/directOrderForm"; 
-	    // 장바구니와 충돌을 피하기 위해 name 속성을 o_count로 변경
-	    countInput.setAttribute("name", "o_count"); 
-	    
-	    form.submit();
-	}
+        // 3. 목적지 변경 및 전송
+        form.action = "/member/directOrderForm"; 
+        countInput.setAttribute("name", "o_count"); 
+        
+        form.submit();
+    }
 </script>
 
 </head>
@@ -88,7 +104,7 @@ function addToCart() {
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 </header>
 <main>
-    <h2>${detail.p_title}</h2>
+    <h1>${detail.p_title}</h1>
     <h3>${detail.p_subtitle}</h3>
 
     <!-- 메인 상품 정보 레이아웃 -->
@@ -173,7 +189,7 @@ function addToCart() {
     <!-- 하단 버튼: 목록(좌), 수정/삭제(우) -->
     <div class="link-container">
         <div class="left-btns">
-            <a href="productList" class="btn-list">목록으로</a>
+            <a href="productList" class="btn-list">상품 목록</a>
         </div>
         <div class="right-btns">
             <sec:authorize access="hasAuthority('ROLE_ADMIN')">
